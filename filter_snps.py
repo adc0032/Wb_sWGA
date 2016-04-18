@@ -15,7 +15,7 @@ QbD = []
 het_count = 0
 with open(str(sys.argv[1]),'r') as vcf:
     for line in vcf:
-        if line.startwith("#"):
+        if line.startswith("#"):
             f.write(line)
         else:
             x = line.split()
