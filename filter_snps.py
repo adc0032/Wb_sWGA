@@ -9,7 +9,6 @@ import sys
 from scipy import stats
 from math import log
 
-f = open(str(sys.argv[2]),'w')
 DPQ = []
 QbD = []
 het_count = 0
