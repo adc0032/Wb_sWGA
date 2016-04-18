@@ -3,6 +3,7 @@
 Created on Thu Apr 14 12:39:40 2016
 filter_snps.py INFILE OUTFILE
 filters SNPs from a freebayes file that has been normalized with vcflib and vt
+mnps have been properly split using fix_mnps.py
 @author: stsmall
 """
 import sys
@@ -14,8 +15,9 @@ QbD = []
 het_count = 0
 
 with open(str(sys.argv[2]),'w') as f:
-    #with open(str(sys.argv[1]),'r') as vcf:
-    with open("test.break.norm.out.vcf",'r') as vcf:
+#with open("test.py.out",'w') as f:    
+    with open(str(sys.argv[1]),'r') as vcf:
+#    with open("test.break.norm.out.vcf",'r') as vcf:
     
         for line in vcf:
             if line.startswith("#"):
