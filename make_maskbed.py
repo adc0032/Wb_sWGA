@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Mar 21 13:27:07 2016
-make a bedfile mask for use with bedtools mask fasta, 0 coordinate
-from a lowercase masked fasta. fasta should be single line format not broken 
-every 80 or whatever characters
+make a bedfile mask for use with bedtools mask fasta from a lower-case fasta where
+the lower case is considered a masked site, fasta should be single line format 
+not broken every 80 or whatever characters
 
 python make_maskbed.py FOO.fa
 
