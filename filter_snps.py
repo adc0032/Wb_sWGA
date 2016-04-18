@@ -13,7 +13,9 @@ f = open(str(sys.argv[2]),'w')
 DPQ = []
 QbD = []
 het_count = 0
-with open(str(sys.argv[1]),'r') as vcf:
+#with open(str(sys.argv[1]),'r') as vcf:
+with open("test.break.norm.out.vcf",'r') as vcf:
+
     for line in vcf:
         if line.startswith("#"):
             f.write(line)
@@ -25,7 +27,7 @@ with open(str(sys.argv[1]),'r') as vcf:
                 SAP = x[7].split(";")[35]
                 MQM = x[7].split(";")[15]
                 QUAL = x[6]
-                pvalue, oddsration = stats.fisher_exact([[x[7].split(";")[37].split("=")[1], x[7].split(";")[34].split("=")[1]],[x[7].split(";")[39].split("=")[1], x[7].split(";")[36].split("=")[1]]])
+                oddsratio, pvalue = stats.fisher_exact([[x[7].split(";")[37].split("=")[1], x[7].split(";")[34].split("=")[1]],[x[7].split(";")[39].split("=")[1], x[7].split(";")[36].split("=")[1]]])
                 try:
                     phred_pvalue = -10*(log(pvalue,10))  
                 except TypeError:
