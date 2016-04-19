@@ -48,7 +48,7 @@ with open(sys.argv[2],'w') as f:
                     x[9] = ":".join(x9)
                     y[7] = ";".join(y7)
                     y[9] = ":".join(y9)
-                    if line.split()[7].split(";")[0].split(",")[1] > line.split()[7].split(";")[0].split(",")[0].split("=")[1]:
+                    if float(line.split()[7].split(";")[0].split(",")[1]) > float(line.split()[7].split(";")[0].split(",")[0].split("=")[1]):
                         f.write("\t".join(y) + "\n")                
                         f.write("\t".join(x) + "\n")
                     else:
