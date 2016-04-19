@@ -12,10 +12,8 @@ from math import log
 
 DPQ = []
 
-#with open(str(sys.argv[2]),'w') as f:
-with open("test.filt.out",'w') as f:    
-    #with open(str(sys.argv[1]),'r') as vcf:
-    with open("test.mnps.norm.out.vcf",'r') as vcf:
+with open(str(sys.argv[2]),'w') as f:   
+    with open(str(sys.argv[1]),'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
                 f.write(line)
@@ -49,16 +47,16 @@ depth_thresh = avg_depth + 3*((avg_depth)**0.5)
 depth_test = [i for i,z in enumerate(DPQ) if z > depth_thresh]
 
 ##appends depth threshold to comments column
-if depth_test:
-    with open(str(sys.argv[2]),'w') as f:  
-        with open(str(sys.argv[1]),'r') as vcf:
+if depth_test:    
+    with open(str(sys.argv[2]),'r') as f:  
+        with open(str(sys.argv[3]),'w') as vcf:
             for line in vcf:
-                if line.startwith("#"):
+                if line.startswith("#"):
                     f.write(line)
                 else:
                     x = line.split()
                     if x[9].split(":")[0] in "0|1" or x[9].split(":")[0] in "0/1" or x[9].split(":")[0] in "1|0":
-                        if depth_thresh < x[7].split(";")[7]:
+                        if int(x[7].split(";")[7].split("=")[1]) > depth_thresh:
                             x[6] = "DepthThresh"
                             f.write("\t".join(x)+"\n")
                         else:
