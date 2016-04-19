@@ -43,16 +43,19 @@ with open(sys.argv[2],'w') as f:
                     
                     x9[7] = x9[7].split(",")[0] + "," + x9[7].split(",")[4] + "," + x9[7].split(",")[3]
                     y9[7] = y9[7].split(",")[0] + "," + y9[7].split(",")[4] + "," + y9[7].split(",")[5]
-                x[7] = ";".join(x7)
-                x[9] = ":".join(x9)
-                y[7] = ";".join(y7)
-                y[9] = ":".join(y9)
-                if line.split()[7].split(";")[0].split(",")[1] > line.split()[7].split(";")[0].split(",")[0].split("=")[1]:
-                    f.write("\t".join(y) + "\n")                
-                    f.write("\t".join(x) + "\n")
+                    
+                    x[7] = ";".join(x7)
+                    x[9] = ":".join(x9)
+                    y[7] = ";".join(y7)
+                    y[9] = ":".join(y9)
+                    if line.split()[7].split(";")[0].split(",")[1] > line.split()[7].split(";")[0].split(",")[0].split("=")[1]:
+                        f.write("\t".join(y) + "\n")                
+                        f.write("\t".join(x) + "\n")
+                    else:
+                        f.write("\t".join(x) + "\n")
+                        f.write("\t".join(y) + "\n")
                 else:
-                    f.write("\t".join(x) + "\n")
-                    f.write("\t".join(y) + "\n")
+                    f.write(line)
 
 
                     
