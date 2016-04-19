@@ -8,15 +8,19 @@ This assumes that fix_mnps has selected the highest allele freq as the first lin
 """
 import sys
 with open(sys.argv[2],'w') as f:
-    with open(sys.argv[1],'r') as vcf:
-        f_coordinate = 1        
+    with open(sys.argv[1],'r') as vcf:      
         for line in vcf:
-            if line.startswith("#"):
+            if line.startswith("##"):
+                f.write(line)
+            elif line.startswith("#CHROM"):
+                line = vcf.next()
+                contig = line.split()[0]
+                position = line.split()[1]
                 f.write(line)
             else:
                 x = line.split()
-                if x[1] == f_coordinate:
-                    f_coordinate = x[1]
+                if x[1] == position and contig == x[0]:
+                    position = x[1]
                 else:
-                    f_coordinate = line.split()[1]                    
+                    position = line.split()[1]                    
                     f.write(line)

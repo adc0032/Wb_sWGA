@@ -7,8 +7,10 @@ This script prints 2 lines. These can then be properly filtered.
 @author: stsmall
 """
 import sys,copy
-with open(sys.argv[2],'w') as f:
-    with open(sys.argv[1],'r') as vcf:
+#with open(sys.argv[2],'w') as f:
+with open("fix_mnps.py.out",'w') as f:
+    #with open(sys.argv[1],'r') as vcf:
+    with open("test.mnp.out",'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
                 f.write(line)
