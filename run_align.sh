@@ -1,15 +1,16 @@
 #!bin/bash
 
-#usage: bash run_align.sh BASE mREAD1 mREAD2 uREAD 
+#usage: bash run_align.sh mREAD1 mREAD2 uREAD 
+
+#xargs -n 3 run_align.sh
+
+base = cut mREAD1
 
 ##Align
-/home/smalls/programs_that_work/bowtie2/bowtie2 -p15 --no-unal -X 1500 -x /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt -1 $2 -2 $3 -U $4 2>${1}.log | samtools view -bS - > ${1}.bam
+/home/smalls/programs_that_work/bowtie2/bowtie2 -p15 --no-unal -X 1500 -x /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt -1 $2 -2 $3 -U $4 2>${base}.log | samtools view -bS - > ${base}.bam
 #sambamba
 sambamba sort -t 15 ${1}.bam
-sambamba index -t 15 ${1}.sorted.bam
 
-##freebayes
-bamaddrg -b ${1}.sorted.bam -s $1 | freebayes -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta --min-repeat-entropy 1 --min-alternate-count 2 --no-partial-observations --stdin > ${1}.vcf
-#if running populations then invoke --no-population-priors or --pooled-discrete  and --theta
+#python getinsertsize.py
 
-##GATK haplotypecaller
+#samblaster for discordant??

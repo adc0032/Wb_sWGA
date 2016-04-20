@@ -7,6 +7,9 @@ This assumes that fix_mnps has selected the highest allele freq as the first lin
 @author: stsmall
 """
 import sys
+
+mnps_filename = sys.argv[2].split(".")[0]
+q = open("{}.mnps.out".format(mnps_filename),'w')
 with open(sys.argv[2],'w') as f:
    with open(sys.argv[1],'r') as vcf:     
         for line in vcf:
@@ -23,8 +26,10 @@ with open(sys.argv[2],'w') as f:
                 if x[1] in position and contig in x[0]:
                     position = x[1]
                     contig = x[0]
+                    q.write("%s\t%s\n" %(contig,position))
                     pass
                 else:
                     f.write(line)                    
                     position = x[1]
-                    contig = x[0]                    
+                    contig = x[0]
+q.close()
