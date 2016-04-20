@@ -7,6 +7,9 @@
 #sambamba
 sambamba sort -t 15 ${1}.bam
 sambamba index -t 15 ${1}.sorted.bam
-bamaddrg -b ${1}.sorted.bam -s $1 | freebayes -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta --min-repeat-entropy 1 --min-alternate-count 2 --no-partial-observations --stdin > ${1}.vcf
 
+##freebayes
+bamaddrg -b ${1}.sorted.bam -s $1 | freebayes -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta --min-repeat-entropy 1 --min-alternate-count 2 --no-partial-observations --stdin > ${1}.vcf
 #if running populations then invoke --no-population-priors or --pooled-discrete  and --theta
+
+##GATK haplotypecaller
