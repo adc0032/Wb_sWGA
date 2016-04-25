@@ -14,10 +14,12 @@ with open(sys.argv[2],'w') as f:
                 f.write(line)
             else:
                 x = line.split()
-                if len(x[4]) > 2:
+                if len(x[4]) > 2:  #universal ID of MNP
                     y = copy.copy(x)
                     x[4] = x[4].split(",")[0]
-                    y[4] = y[4].split(",")[1]                    
+                    y[4] = y[4].split(",")[1] 
+                    x[6] = "MNP"
+                    y[6] = "MNP"
                     x7 = x[7].split(";")
                     y7 = y[7].split(";") 
                     x9 = x[9].split(":")
