@@ -180,6 +180,8 @@ with open(str(sys.argv[2]),'w') as f:
                         #filter step accept if...                        
                         if (MQM > 30) and (DP > 20) and (QUAL > 30) and (GQ > 30):
                             f.write(line)
+                    #elif "AC=0" in x[7]: #in the fbjoint calling there will be 0/0 sites, make sure to filter these on depth and maybe quality???
+                            
                     
 #not filtering on depth_thresh, because of sWGA, note in Filter field
 avg_depth = float(sum(DPQ)/len(DPQ))
