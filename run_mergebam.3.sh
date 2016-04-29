@@ -1,12 +1,10 @@
 #!bin/bash
-#ls *.sorted.bam | xargs -n 2 -P 6 run_snpcalling.sh
+#ls *.bam |parallel -P 6 ./run_mergebam.sh {} {}
 #--dry-run
-#run_snpcalling.sh 1bam 2bam
-
-rgsm = $(echo $1 | cut -d "." -f 1)
 
 #merge bams from runs 1 and 2
-nice sambamba merge -t 10 ${rgsm}.rg.merge.bam $1 $2
+nice sambamba merge -t 10 /data/smalls/wuchereria/Wb_MF_swga_analysis/merged_bams/$( echo $1 | cut -d "." -f 1 ).rg.merge.bam $1 $2
 
 #index
-nice sambamba index -t 10 ${rgsm}.rg.merge.bam
+#ls *.merge.bam | parallel -P 6 ./run_index.sh {}
+#nice sambamba index -t 10 $( echo $1 | cut -d "." -f 1 ).rg.merge.bam
