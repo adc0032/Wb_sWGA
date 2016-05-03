@@ -17,7 +17,7 @@ python make_maskbed.py masked.fa #will make a bedfile mask from the genome.mask.
 #create low-complexity and repeat mask
 /home/smalls/programs_that_work/maker/RepeatMasker/RepeatMasker -pa 20 -norna -species "brugia malayi" -gccalc -dir . -x -poly -gff /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta
 cut -f1,4-5 Wbcontigs2.fasta.out.gff > Wb.repeatmasker.mask.out
-awk '{$2 = $2 - 1; print}' Wb.repeatmasker.mask.out > Wb.repeatmasker.mask0.out
+awk -F"\t" 'BEGIN {OFS = "\t"}{ $2 = $2 - 1; print}' Wb.repeatmasker.mask.out > Wb.repeatmasker.mask0.out
 remove first 3 lines
 sed 's/ /\t/g' Wb.repeatmasker.mask0.bed > proper-fields.out
 
