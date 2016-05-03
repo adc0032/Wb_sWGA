@@ -9,8 +9,8 @@ import argparse
 
 def get_args():
   parser = argparse.ArgumentParser(description='configures fasta file to different character breaks')  
-  parser.add_argument('-c','--char', action='store_true', type=int, help='number of characters per line, default is all in 1 line')
-  parser.add_argument('fasta_file', metavar="fasta",type=str,nargs='+',help='path to fasta file')   
+  parser.add_argument('-c','--char', type=int, help='number of characters per line, default is all in 1 line')
+  parser.add_argument('fasta_file', metavar="fasta",type=str, nargs='+',help='path to fasta file')   
   args = parser.parse_args()
   return args
   
