@@ -18,7 +18,8 @@ python make_maskbed.py masked.fa #will make a bedfile mask from the genome.mask.
 /home/smalls/programs_that_work/maker/RepeatMasker/RepeatMasker -pa 20 -norna -species "brugia malayi" -gccalc -dir . -x -poly -gff /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta
 cut -f1,4-5 Wbcontigs2.fasta.out.gff > Wb.repeatmasker.mask.out
 awk '{$2 = $2 - 1; print}' Wb.repeatmasker.mask.out > Wb.repeatmasker.mask0.out
+remove first 3 lines
 sed 's/ /\t/g' Wb.repeatmasker.mask0.bed > proper-fields.out
 
-#removes lines from the VCF which conflict with the masks
-vcf_addmask.py vcfIN vcfOUT rp_mask snpable_mask
+#create coverage mask after samtools depth -aa .bam > .aa.dep
+xargs -P10 genomeCoverageBed -bga -ibam $1 -g /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta | awk '$3 <= 20' > $(echo $1 | cut -d "." -f 1).covmask.bed

@@ -29,122 +29,12 @@ with open(str(sys.argv[2]),'w') as f:
             if line.startswith("#"):
                 f.write(line)
             else:
-                x = line.split()
-                #if re.search()                
-                if "set" in x[7].split(";")[-1]:  #bcbio.variation ensemble                
-                    if "-" in x[7].split(";")[-1]: #combo call;  this is combo of gatk, fb, and samtools info fields
-                        if "AC=1" in x[7]: #0/1
-                            QUAL = float(x[5])                            
-                            ab = re.search(r'AB=\d*\.?\d*',x[7])
-                            AB = float(ab.group().split("=")[1])
-                            dp = re.search(r'DP=\d*\.?\d*',x[7])
-                            DP = int(dp.group().split("=")[1])
-                            fs = re.search(r'FS=\d*\.?\d*',x[7])                               
-                            FS = float(fs.group().split("=")[1])                            
-                            mqm = re.search(r'MQM=\d*\.?\d*',x[7])                              
-                            MQM = float(mqm.group().split("=")[1])
-                            mqrs = re.search(r'MQRankSum=-?\d*\.?\d*',x[7]) 
-                            MQRS = float(mqrs.group().split("=")[1]) #GATK only
-                            rprs = re.search(r'ReadPosRankSum=-?\d*\.?\d*',x[7])   
-                            RPRS = float(rprs.group().split("=")[1]) #GATK only
-                            qd = re.search(r'QD=\d*\.?\d*',x[7]) 
-                            QD = float(qd.group().split("=")[1]) #GATK only
-                            sap = re.search(r'SAP=\d*\.?\d*',x[7])
-                            SAP = float(sap.group().split("=")[1])
-                            #rpb = re.search(r'RPB=\d*\.?\d*',x[7])
-                            #RPB = float(rpb.group().split("=")[1]) #samtools and (RPB < 0.1)
-                            GQ = float(x[9].split(":")[-2].split("=")[1])
-                            if (AB > 0.3) and (QD > 2) and (SAP < 60) and (QUAL > 30) and (MQM > 30) and (DP > 20) and (FS < 60) and (GQ > 30) and (MQRS > -12.5) and (RPRS > -8):
-                                f.write(line)
-                                DPQ.append(DP)
-                                QxD.append(QUAL)
-                        elif "AC=2" in x[7]: #1/1
-                            dp = re.search(r'DP=\d*\.?\d*',x[7])
-                            DP = int(dp.group().split("=")[1]) 
-                            QUAL = float(x[5])
-                            mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
-                            MQ = float(mq.group().split("=")[1])
-                            qd = re.search(r'QD=\d*\.?\d*',x[7]) 
-                            QD = float(qd.group().split("=")[1]) #GATK only
-                            GQ = float(x[9].split(":")[-2].split("=")[1])
-                             #filter step accept if...
-                            if (MQ > 30) and (DP > 20) and (QD > 2) and (GQ > 30) and (QUAL > 30):
-                                f.write(line)      
-                    else:
-                        if "gatk" in x[7].split(";")[-1]: #gatk
-                            #this is gatk info fields
-                            if "AC=1" in x[7]: #0/1
-                                AF = int(x[9].split(":")[1].split(",")[1]) / (float(x[9].split(":")[1].split(",")[1]) + float(x[9].split(":")[1].split(",")[0]))                                
-                                dp = re.search(r'DP=\d*\.?\d*',x[7])
-                                DP = int(dp.group().split("=")[1])                              
-                                fs = re.search(r'FS=\d*\.?\d*',x[7])                               
-                                FS = float(fs.group().split("=")[1])
-                                mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
-                                MQ = float(mq.group().split("=")[1])
-                                QUAL = float(x[5])
-                                GQ = float(x[9].split(":")[-2].split("=")[1])
-                                qd = re.search(r'QD=\d*\.?\d*',x[7]) 
-                                QD = float(qd.group().split("=")[1]) #GATK only
-                                mqrs = re.search(r'MQRankSum=-?\d*\.?\d*',x[7]) 
-                                MQRS = float(mqrs.group().split("=")[1]) #GATK only
-                                rprs = re.search(r'ReadPosRankSum=-?\d*\.?\d*',x[7])   
-                                RPRS = float(rprs.group().split("=")[1]) #GATK only
-                                #filter step accept if ...                        
-                                if (AF > 0.2 and AF < 0.8 ) and (QD > 2) and (QUAL > 30) and (MQ > 30) and (DP > 20) and (FS < 60) and (GQ > 30) and (MQRS > -12.5) and (RPRS > -8):
-                                    f.write(line)
-                                    DPQ.append(DP)
-                                    QxD.append(QUAL)
-                            elif "AC=2" in x[7]: #1/1
-                                dp = re.search(r'DP=\d*\.?\d*',x[7])
-                                DP = int(dp.group().split("=")[1]) 
-                                QUAL = float(x[5])
-                                mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
-                                MQ = float(mq.group().split("=")[1])
-                                qd = re.search(r'QD=\d*\.?\d*',x[7]) 
-                                QD = float(qd.group().split("=")[1]) #GATK only
-                                GQ = float(x[9].split(":")[-2].split("=")[1])
-                                 #filter step accept if...
-                                if (MQ > 30) and (DP > 20) and (QD > 2) and (GQ > 30) and (QUAL > 30):
-                                    f.write(line)                                
-                        elif "freebayes" in x[7].split(";")[-1]: #freebayes
-                            #this is a truncated fb info fields 
-                            if "AC=1" in x[7]: #0/1
-                                ab = re.search(r'AB=\d*\.?\d*',x[7])
-                                AB = float(ab.group().split("=")[1])
-                                dp = re.search(r'DP=\d*\.?\d*',x[7])
-                                DP = int(dp.group().split("=")[1])
-                                sap = re.search(r'SAP=\d*\.?\d*',x[7])
-                                SAP = float(sap.group().split("=")[1])
-                                mqm = re.search(r'MQM=\d*\.?\d*',x[7])
-                                MQM = float(mqm.group().split("=")[1])
-                                QUAL = float(x[5])
-                                GQ = float(x[9].split(":")[-2].split("=")[1])                   
-                                srf = re.search(r'SRF=\d*\.?\d*',x[7])
-                                saf = re.search(r'SAF=\d*\.?\d*',x[7])
-                                srr = re.search(r'SRR=\d*\.?\d*',x[7])
-                                sar = re.search(r'SAR=\d*\.?\d*',x[7])
-                                oddsratio, pvalue = stats.fisher_exact([[float(srf.group().split("=")[1]),float(saf.group().split("=")[1])],[float(srr.group().split("=")[1]),float(sar.group().split("=")[1])]])                    
-                                try:
-                                    phred_pvalue = -10*(log(pvalue,10))  
-                                except TypeError:
-                                    phred_pvalue = 0
-                                #filter step accept position if...
-                                if (AB > 0.30) and (QUAL > 30) and (MQM > 30) and (SAP < 60) and (DP > 20) and (phred_pvalue < 60) and (GQ > 30):
-                                    f.write(line)
-                                    DPQ.append(DP)
-                                    QxD.append(QUAL)
-                            elif "AC=2" in x[7]: #1/1p
-                                mqm = re.search(r'MQM=\d*\.?\d*',x[7])
-                                MQM = float(mqm.group().split("=")[1])
-                                dp = re.search(r'DP=\d*\.?\d*',x[7])
-                                DP = int(dp.group().split("=")[1])
-                                QUAL = float(x[5])
-                                GQ = float(x[9].split(":")[-2].split("=")[1]) 
-                                #filter step accept if...                        
-                                if (MQM > 30) and (DP > 20) and (QUAL > 30) and (GQ > 30):
-                                    f.write(line)
-                        #elif "samtools" in x[7].split(";")[-1]:
-                else: #just freebayes; for filtering bcbio.variation.recall ensemble and freebayes --variants 
+                if line.startswith("mtGenomeConsensus"):
+                    x = line.split()
+                    #this is mtDNA and should only haploid so only 1/1 or 0/0
+                else:
+                    x = line.split()
+                    #this is normal diploid
                     if "AC=1" in x[7]:
                         ab = re.search(r'AB=\d*\.?\d*',x[7])
                         AB = float(ab.group().split("=")[1])
@@ -180,8 +70,8 @@ with open(str(sys.argv[2]),'w') as f:
                         #filter step accept if...                        
                         if (MQM > 30) and (DP > 20) and (QUAL > 30) and (GQ > 30):
                             f.write(line)
-                    #elif "AC=0" in x[7]: #in the fbjoint calling there will be 0/0 sites, make sure to filter these on depth and maybe quality???
-                            
+                    elif "AC=0" in x[7]: #in the fbjoint calling there will be 0/0 sites, make sure to filter these on depth and maybe quality???
+                        f.write(line)        
                     
 #not filtering on depth_thresh, because of sWGA, note in Filter field
 avg_depth = float(sum(DPQ)/len(DPQ))
@@ -216,7 +106,120 @@ if depth_test:
                         f.write(line)
 
     
-    
+                  #if re.search()                
+#                if "set" in x[7].split(";")[-1]:  #bcbio.variation ensemble                
+#                    if "-" in x[7].split(";")[-1]: #combo call;  this is combo of gatk, fb, and samtools info fields
+#                        if "AC=1" in x[7]: #0/1
+#                            QUAL = float(x[5])                            
+#                            ab = re.search(r'AB=\d*\.?\d*',x[7])
+#                            AB = float(ab.group().split("=")[1])
+#                            dp = re.search(r'DP=\d*\.?\d*',x[7])
+#                            DP = int(dp.group().split("=")[1])
+#                            fs = re.search(r'FS=\d*\.?\d*',x[7])                               
+#                            FS = float(fs.group().split("=")[1])                            
+#                            mqm = re.search(r'MQM=\d*\.?\d*',x[7])                              
+#                            MQM = float(mqm.group().split("=")[1])
+#                            mqrs = re.search(r'MQRankSum=-?\d*\.?\d*',x[7]) 
+#                            MQRS = float(mqrs.group().split("=")[1]) #GATK only
+#                            rprs = re.search(r'ReadPosRankSum=-?\d*\.?\d*',x[7])   
+#                            RPRS = float(rprs.group().split("=")[1]) #GATK only
+#                            qd = re.search(r'QD=\d*\.?\d*',x[7]) 
+#                            QD = float(qd.group().split("=")[1]) #GATK only
+#                            sap = re.search(r'SAP=\d*\.?\d*',x[7])
+#                            SAP = float(sap.group().split("=")[1])
+#                            #rpb = re.search(r'RPB=\d*\.?\d*',x[7])
+#                            #RPB = float(rpb.group().split("=")[1]) #samtools and (RPB < 0.1)
+#                            GQ = float(x[9].split(":")[-2].split("=")[1])
+#                            if (AB > 0.3) and (QD > 2) and (SAP < 60) and (QUAL > 30) and (MQM > 30) and (DP > 20) and (FS < 60) and (GQ > 30) and (MQRS > -12.5) and (RPRS > -8):
+#                                f.write(line)
+#                                DPQ.append(DP)
+#                                QxD.append(QUAL)
+#                        elif "AC=2" in x[7]: #1/1
+#                            dp = re.search(r'DP=\d*\.?\d*',x[7])
+#                            DP = int(dp.group().split("=")[1]) 
+#                            QUAL = float(x[5])
+#                            mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
+#                            MQ = float(mq.group().split("=")[1])
+#                            qd = re.search(r'QD=\d*\.?\d*',x[7]) 
+#                            QD = float(qd.group().split("=")[1]) #GATK only
+#                            GQ = float(x[9].split(":")[-2].split("=")[1])
+#                             #filter step accept if...
+#                            if (MQ > 30) and (DP > 20) and (QD > 2) and (GQ > 30) and (QUAL > 30):
+#                                f.write(line)      
+#                    else:
+#                        if "gatk" in x[7].split(";")[-1]: #gatk
+#                            #this is gatk info fields
+#                            if "AC=1" in x[7]: #0/1
+#                                AF = int(x[9].split(":")[1].split(",")[1]) / (float(x[9].split(":")[1].split(",")[1]) + float(x[9].split(":")[1].split(",")[0]))                                
+#                                dp = re.search(r'DP=\d*\.?\d*',x[7])
+#                                DP = int(dp.group().split("=")[1])                              
+#                                fs = re.search(r'FS=\d*\.?\d*',x[7])                               
+#                                FS = float(fs.group().split("=")[1])
+#                                mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
+#                                MQ = float(mq.group().split("=")[1])
+#                                QUAL = float(x[5])
+#                                GQ = float(x[9].split(":")[-2].split("=")[1])
+#                                qd = re.search(r'QD=\d*\.?\d*',x[7]) 
+#                                QD = float(qd.group().split("=")[1]) #GATK only
+#                                mqrs = re.search(r'MQRankSum=-?\d*\.?\d*',x[7]) 
+#                                MQRS = float(mqrs.group().split("=")[1]) #GATK only
+#                                rprs = re.search(r'ReadPosRankSum=-?\d*\.?\d*',x[7])   
+#                                RPRS = float(rprs.group().split("=")[1]) #GATK only
+#                                #filter step accept if ...                        
+#                                if (AF > 0.2 and AF < 0.8 ) and (QD > 2) and (QUAL > 30) and (MQ > 30) and (DP > 20) and (FS < 60) and (GQ > 30) and (MQRS > -12.5) and (RPRS > -8):
+#                                    f.write(line)
+#                                    DPQ.append(DP)
+#                                    QxD.append(QUAL)
+#                            elif "AC=2" in x[7]: #1/1
+#                                dp = re.search(r'DP=\d*\.?\d*',x[7])
+#                                DP = int(dp.group().split("=")[1]) 
+#                                QUAL = float(x[5])
+#                                mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
+#                                MQ = float(mq.group().split("=")[1])
+#                                qd = re.search(r'QD=\d*\.?\d*',x[7]) 
+#                                QD = float(qd.group().split("=")[1]) #GATK only
+#                                GQ = float(x[9].split(":")[-2].split("=")[1])
+#                                 #filter step accept if...
+#                                if (MQ > 30) and (DP > 20) and (QD > 2) and (GQ > 30) and (QUAL > 30):
+#                                    f.write(line)                                
+#                        elif "freebayes" in x[7].split(";")[-1]: #freebayes
+#                            #this is a truncated fb info fields 
+#                            if "AC=1" in x[7]: #0/1
+#                                ab = re.search(r'AB=\d*\.?\d*',x[7])
+#                                AB = float(ab.group().split("=")[1])
+#                                dp = re.search(r'DP=\d*\.?\d*',x[7])
+#                                DP = int(dp.group().split("=")[1])
+#                                sap = re.search(r'SAP=\d*\.?\d*',x[7])
+#                                SAP = float(sap.group().split("=")[1])
+#                                mqm = re.search(r'MQM=\d*\.?\d*',x[7])
+#                                MQM = float(mqm.group().split("=")[1])
+#                                QUAL = float(x[5])
+#                                GQ = float(x[9].split(":")[-2].split("=")[1])                   
+#                                srf = re.search(r'SRF=\d*\.?\d*',x[7])
+#                                saf = re.search(r'SAF=\d*\.?\d*',x[7])
+#                                srr = re.search(r'SRR=\d*\.?\d*',x[7])
+#                                sar = re.search(r'SAR=\d*\.?\d*',x[7])
+#                                oddsratio, pvalue = stats.fisher_exact([[float(srf.group().split("=")[1]),float(saf.group().split("=")[1])],[float(srr.group().split("=")[1]),float(sar.group().split("=")[1])]])                    
+#                                try:
+#                                    phred_pvalue = -10*(log(pvalue,10))  
+#                                except TypeError:
+#                                    phred_pvalue = 0
+#                                #filter step accept position if...
+#                                if (AB > 0.30) and (QUAL > 30) and (MQM > 30) and (SAP < 60) and (DP > 20) and (phred_pvalue < 60) and (GQ > 30):
+#                                    f.write(line)
+#                                    DPQ.append(DP)
+#                                    QxD.append(QUAL)
+#                            elif "AC=2" in x[7]: #1/1p
+#                                mqm = re.search(r'MQM=\d*\.?\d*',x[7])
+#                                MQM = float(mqm.group().split("=")[1])
+#                                dp = re.search(r'DP=\d*\.?\d*',x[7])
+#                                DP = int(dp.group().split("=")[1])
+#                                QUAL = float(x[5])
+#                                GQ = float(x[9].split(":")[-2].split("=")[1]) 
+#                                #filter step accept if...                        
+#                                if (MQM > 30) and (DP > 20) and (QUAL > 30) and (GQ > 30):
+#                                    f.write(line)
+  
     
     
     

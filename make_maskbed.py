@@ -5,7 +5,7 @@ make a bedfile mask for use with bedtools mask fasta from a lower-case fasta whe
 the lower case is considered a masked site, fasta should be single line format 
 not broken every 80 or whatever characters
 
-python make_maskbed.py FOO.fa
+python make_maskbed.py foo.MASK.fa
 
 @author: stsmall
 """
@@ -56,7 +56,7 @@ def make_posmaskbed(masked_fasta):
 
 def main():
     make_negmaskbed(str(sys.argv[1]))
-	make_posmaskbed(str(sys.argv[1]))
+    make_posmaskbed(str(sys.argv[1]))
 	
 if __name__ == "__main__":
     main()
