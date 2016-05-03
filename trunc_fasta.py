@@ -20,8 +20,8 @@ def trunc_fasta(foofasta,char):
             line = fasta.next()            
             f.write(line)            
             for line in fasta:
-                if line.startswith("\n>"):
-                    f.write(line)
+                if line.startswith(">"):
+                    f.write("\n" + line + "\n")
                 else:
                     f.write(line.strip())
 def main():
