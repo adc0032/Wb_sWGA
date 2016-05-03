@@ -21,7 +21,7 @@ def trunc_fasta(foofasta,char):
                 if line.startswith(">"):
                     f.write(line)
                 else:
-                    f.write(line.rstrip("\n"))
+                    f.write(line.strip())
 def main():
     args=get_args()
     trunc_fasta(args.fasta_file, args.char)
