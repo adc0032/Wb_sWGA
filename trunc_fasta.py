@@ -17,8 +17,10 @@ def get_args():
 def trunc_fasta(foofasta,char):
     with open("{}.trunc-{}.fasta".format(foofasta.rstrip(".fasta"),char),'w') as f:
         with open(foofasta,'r') as fasta:
+            line = fasta.next()            
+            f.write(line)            
             for line in fasta:
-                if line.startswith(">"):
+                if line.startswith("\n>"):
                     f.write(line)
                 else:
                     f.write(line.strip())
