@@ -28,10 +28,12 @@ def fasta_iter(fasta_name):
 
 yes_header = []
 
-with open(sys.argv[2]) as header:
+#with open(sys.argv[2]) as header:
+with open("trinity_mrna.blastout.keep",'r') as header:
     for line in header:
-        if line.startswith(">"):
-            yes_header.append(line.split()[0][1:])
+        yes_header.append(line.split()[0])
+        #if line.startswith(">"):
+        #yes_header.append(line.split()[0][1:])
 
 f=open(sys.argv[3],'w')
 for header in fasta_iter(sys.argv[1]):
