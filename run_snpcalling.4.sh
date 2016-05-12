@@ -6,12 +6,12 @@
 ##bcftools/samtools
 nice samtools mpileup -ugf /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta $1 | bcftools call -mv -Ov > vcfs/$(echo $1 | cut -d "." -f 1).smt-all.vcf &
 
-##freebayes (parallel??)
+##freebayes
 nice freebayes -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta --min-repeat-entropy 1 --min-alternate-count 2 --no-partial-observations --strict-vcf --genotype-qualities $1 > vcfs/$(echo $1 | cut -d "." -f 1).fb-all.vcf && fg
 #if running populations then invoke --no-population-priors or --pooled-discrete  and --theta
 
 grep -Fwvf /data/smalls/wuchereria/Wb_MF_swga_analysis/contig-remove10k.out vcfs/$(echo $1 | cut -d "." -f 1).fb-all.vcf > vcfs/$(echo $1 | cut -d "." -f 1).fb.vcf
-vcffilter -f 'QUAL > 30' -s vcfs/$(echo $1 | cut -d "." -f 1).fb.vcf | vcfallelicprimitives --keep-geno --keep-info | vcffixup - | vcfstreamsort | vt normalize -r /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta -q - 2> /dev/null | vcfuniqalleles > vcfs/$(echo $1 | cut -d "." -f 1).norm.fb.vcf
+vcffilter -f 'QUAL > 30' -s vcfs/$(echo $1 | cut -d "." -f 1).fb.vcf | vt decompose_blocksub - 2> /dev/null | vcffixup - | vcfstreamsort | vt normalize -r /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta -q - 2> /dev/null | vcfuniqalleles > vcfs/$(echo $1 | cut -d "." -f 1).norm.fb.vcf
 grep -Fwvf /data/smalls/wuchereria/Wb_MF_swga_analysis/contig-remove10k.out vcfs/$(echo $1 | cut -d "." -f 1).smt-all.vcf > vcfs/$(echo $1 | cut -d "." -f 1).smt.vcf
 
 #remove multimapping

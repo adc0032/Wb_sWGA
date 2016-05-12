@@ -1,21 +1,19 @@
-#!bin/bash
-# ls *.rg.merge.bam | xargs -n 1 -P 40 run_jointsnpcalling.sh
+#!/bin/bash
+#recall each sample individually with freebayes --variant-input. Use union from ensemble method
 
-rgsm = $(echo $1 | cut -d "." -f 1)
+##INDELS in exons
+#glia is probably necessary for indels only, since the snps shouldnt need realignment. 
+#In this case use the -tCONTIG:BASE-BASE to indicate the indel regions.
+#this will be necessary for indels that are found in exons
+#<../../merged_bams/Haiti1007-1.rg.merge.bam glia -Rru -w 1000 -G 4 -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta -v Wb_joint.ensemble.snp.vcf.gz | freebayes -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta --min-repeat-entropy 1 --min-alternate-count 2 --no-partial-observations --strict-vcf --genotype-qualities --only-use-input-alleles --variant-input Wb_joint.ensemble.snp.vcf.gz --stdin > Haiti1007-1.fbjoint-all.vcf
+#vcffilter -f 'DP > 5' -s ${rgsm}.fbjoint.vcf | vcfallelicprimitives --keep-geno --keep-info | vcffixup - | vcfstreamsort | vt normalize -r /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta -q - 2> /dev/null | vcfuniqalleles > ${rgsm}.norm.fbjoint.vcf
+#bcftools filter -g3 -G10 -i'%TYPE="snp"' ${rgsm}.norm.fbjoint.vcf > ${rgsm}.snps.norm.fbjoint.vcf
 
-#xargs for each rg.merge.bam
-
-#recall each sample individually, realigning read to the variants in the union VCF with glia (or would sga work here??)
-#and calling the output with freebayes --variant-input FILE
-
-<${1} glia -Rru -w 1000 -S 100 -Q 100 -G 4 -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta -v Wb.merge-variants.vcf.gz | freebayes -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta --stdin --variant-input Wb.merge-variants.vcf.gz --only-use-input-alleles > ${rgsm}.fbjoint-all.vcf
-
-grep -Fwvf contig-remove10k.out ${rgsm}.fbjoint-all.vcf > ${rgsm}.fbjoint.vcf
-
-#normalize indels
-vcffilter -f 'QUAL > 30' -s ${rgsm}.fbjoint.vcf | vcfallelicprimitives --keep-geno --keep-info | vcffixup - | vcfstreamsort | vt normalize -r /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta -q - 2> /dev/null | vcfuniqalleles > ${rgsm}.norm.fbjoint.vcf
-#select only snps
-bcftools filter -g3 -G10 -i'%TYPE="snp"' ${rgsm}.norm.fbjoint.vcf > ${rgsm}.snps.norm.fbjoint.vcf
+##SNPs only
+#parallel w/variants
+~/programs_that_work/freebayes/scripts/freebayes-parallel <(~/programs_that_work/freebayes/scripts/fasta_generate_regions.py /data/smalls/wuchereria/Wb_MF_swga_analysis/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta.fai 10000) 20 -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta --min-repeat-entropy 1 --min-alternate-count 2 --no-partial-observations --strict-vcf --genotype-qualities --only-use-input-alleles --variant-input Wb_joint.ensemble.snp.vcf.gz /data/smalls/wuchereria/Wb_MF_swga_analysis/merged_bams/Haiti1007-1.rg.merge.bam > Haiti1007-1.fbjoint-all.parallel.vcf
+#single w/variants
+freebayes -f /SerreDLab/smalls/bowtie2_index/Wb-PNG_Genome_assembly-pt22.spades.ragoutrep.gapfill.mt.fasta --min-repeat-entropy 1 --min-alternate-count 2 --no-partial-observations --strict-vcf --genotype-qualities --only-use-input-alleles --variant-input Wb_joint.ensemble.snp.vcf.gz --stdin > Haiti1007-1.fbjoint-all.vcf
 #split mnps
 python ~/programs_that_work/Wb_swga/fix_mnps_fb.py ${rgsm}.snps.norm.fbjoint.vcf ${rgsm}.mnps.snps.norm.fbjoint.vcf
 #filter
@@ -27,8 +25,3 @@ bgzip ${rgsm}.flat.filt.mnps.snps.norm.fbjoint.vcf
 tabix -p vcf ${rgsm}.flat.filt.mnps.snps.norm.fbjoint.vcf.gz
 
 bcftools stats ${rgsm}.flat.filt.mnps.snps.norm.fbjoint.vcf.gz > ${rgsm}.stats.out
-
-#awk -F$'\t' -v OFS='\t' '{if ($0 !~ /^#/) gsub(/[KMRYSWBVHDX]/, "N", $4) } {print}' #removes ambigous from ref
-#if gvcf then convert to vcf, grep -v '<\*>' FOO.gvcf > FOO.vcf
-#check ref allele: bcftools norm -cw -f REF.fa > /dev/null
-#mnps = (awk -F"\t" 'length($5) > 2') ${1}.filt.norm.vcf | wc -l
