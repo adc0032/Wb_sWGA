@@ -26,14 +26,15 @@ def fasta_iter(fasta_name):
         seq = "".join(s.strip() for s in faiter.next())
         yield header, seq
 
-not_header = []
+yes_header = []
 
 with open(sys.argv[2]) as header:
     for line in header:
-        not_header.append(line.split()[0][1:])
+        if line.startswith(">"):
+            yes_header.append(line.split()[0][1:])
 
 f=open(sys.argv[3],'w')
 for header in fasta_iter(sys.argv[1]):
-    if header[0] not in not_header:
+    if header[0] in yes_header:
         f.write(">%s\n%s\n" %(header[0],header[1]))
 f.close()
