@@ -14,7 +14,7 @@ import argparse
 
 def get_args():
   parser = argparse.ArgumentParser(description='selects headers and sequeces from fasta file')  
-  parser.add_argument('-i','--include', nargs='?', action='store_true', help='this option excludes the header list')
+  parser.add_argument('-i','--include', action='store_true', help='this option excludes the header list')
   parser.add_argument('INfasta_file', metavar="INfasta",type=str,help='path to fasta IN file')   
   parser.add_argument('OUTfasta_file', metavar="OUTfasta",type=str,help='path to fasta OUT file')   
   parser.add_argument('header_list', metavar="header",type=str,help='path to fasta OUT file')         
