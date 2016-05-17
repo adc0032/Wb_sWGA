@@ -3,7 +3,7 @@
 Created on Thu May 12 11:56:59 2016
 parses a fasta file by a list to include or exlude. Works with both single and 
 character break lines.
-usage: python fasta_parse.py -i FOO.INfasta FOO.OUTfasta FOO.headerlist
+usage: python fasta_parse.py -i [default exclude] FOO.INfasta FOO.OUTfasta FOO.headerlist
 
 @author: stsmall
 """
@@ -39,16 +39,14 @@ def fasta_iter(fasta_IN_name):
 def make_headerlist(header_clude):
     header_parse = []
     with open(header_clude) as header:
-    #with open("trinity_mrna.blastout.keep",'r') as header:
         for line in header:
             header_parse.append(line.split()[0])
             #if line.startswith(">"):
-            #yes_header.append(line.split()[0][1:])
     return header_parse
 
 def main():
     args = get_args()  
-    f=open(args.OUTfasta_file,'w')
+    f=open(args.OUTfasta_file)
     header_parse = make_headerlist(args.header_list)    
     if args.include:    
         for header in fasta_iter(args.INfasta_file):          
