@@ -28,8 +28,7 @@ def get_args():
   parser.add_argument('-f','--fisher', action='store_true', help='this option will calculate fisher strand test for fb, only use this if you have scipy')
   parser.add_argument('-r','--rejects', action='store_true', help='this option prints filterd snps to vcfout file')
   parser.add_argument('-s','--samples', type=int, nargs='?',const=1, help='number of samples')
-  parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file')   
-  parser.add_argument('OUTvcf', metavar="OUTvcf",type=str,help='path to vcf OUT file')   
+  parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file')      
   args = parser.parse_args()
   return args
 
@@ -37,14 +36,14 @@ def get_args():
 ##if DP <= 10 then ./. or just dont print the line
 
 
-def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
+def snp_filter_fb(vcfIN,rejects,mito,samples,fisher):
     #DPQ = []
     #QxD = []    
     if rejects:
-        g = open(vcfOUT+".rejects.vcf",'w')
+        g = open("{}.rejects.out".format(vcfIN.split(".")[0]),'w')
     if mito:
-        mt = open(vcfOUT+".mtDNA.vcf",'w')
-    with open(vcfOUT,'w') as f:
+        mt = open("{}.mito.out".format(vcfIN.split(".")[0]),'w')
+    with open("{}.filter.vcf".format(vcfIN.strip(".vcf")),'w') as f:
         with open(vcfIN,'r') as vcf:
             if samples == 1:            
                 for line in vcf:
@@ -160,14 +159,14 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
                 pass  #fb does not handle multiple samples yet           
     #return DPQ, QxD
 #GT:GQ:DP:DPR:RO:QR:AO:QA:GL     0/1:160:124:124,48:75:2575:48:1373:-42.5306,0,-112.823                
-def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):    
+def snp_filter_gatk(vcfIN,rejects,mito,samples):    
     DPQ = []
     QxD = []
     if rejects:
-        g = open(vcfOUT+".rejects.vcf",'w')
+        g = open("{}.rejects.out".format(vcfIN.split(".")[0]),'w')
     if mito:
-        mt = open(vcfOUT+".mtDNA.vcf",'w')
-    with open(vcfOUT,'w') as f:
+        mt = open("{}.mito.out".format(vcfIN.split(".")[0]),'w')
+    with open("{}.filter.vcf".format(vcfIN.strip(".vcf")),'w') as f:
         with open(vcfIN,'r') as vcf:
             if samples == 1:            
                 for line in vcf:
@@ -373,9 +372,9 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
 def main():
     args = get_args()  
     if args.gatk:
-        snp_filter_gatk(args.INvcf,args.OUTvcf,args.rejects,args.mito,args.samples)
+        snp_filter_gatk(args.INvcf,args.rejects,args.mito,args.samples)
     else:
-        snp_filter_fb(args.INvcf,args.OUTvcf,args.rejects,args.mito,args.samples,args.fisher)
+        snp_filter_fb(args.INvcf,args.rejects,args.mito,args.samples,args.fisher)
     
 if __name__ == '__main__':
     main()
