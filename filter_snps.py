@@ -33,9 +33,13 @@ def get_args():
   args = parser.parse_args()
   return args
 
+
+##if DP <= 10 then ./. or just dont print the line
+
+
 def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
-    DPQ = []
-    QxD = []    
+    #DPQ = []
+    #QxD = []    
     if rejects:
         g = open(vcfOUT+".rejects.vcf",'w')
     if mito:
@@ -50,103 +54,111 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
                         if line.startswith("WbmtGenome_L3consensus"): #this mtDNA
                             if mito:                        
                                 x = line.split()
-                                dp = re.search(r'DP=\d*\.?\d*',x[7])
-                                DP = float(dp.group().split("=")[1])                                     
-                                ao_idx = x[8].split(":").index("AO")
-                                AO = float(x[9].split(":")[ao_idx])
-                                gq_idx = x[8].split(":").index("GQ")                               
-                                GQ = float(x[9].split(":")[gq_idx]) 
-                                QUAL = float(x[5])                                
-                                if "AC=1" in x[7]: #<0.50 goes to REF, >0.5 goes to ALT
-                                    if (DP >=10) and ((AO/DP) > 0.50):
-                                        x9 = x[9].split(":")
-                                        x9[0] = "1/1"
-                                        x[9] = ":".join(x9)                                            
-                                        mt.write("\t".join(x)+"\n")
-                                    elif (DP >= 10) and ((AO/DP) <= 0.50):
-                                        x9 = x[9].split(":")
-                                        x9[0] = "0/0"
-                                        x[9] = ":".join(x9)                                            
-                                        mt.write("\t".join(x)+"\n")
-                                    elif rejects:
-                                        g.write(line)
-                                elif "AC=2" in x[7]:
-                                    if (DP >= 10) and (GQ >= 30) and (QUAL >=30):
-                                        mt.write(line)
-                                    elif rejects:
-                                        g.write(line)
-                                elif "AC=0" in x[7]:                               
-                                    if (DP >= 10) and (GQ >= 30):
-                                        mt.write(line)
-                                    elif rejects:
+                                try:
+                                    dp = re.search(r'DP=\d*\.?\d*',x[7])
+                                    DP = float(dp.group().split("=")[1])                                     
+                                    ao_idx = x[8].split(":").index("AO")
+                                    AO = float(x[9].split(":")[ao_idx])
+                                    gq_idx = x[8].split(":").index("GQ")                               
+                                    GQ = float(x[9].split(":")[gq_idx]) 
+                                    QUAL = float(x[5])                                
+                                    if "AC=1" in x[7]: #<0.50 goes to REF, >0.5 goes to ALT
+                                        if (DP >=10) and ((AO/DP) > 0.50):
+                                            x9 = x[9].split(":")
+                                            x9[0] = "1/1"
+                                            x[9] = ":".join(x9)                                            
+                                            mt.write("\t".join(x)+"\n")
+                                        elif (DP >= 10) and ((AO/DP) <= 0.50):
+                                            x9 = x[9].split(":")
+                                            x9[0] = "0/0"
+                                            x[9] = ":".join(x9)                                            
+                                            mt.write("\t".join(x)+"\n")
+                                        elif rejects:
+                                            g.write(line)
+                                    elif "AC=2" in x[7]:
+                                        if (DP >= 10) and (GQ >= 30) and (QUAL >=30):
+                                            mt.write(line)
+                                        elif rejects:
+                                            g.write(line)
+                                    elif "AC=0" in x[7]:                               
+                                        if (DP >= 10) and (GQ >= 30):
+                                            mt.write(line)
+                                        elif rejects:
+                                            g.write(line)
+                                except IndexError:
+                                    if rejects:
                                         g.write(line)
                         else: #this is normal diploid
                             x = line.split()
-                            ab = re.search(r'AB=\d*\.?\d*',x[7])
-                            AB = float(ab.group().split("=")[1])
-                            dp = re.search(r'DP=\d*\.?\d*',x[7])
-                            DP = float(dp.group().split("=")[1])
-                            sap = re.search(r'SAP=\d*\.?\d*',x[7])
-                            SAP = float(sap.group().split("=")[1])
-                            mqm = re.search(r'MQM=\d*\.?\d*',x[7])
-                            MQM = float(mqm.group().split("=")[1])
-                            mqmr = re.search(r'MQMR=\d*\.?\d*',x[7])
-                            MQMR = float(mqmr.group().split("=")[1])
-                            QUAL = float(x[5])
-                            ao_idx = x[8].split(":").index("AO")
-                            try:
-                                AO = int(x[9].split(":")[ao_idx])
-                            except ValueError:
-                                raise Exception("ERROR: MNPs in vcf, run fix MNPs")
-                            except IndexError:    
-                                raise Exception(line)
-                            gq_idx = x[8].split(":").index("GQ")                               
-                            GQ = float(x[9].split(":")[gq_idx])                               
-                            srf = re.search(r'SRF=\d*\.?\d*',x[7])
-                            saf = re.search(r'SAF=\d*\.?\d*',x[7])
-                            srr = re.search(r'SRR=\d*\.?\d*',x[7])
-                            sar = re.search(r'SAR=\d*\.?\d*',x[7])
-                            if fisher:
-                                from scipy import stats
-                                oddsratio, pvalue = stats.fisher_exact([[float(srf.group().split("=")[1]),float(saf.group().split("=")[1])],[float(srr.group().split("=")[1]),float(sar.group().split("=")[1])]])                    
+                            try:                            
+                                dp = re.search(r'DP=\d*\.?\d*',x[7])
+                                DP = float(dp.group().split("=")[1])                            
+                                ab = re.search(r'AB=\d*\.?\d*',x[7])
+                                AB = float(ab.group().split("=")[1])
+                                sap = re.search(r'SAP=\d*\.?\d*',x[7])
+                                SAP = float(sap.group().split("=")[1])
+                                mqm = re.search(r'MQM=\d*\.?\d*',x[7])
+                                MQM = float(mqm.group().split("=")[1])
+                                mqmr = re.search(r'MQMR=\d*\.?\d*',x[7])
+                                MQMR = float(mqmr.group().split("=")[1])
+                                QUAL = float(x[5])
+                                ao_idx = x[8].split(":").index("AO")
                                 try:
-                                    phred_pvalue = -10*(log(pvalue,10))  
-                                except TypeError:
+                                    AO = int(x[9].split(":")[ao_idx])
+                                except ValueError:
+                                    raise Exception("ERROR: MNPs in vcf, run fix MNPs")
+                                #except IndexError:    
+                                #    raise Exception(line)
+                                gq_idx = x[8].split(":").index("GQ")                               
+                                GQ = float(x[9].split(":")[gq_idx])                               
+                                srf = re.search(r'SRF=\d*\.?\d*',x[7])
+                                saf = re.search(r'SAF=\d*\.?\d*',x[7])
+                                srr = re.search(r'SRR=\d*\.?\d*',x[7])
+                                sar = re.search(r'SAR=\d*\.?\d*',x[7])
+                                if fisher:
+                                    from scipy import stats
+                                    oddsratio, pvalue = stats.fisher_exact([[float(srf.group().split("=")[1]),float(saf.group().split("=")[1])],[float(srr.group().split("=")[1]),float(sar.group().split("=")[1])]])                    
+                                    try:
+                                        phred_pvalue = -10*(log(pvalue,10))  
+                                    except TypeError:
+                                        phred_pvalue = 0
+                                else:
                                     phred_pvalue = 0
-                            else:
-                                phred_pvalue = 0
-                            if "AC=1" in x[7]:
-                                #filter step accept position if...
-                                if (AB >= 0.30) and (QUAL >= 30) and (MQM >= 20) and (SAP <= 60) and (DP >= 20) and (phred_pvalue <= 60) and (GQ >= 30):
-                                    f.write(line)
-                                    DPQ.append(DP)
-                                    QxD.append(QUAL)
-                                elif (DP >= 20) and (MQM >= 20):
-                                    if (AO/DP) >= 0.70:
-                                        x9 = x[9].split(":")
-                                        x9[0] = "1/1"
-                                        x[9] = ":".join(x9)                                            
-                                        f.write("\t".join(x)+"\n")
-                                    elif (AO/DP) <= 0.30:
-                                        x9 = x[9].split(":")
-                                        x9[0] = "0/0"
-                                        x[9] = ":".join(x9)                                            
-                                        f.write("\t".join(x)+"\n") 
+                                if "AC=1" in x[7]:
+                                    #filter step accept position if...
+                                    if (AB >= 0.30) and (QUAL >= 30) and (MQM >= 20) and (SAP <= 60) and (DP >= 20) and (phred_pvalue <= 60) and (GQ >= 30):
+                                        f.write(line)
+                                        #DPQ.append(DP)
+                                        #QxD.append(QUAL)
+                                    elif (DP >= 20) and (MQM >= 20):
+                                        if (AO/DP) >= 0.70:
+                                            x9 = x[9].split(":")
+                                            x9[0] = "1/1"
+                                            x[9] = ":".join(x9)                                            
+                                            f.write("\t".join(x)+"\n")
+                                        elif (AO/DP) <= 0.30:
+                                            x9 = x[9].split(":")
+                                            x9[0] = "0/0"
+                                            x[9] = ":".join(x9)                                            
+                                            f.write("\t".join(x)+"\n") 
+                                        elif rejects:
+                                            g.write(line)
+                                elif "AC=2" in x[7]: #let pass if all reads contain the ALT and DP >= 10                     
+                                    if ((MQM >= 20) and (DP >= 10) and ((AO/DP) >= 0.90) and (QUAL > 30) and (GQ > 30)):
+                                        f.write(line)
                                     elif rejects:
                                         g.write(line)
-                            elif "AC=2" in x[7]: #let pass if all reads contain the ALT and DP >= 10                     
-                                if ((MQM >= 20) and (DP >= 10) and ((AO/DP) >= 0.90) and (QUAL > 30) and (GQ > 30)):
-                                    f.write(line)
-                                elif rejects:
+                                elif "AC=0" in x[7]: #let pass if all reads contain the REF and DP >= 10
+                                    if ((DP >= 10) and ((AO/DP) <= .10) and (GQ >= 30) and (MQMR >= 20)) or ((DP >= 20) and (GQ >= 30) and (MQMR >= 20)):                              
+                                        f.write(line)
+                                    elif rejects: 
+                                        g.write(line)
+                            except IndexError:
+                                if rejects:
                                     g.write(line)
-                            elif "AC=0" in x[7]: #let pass if all reads contain the REF and DP >= 10
-                                if ((DP >= 10) and ((AO/DP) <= .10) and (GQ >= 30) and (MQMR >= 20)) or ((DP >= 20) and (GQ >= 30) and (MQMR >= 20)):                              
-                                    f.write(line)
-                                elif rejects: 
-                                    g.write(line)       
             elif samples > 1:
                 pass  #fb does not handle multiple samples yet           
-    return DPQ, QxD
+    #return DPQ, QxD
 #GT:GQ:DP:DPR:RO:QR:AO:QA:GL     0/1:160:124:124,48:75:2575:48:1373:-42.5306,0,-112.823                
 def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):    
     DPQ = []
@@ -165,102 +177,117 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                         if line.startswith("WbmtGenome_L3consensus"): #this mtDNA
                             if mito:                        
                                 x = line.split()
+                                try:                                
+                                    dp = re.search(r'DP=\d*\.?\d*',x[7])
+                                    DP = float(dp.group().split("=")[1]) 
+                                    if DP < 10:
+                                        break
+                                    mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
+                                    MQ = float(mq.group().split("=")[1])
+                                    QUAL = float(x[5])
+                                    gq_idx = x[8].split(":").index("GQ")                               
+                                    GQ = float(x[9].split(":")[gq_idx])
+                                    ad_idx = x[8].split(":").index("AD")
+                                    AD = float(x[9].split(":")[ad_idx].split(",")[0])
+                                    DP = float(x[9].split(":")[ad_idx].split(",")[1])                                
+                                    if "AC=1" in x[7]: #<0.50 goes to REF, >0.5 goes to ALT
+                                        if (DP >= 10) and (MQ >= 20) and (GQ >= 30) and (QUAL >= 30):
+                                            if rejects:
+                                                g.write(line) #no snps should pass in mtGenome since it is haploid
+                                        elif (DP >= 10): #shouldnt be het, push to homozygous
+                                            if (AD/DP) > 0.50:
+                                                x9 = x[9].split(":")
+                                                x9[0] = "1/1"
+                                                x[9] = ":".join(x9)                                            
+                                                mt.write("\t".join(x)+"\n")
+                                            elif (AD/DP) <= 0.50:
+                                                x9 = x[9].split(":")
+                                                x9[0] = "0/0"
+                                                x[9] = ":".join(x9)                                            
+                                                mt.write("\t".join(x)+"\n")
+                                        elif rejects:
+                                            g.write(line)
+                                    elif "AC=2" in x[7]:
+                                        if (DP >= 10) and (MQ >= 20) and (GQ >= 30):
+                                            mt.write(line)
+                                        elif rejects:
+                                            g.write(line)
+                                    elif "AC=0" in x[7]:                               
+                                        if (DP >= 10) and (MQ >= 20) and (GQ >= 30):
+                                            mt.write(line)
+                                        elif rejects:
+                                            g.write(line)
+                                except IndexError:
+                                    if rejects:
+                                        g.write(line)
+                        else: #this is normal diploid
+                            x = line.split()
+                            try:                            
+                                AF = float(x[9].split(":")[1].split(",")[1]) / (float(x[9].split(":")[1].split(",")[1]) + float(x[9].split(":")[1].split(",")[0]))                                
+                                dp = re.search(r'DP=\d*\.?\d*',x[7])
+                                DP = float(dp.group().split("=")[1])
+                                if DP < 10:
+                                    break
+                                fs = re.search(r'FS=\d*\.?\d*',x[7])                               
+                                FS = float(fs.group().split("=")[1])
                                 mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
                                 MQ = float(mq.group().split("=")[1])
                                 QUAL = float(x[5])
                                 gq_idx = x[8].split(":").index("GQ")                               
                                 GQ = float(x[9].split(":")[gq_idx])
+                                qd = re.search(r'QD=\d*\.?\d*',x[7]) 
+                                QD = float(qd.group().split("=")[1]) #GATK only
+                                #something wrong with regex
+                                mqrs = re.search(r'MQRankSum\=-?\d?\.\d+(e[+|-]?)?\d+',x[7])
+                                MQRS = float(mqrs.group().split("=")[1]) #GATK only
+                                rprs = re.search(r'ReadPosRankSum\=-?\d?\.\d+(e[+|-]?)?\d+',x[7])   
+                                RPRS = float(rprs.group().split("=")[1]) #GATK only
+                                #something wrong with regex
                                 ad_idx = x[8].split(":").index("AD")
                                 AD = float(x[9].split(":")[ad_idx].split(",")[0])
-                                DP = float(x[9].split(":")[ad_idx].split(",")[1])                                
-                                if "AC=1" in x[7]: #<0.50 goes to REF, >0.5 goes to ALT
-                                    if (DP >= 10) and (MQ >= 20) and (GQ >= 30) and (QUAL >= 30):
-                                        if rejects:
-                                            g.write(line) #no snps should pass in mtGenome since it is haploid
-                                    elif (DP >= 10): #shouldnt be het, push to homozygous
-                                        if (AD/DP) > 0.50:
+                                DP1 = float(x[9].split(":")[ad_idx].split(",")[1])                            
+                                if "AC=1" in x[7]: #0/1
+                                    #filter step accept if ...                        
+                                    if (AF >= 0.3) and (QD >= 2) and (QUAL >= 30) and (MQ >= 20) and (DP >= 20) and (FS <= 60) and (GQ >= 30) and (MQRS >= -12.5) and (RPRS >= -8):
+                                        f.write(line)
+                                        DPQ.append(DP)
+                                        QxD.append(QUAL)
+                                    elif (DP >= 20) and (MQ >= 20):
+                                        if (AD/DP1) >= 0.70:
                                             x9 = x[9].split(":")
                                             x9[0] = "1/1"
                                             x[9] = ":".join(x9)                                            
-                                            mt.write("\t".join(x)+"\n")
-                                        elif (AD/DP) <= 0.50:
+                                            f.write("\t".join(x)+"\n")
+                                        elif (AD/DP1) < 0.30:
                                             x9 = x[9].split(":")
                                             x9[0] = "0/0"
                                             x[9] = ":".join(x9)                                            
-                                            mt.write("\t".join(x)+"\n")
+                                            f.write("\t".join(x)+"\n") 
+                                        elif rejects:
+                                            g.write(line)                                      
+                                elif "AC=2" in x[7]: #1/1
+                                     #filter step accept if...
+                                    if ((MQ >= 20) and (DP >= 20) and (QD >= 2) and (GQ > 30)) or ((DP >= 10) and (MQ >= 20) and (QD >= 2) and (GQ > 30) and ((AD/DP1) >= .90)):
+                                        f.write(line)                                
                                     elif rejects:
                                         g.write(line)
-                                elif "AC=2" in x[7]:
-                                    if (DP >= 10) and (MQ >= 20) and (GQ >= 30):
-                                        mt.write(line)
+                                elif "AC=0" in x[7]: #0/0                       
+                                    if ((MQ >= 20) and (DP >= 20) and (QD >= 2) and (GQ > 30)) or ((DP >= 10) and (MQ >= 20) and (QD >= 2) and (GQ > 30) and ((AD/DP1) <= .10)):
+                                        f.write(line)                                
                                     elif rejects:
                                         g.write(line)
-                                elif "AC=0" in x[7]:                               
-                                    if (DP >= 10) and (MQ >= 20) and (GQ >= 30):
-                                        mt.write(line)
-                                    elif rejects:
-                                        g.write(line)
-                        else: #this is normal diploid
-                            x = line.split()
-                            AF = float(x[9].split(":")[1].split(",")[1]) / (float(x[9].split(":")[1].split(",")[1]) + float(x[9].split(":")[1].split(",")[0]))                                
-                            dp = re.search(r'DP=\d*\.?\d*',x[7])
-                            DP = float(dp.group().split("=")[1])                              
-                            fs = re.search(r'FS=\d*\.?\d*',x[7])                               
-                            FS = float(fs.group().split("=")[1])
-                            mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
-                            MQ = float(mq.group().split("=")[1])
-                            QUAL = float(x[5])
-                            gq_idx = x[8].split(":").index("GQ")                               
-                            GQ = float(x[9].split(":")[gq_idx])
-                            qd = re.search(r'QD=\d*\.?\d*',x[7]) 
-                            QD = float(qd.group().split("=")[1]) #GATK only
-                            
-                            mqrs = re.search(r'MQRankSum\=-?\d?\.\d+(e[+|-]?)?\d+',x[7])
-                            MQRS = float(mqrs.group().split("=")[1]) #GATK only
-                            rprs = re.search(r'ReadPosRankSum\=-?\d?\.\d+(e[+|-]?)?\d+',x[7])   
-                            RPRS = float(rprs.group().split("=")[1]) #GATK only
-
-                            ad_idx = x[8].split(":").index("AD")
-                            AD = float(x[9].split(":")[ad_idx].split(",")[0])
-                            DP1 = float(x[9].split(":")[ad_idx].split(",")[1])                            
-                            if "AC=1" in x[7]: #0/1
-                                #filter step accept if ...                        
-                                if (AF >= 0.3) and (QD >= 2) and (QUAL >= 30) and (MQ >= 20) and (DP >= 20) and (FS <= 60) and (GQ >= 30) and (MQRS >= -12.5) and (RPRS >= -8):
-                                    f.write(line)
-                                    DPQ.append(DP)
-                                    QxD.append(QUAL)
-                                elif (DP >= 20) and (MQ >= 20):
-                                    if (AD/DP1) >= 0.70:
-                                        x9 = x[9].split(":")
-                                        x9[0] = "1/1"
-                                        x[9] = ":".join(x9)                                            
-                                        f.write("\t".join(x)+"\n")
-                                    elif (AD/DP1) < 0.30:
-                                        x9 = x[9].split(":")
-                                        x9[0] = "0/0"
-                                        x[9] = ":".join(x9)                                            
-                                        f.write("\t".join(x)+"\n") 
-                                    elif rejects:
-                                        g.write(line)                                      
-                            elif "AC=2" in x[7]: #1/1
-                                 #filter step accept if...
-                                if ((MQ >= 20) and (DP >= 20) and (QD >= 2) and (GQ > 30)) or ((DP >= 10) and (MQ >= 20) and (QD >= 2) and (GQ > 30) and ((AD/DP1) >= .90)):
-                                    f.write(line)                                
-                                elif rejects:
-                                    g.write(line)
-                            elif "AC=0" in x[7]: #0/0                       
-                                if ((MQ >= 20) and (DP >= 20) and (QD >= 2) and (GQ > 30)) or ((DP >= 10) and (MQ >= 20) and (QD >= 2) and (GQ > 30) and ((AD/DP1) <= .10)):
-                                    f.write(line)                                
-                                elif rejects:
+                            except IndexError:
+                                if rejects:
                                     g.write(line)
             elif samples > 1: #samples > 1      THIS IS LIKELY IN THE FORM OF A g.VCF that was combined and genotyped. 
                 for line in vcf:
                     if line.startswith("#"):
                         f.write(line)
                     else:
-                        if line.startswith("mtGenomeConsensus"):
+                        if line.startswith("WbmtGenome_L3consensus"):
                             if mito:                            
                                 x = line.split()
+                                #need to account for missing data where we cant calculate these
                                 for ind in range(9,samples+9):
                                     ad_idx = x[8].split(":").index("AD")
                                     AD = float(x[ind].split(":")[ad_idx].split(",")[0])
