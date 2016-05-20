@@ -98,6 +98,8 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
                                 AO = int(x[9].split(":")[ao_idx])
                             except ValueError:
                                 raise Exception("ERROR: MNPs in vcf, run fix MNPs")
+                            except IndexError:    
+                                raise Exception(line)
                             gq_idx = x[8].split(":").index("GQ")                               
                             GQ = float(x[9].split(":")[gq_idx])                               
                             srf = re.search(r'SRF=\d*\.?\d*',x[7])
