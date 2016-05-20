@@ -4,22 +4,28 @@ Created on Thu Apr 14 12:39:40 2016
 filter_snps.py [-mt -g -r] -s INFILE OUTFILE
 
 purpose: filters SNPs from an a freebayes file or gatk file with 1 or more samples.
-File prep: vcffilter -f 'DP < 10' -s FOO.vcf | vt decompose_blocksub | vcffixup - | vcfstreamsort | vt normalize -r {ref} -q - 2> /dev/null | vcfuniqalleles > out.vcf 
-bcftools filter -g5 -g10 'type=snps'"
+
+File prep straight from fb/gatk with indels: vcffilter -f 'DP < 10' -s FOO.vcf | vt decompose_blocksub | vcffixup - | vcfstreamsort | vt normalize -r {ref} -q - 2> /dev/null | vcfuniqalleles > out.vcf 
+bcftools filter -g5 -g10 'type=snps'" #this will give only SNPs
 fix_mnps.py
+filter_snps.py ~this script
+vcf_flatten.py
 
 Dependencies: anaconda (scipy)
 @author: stsmall
 """
 
+
+####NOTE this works fine for fb with 1 sample. Still having some issues with GATK for 1 sample due to regex
+
 import re, argparse
-from scipy import stats
 from math import log
 
 def get_args():
   parser = argparse.ArgumentParser(description='filters vcf using either gatk or fb set of hard filters')  
   parser.add_argument('-mt','--mito', action='store_true', help='print out mitochondrial DNA as separate file')
   parser.add_argument('-g','--gatk', action='store_true', help='this option determines if gatk or fb')
+  parser.add_argument('-f','--fisher', action='store_true', help='this option will calculate fisher strand test for fb, only use this if you have scipy')
   parser.add_argument('-r','--rejects', action='store_true', help='this option prints filterd snps to vcfout file')
   parser.add_argument('-s','--samples', type=int, nargs='?',const=1, help='number of samples')
   parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file')   
@@ -27,54 +33,50 @@ def get_args():
   args = parser.parse_args()
   return args
 
-def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples):
+def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
     DPQ = []
     QxD = []    
     if rejects:
-        g = open(vcfOUT+".rejects.vcf")
+        g = open(vcfOUT+".rejects.vcf",'w')
     if mito:
-        mt = open(vcfOUT+".mtDNA.vcf")
-    with open(vcfOUT) as f:
-        with open(vcfIN) as vcf:
+        mt = open(vcfOUT+".mtDNA.vcf",'w')
+    with open(vcfOUT,'w') as f:
+        with open(vcfIN,'r') as vcf:
             if samples == 1:            
                 for line in vcf:
                     if line.startswith("#"):
                         f.write(line)
                     else:
-                        if line.startswith("WbL3mtGenomeConsensus"): #this mtDNA
+                        if line.startswith("WbmtGenome_L3consensus"): #this mtDNA
                             if mito:                        
                                 x = line.split()
                                 dp = re.search(r'DP=\d*\.?\d*',x[7])
-                                DP = int(dp.group().split("=")[1])
-                                mqm = re.search(r'MQM=\d*\.?\d*',x[7])
-                                MQM = float(mqm.group().split("=")[1])                                    
+                                DP = int(dp.group().split("=")[1])                                     
                                 ao_idx = x[8].split(":").index("AO")
                                 AO = int(x[9].split(":")[ao_idx])
                                 gq_idx = x[8].split(":").index("GQ")                               
                                 GQ = int(x[9].split(":")[gq_idx]) 
                                 QUAL = float(x[5])                                
-                                if "AC=1": #<0.50 goes to REF, >0.5 goes to ALT
-                                    if (DP >= 10) and (MQM >= 20) and (GQ >= 30) and (QUAL >= 30):
-                                        if rejects:                                        
-                                            g.write(line)
-                                    elif (DP >= 10):
-                                        if float(AO/DP) > 0.50:
-                                            x9 = x[9].split(":")
-                                            x9[0] = "1/1"
-                                            x[9] = ":".join(x9)                                            
-                                            mt.write("\t".join(x)+"\n")
-                                        elif float(AO/DP) <= 0.50:
-                                            x9 = x[9].split(":")
-                                            x9[0] = "0/0"
-                                            x[9] = ":".join(x9)                                            
-                                            mt.write("\t".join(x)+"\n")
-                                elif "AC=2":
-                                    if (DP >= 10) and (MQM >= 20) and (GQ >= 30):
+                                if "AC=1" in x[7]: #<0.50 goes to REF, >0.5 goes to ALT
+                                    if (DP >=10) and (float(AO/DP) > 0.50):
+                                        x9 = x[9].split(":")
+                                        x9[0] = "1/1"
+                                        x[9] = ":".join(x9)                                            
+                                        mt.write("\t".join(x)+"\n")
+                                    elif (DP >= 10) and (float(AO/DP) <= 0.50):
+                                        x9 = x[9].split(":")
+                                        x9[0] = "0/0"
+                                        x[9] = ":".join(x9)                                            
+                                        mt.write("\t".join(x)+"\n")
+                                    elif rejects:
+                                        g.write(line)
+                                elif "AC=2" in x[7]:
+                                    if (DP >= 10) and (GQ >= 30) and (QUAL >=30):
                                         mt.write(line)
                                     elif rejects:
                                         g.write(line)
-                                elif "AC=0":                               
-                                    if (DP >= 10) and (MQM >= 20) and (GQ >= 30):
+                                elif "AC=0" in x[7]:                               
+                                    if (DP >= 10) and (GQ >= 30):
                                         mt.write(line)
                                     elif rejects:
                                         g.write(line)
@@ -88,9 +90,14 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples):
                             SAP = float(sap.group().split("=")[1])
                             mqm = re.search(r'MQM=\d*\.?\d*',x[7])
                             MQM = float(mqm.group().split("=")[1])
+                            mqmr = re.search(r'MQMR=\d*\.?\d*',x[7])
+                            MQMR = float(mqmr.group().split("=")[1])
                             QUAL = float(x[5])
                             ao_idx = x[8].split(":").index("AO")
-                            AO = int(x[9].split(":")[ao_idx])
+                            try:
+                                AO = int(x[9].split(":")[ao_idx])
+                            except ValueError:
+                                raise Exception("ERROR: MNPs in vcf, run fix MNPs")
                             gq_idx = x[8].split(":").index("GQ")                               
                             GQ = int(x[9].split(":")[gq_idx])  
                             ro_idx = x[8].split(":").index("RO")
@@ -99,11 +106,15 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples):
                             saf = re.search(r'SAF=\d*\.?\d*',x[7])
                             srr = re.search(r'SRR=\d*\.?\d*',x[7])
                             sar = re.search(r'SAR=\d*\.?\d*',x[7])
-                            oddsratio, pvalue = stats.fisher_exact([[float(srf.group().split("=")[1]),float(saf.group().split("=")[1])],[float(srr.group().split("=")[1]),float(sar.group().split("=")[1])]])                    
-                            try:
-                                phred_pvalue = -10*(log(pvalue,10))  
-                            except TypeError:
-                                phred_pvalue = 0                            
+                            if fisher:
+                                from scipy import stats
+                                oddsratio, pvalue = stats.fisher_exact([[float(srf.group().split("=")[1]),float(saf.group().split("=")[1])],[float(srr.group().split("=")[1]),float(sar.group().split("=")[1])]])                    
+                                try:
+                                    phred_pvalue = -10*(log(pvalue,10))  
+                                except TypeError:
+                                    phred_pvalue = 0
+                            else:
+                                phred_pvalue = 0
                             if "AC=1" in x[7]:
                                 #filter step accept position if...
                                 if (AB >= 0.30) and (QUAL >= 30) and (MQM >= 20) and (SAP <= 60) and (DP >= 20) and (phred_pvalue <= 60) and (GQ >= 30):
@@ -129,11 +140,11 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples):
                                 elif rejects:
                                     g.write(line)
                             elif "AC=0" in x[7]: #let pass if all reads contain the REF and DP >= 10
-                                if ((DP >= 10) and (AO == 0) and (GQ >= 30)) or ((DP >= 20) and (GQ >= 30)):
+                                if ((DP >= 10) and (AO == 0) and (GQ >= 30) and (MQMR >= 20)) or ((DP >= 20) and (GQ >= 30) and (MQMR >= 20)):                              
                                     f.write(line)
                                 elif rejects: 
                                     g.write(line)       
-            else: #samples >1
+            elif samples > 1:
                 pass  #fb does not handle multiple samples yet           
     g.close()
     return DPQ, QxD
@@ -142,17 +153,17 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
     DPQ = []
     QxD = []
     if rejects:
-        g = open(vcfOUT+".rejects.vcf")
+        g = open(vcfOUT+".rejects.vcf",'w')
     if mito:
-        mt = open(vcfOUT+".mtDNA.vcf")
-    with open(vcfOUT) as f:
-        with open(vcfIN) as vcf:
+        mt = open(vcfOUT+".mtDNA.vcf",'w')
+    with open(vcfOUT,'w') as f:
+        with open(vcfIN,'r') as vcf:
             if samples == 1:            
                 for line in vcf:
                     if line.startswith("#"):
                         f.write(line)
                     else:
-                        if line.startswith("mtGenomeConsensus"): #this mtDNA
+                        if line.startswith("WbmtGenome_L3consensus"): #this mtDNA
                             if mito:                        
                                 x = line.split()
                                 mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
@@ -161,9 +172,9 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                 gq_idx = x[8].split(":").index("GQ")                               
                                 GQ = int(x[9].split(":")[gq_idx])
                                 ad_idx = x[8].split(":").index("AD")
-                                AD = int(x[9].split(":")[ad_idx][0])
-                                DP = int(x[9].split(":")[ad_idx][1])                                
-                                if "AC=1": #<0.50 goes to REF, >0.5 goes to ALT
+                                AD = int(x[9].split(":")[ad_idx].split(",")[0])
+                                DP = int(x[9].split(":")[ad_idx].split(",")[1])                                
+                                if "AC=1" in x[7]: #<0.50 goes to REF, >0.5 goes to ALT
                                     if (DP >= 10) and (MQ >= 20) and (GQ >= 30) and (QUAL >= 30):
                                         if rejects:
                                             g.write(line) #no snps should pass in mtGenome since it is haploid
@@ -180,12 +191,12 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                             mt.write("\t".join(x)+"\n")
                                     elif rejects:
                                         g.write(line)
-                                elif "AC=2":
+                                elif "AC=2" in x[7]:
                                     if (DP >= 10) and (MQ >= 20) and (GQ >= 30):
                                         mt.write(line)
                                     elif rejects:
                                         g.write(line)
-                                elif "AC=0":                               
+                                elif "AC=0" in x[7]:                               
                                     if (DP >= 10) and (MQ >= 20) and (GQ >= 30):
                                         mt.write(line)
                                     elif rejects:
@@ -200,16 +211,19 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                             mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
                             MQ = float(mq.group().split("=")[1])
                             QUAL = float(x[5])
-                            GQ = float(x[9].split(":")[-2].split("=")[1])
+                            gq_idx = x[8].split(":").index("GQ")                               
+                            GQ = int(x[9].split(":")[gq_idx])
                             qd = re.search(r'QD=\d*\.?\d*',x[7]) 
                             QD = float(qd.group().split("=")[1]) #GATK only
-                            mqrs = re.search(r'MQRankSum=-?\d*\.?\d*',x[7]) 
+                            
+                            mqrs = re.search(r'MQRankSum\=-?\d?\.\d+(e[+|-]?)?\d+',x[7])
                             MQRS = float(mqrs.group().split("=")[1]) #GATK only
-                            rprs = re.search(r'ReadPosRankSum=-?\d*\.?\d*',x[7])   
+                            rprs = re.search(r'ReadPosRankSum\=-?\d?\.\d+(e[+|-]?)?\d+',x[7])   
                             RPRS = float(rprs.group().split("=")[1]) #GATK only
+
                             ad_idx = x[8].split(":").index("AD")
-                            AD = int(x[9].split(":")[ad_idx][0])
-                            DP1 = int(x[9].split(":")[ad_idx][1])                            
+                            AD = int(x[9].split(":")[ad_idx].split(",")[0])
+                            DP1 = int(x[9].split(":")[ad_idx].split(",")[1])                            
                             if "AC=1" in x[7]: #0/1
                                 #filter step accept if ...                        
                                 if (AF >= 0.3) and (QD >= 2) and (QUAL >= 30) and (MQ >= 20) and (DP >= 20) and (FS <= 60) and (GQ >= 30) and (MQRS >= -12.5) and (RPRS >= -8):
@@ -240,7 +254,7 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                     f.write(line)                                
                                 elif rejects:
                                     g.write(line)
-            elif samples > 1: #samples > 1       
+            elif samples > 1: #samples > 1      THIS IS LIKELY IN THE FORM OF A g.VCF that was combined and genotyped. 
                 for line in vcf:
                     if line.startswith("#"):
                         f.write(line)
@@ -250,8 +264,8 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                 x = line.split()
                                 for ind in range(9,samples+9):
                                     ad_idx = x[8].split(":").index("AD")
-                                    AD = int(x[ind].split(":")[ad_idx][0])
-                                    DP1 = int(x[ind].split(":")[ad_idx][1]) 
+                                    AD = int(x[ind].split(":")[ad_idx].split(",")[0])
+                                    DP1 = int(x[ind].split(":")[ad_idx].split(",")[1]) 
                                     dp_idx = x[8].split(":").index("DP")
                                     DP = int(x[ind].split(":")[dp_idx])
                                     gq_idx = x[8].split(":").index("GQ")
@@ -289,8 +303,8 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                             x = line.split()
                             for ind in range(9,samples+9):
                                 ad_idx = x[8].split(":").index("AD")
-                                AD = int(x[ind].split(":")[ad_idx][0])
-                                DP1 = int(x[ind].split(":")[ad_idx][1]) 
+                                AD = int(x[ind].split(":")[ad_idx].split(",")[0])
+                                DP1 = int(x[ind].split(":")[ad_idx].split(",")[1]) 
                                 dp_idx = x[8].split(":").index("DP")
                                 DP = int(x[ind].split(":")[dp_idx])
                                 gq_idx = x[8].split(":").index("GQ")
@@ -336,7 +350,7 @@ def main():
     if args.gatk:
         snp_filter_gatk(args.INvcf,args.OUTvcf,args.rejects,args.mito,args.samples)
     else:
-        snp_filter_fb(args.INvcf,args.OUTvcf,args.rejects,args.mito,args.samples)
+        snp_filter_fb(args.INvcf,args.OUTvcf,args.rejects,args.mito,args.samples,args.fisher)
     
 if __name__ == '__main__':
     main()
@@ -371,13 +385,4 @@ if __name__ == '__main__':
 #                            else:
 #                                f.write(line)                        
 #                        else:
-#                            f.write(line)
-  
-    
-    
-    
-    
-    
-    
-    
-    
+#                            f.write(line)  
