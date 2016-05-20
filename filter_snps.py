@@ -51,19 +51,19 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
                             if mito:                        
                                 x = line.split()
                                 dp = re.search(r'DP=\d*\.?\d*',x[7])
-                                DP = int(dp.group().split("=")[1])                                     
+                                DP = float(dp.group().split("=")[1])                                     
                                 ao_idx = x[8].split(":").index("AO")
-                                AO = int(x[9].split(":")[ao_idx])
+                                AO = float(x[9].split(":")[ao_idx])
                                 gq_idx = x[8].split(":").index("GQ")                               
-                                GQ = int(x[9].split(":")[gq_idx]) 
+                                GQ = float(x[9].split(":")[gq_idx]) 
                                 QUAL = float(x[5])                                
                                 if "AC=1" in x[7]: #<0.50 goes to REF, >0.5 goes to ALT
-                                    if (DP >=10) and (float(AO/DP) > 0.50):
+                                    if (DP >=10) and ((AO/DP) > 0.50):
                                         x9 = x[9].split(":")
                                         x9[0] = "1/1"
                                         x[9] = ":".join(x9)                                            
                                         mt.write("\t".join(x)+"\n")
-                                    elif (DP >= 10) and (float(AO/DP) <= 0.50):
+                                    elif (DP >= 10) and ((AO/DP) <= 0.50):
                                         x9 = x[9].split(":")
                                         x9[0] = "0/0"
                                         x[9] = ":".join(x9)                                            
@@ -85,7 +85,7 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
                             ab = re.search(r'AB=\d*\.?\d*',x[7])
                             AB = float(ab.group().split("=")[1])
                             dp = re.search(r'DP=\d*\.?\d*',x[7])
-                            DP = int(dp.group().split("=")[1])
+                            DP = float(dp.group().split("=")[1])
                             sap = re.search(r'SAP=\d*\.?\d*',x[7])
                             SAP = float(sap.group().split("=")[1])
                             mqm = re.search(r'MQM=\d*\.?\d*',x[7])
@@ -99,9 +99,7 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
                             except ValueError:
                                 raise Exception("ERROR: MNPs in vcf, run fix MNPs")
                             gq_idx = x[8].split(":").index("GQ")                               
-                            GQ = int(x[9].split(":")[gq_idx])  
-                            ro_idx = x[8].split(":").index("RO")
-                            RO = int(x[9].split(":")[ro_idx])                               
+                            GQ = float(x[9].split(":")[gq_idx])                               
                             srf = re.search(r'SRF=\d*\.?\d*',x[7])
                             saf = re.search(r'SAF=\d*\.?\d*',x[7])
                             srr = re.search(r'SRR=\d*\.?\d*',x[7])
@@ -122,12 +120,12 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
                                     DPQ.append(DP)
                                     QxD.append(QUAL)
                                 elif (DP >= 20) and (MQM >= 20):
-                                    if float(AO/DP) >= 0.70:
+                                    if (AO/DP) >= 0.70:
                                         x9 = x[9].split(":")
                                         x9[0] = "1/1"
                                         x[9] = ":".join(x9)                                            
                                         f.write("\t".join(x)+"\n")
-                                    elif float(AO/DP) <= 0.30:
+                                    elif (AO/DP) <= 0.30:
                                         x9 = x[9].split(":")
                                         x9[0] = "0/0"
                                         x[9] = ":".join(x9)                                            
@@ -135,12 +133,12 @@ def snp_filter_fb(vcfIN,vcfOUT,rejects,mito,samples,fisher):
                                     elif rejects:
                                         g.write(line)
                             elif "AC=2" in x[7]: #let pass if all reads contain the ALT and DP >= 10                     
-                                if ((MQM >= 30) and (DP >= 20) and (QUAL >= 30) and (GQ >= 30)) or ((MQM >= 20) and (DP >= 10) and (RO == 0) and (QUAL > 30) and (GQ > 30)):
+                                if ((MQM >= 20) and (DP >= 10) and ((AO/DP) >= 0.90) and (QUAL > 30) and (GQ > 30)):
                                     f.write(line)
                                 elif rejects:
                                     g.write(line)
                             elif "AC=0" in x[7]: #let pass if all reads contain the REF and DP >= 10
-                                if ((DP >= 10) and (AO == 0) and (GQ >= 30) and (MQMR >= 20)) or ((DP >= 20) and (GQ >= 30) and (MQMR >= 20)):                              
+                                if ((DP >= 10) and ((AO/DP) <= .10) and (GQ >= 30) and (MQMR >= 20)) or ((DP >= 20) and (GQ >= 30) and (MQMR >= 20)):                              
                                     f.write(line)
                                 elif rejects: 
                                     g.write(line)       
@@ -169,21 +167,21 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                 MQ = float(mq.group().split("=")[1])
                                 QUAL = float(x[5])
                                 gq_idx = x[8].split(":").index("GQ")                               
-                                GQ = int(x[9].split(":")[gq_idx])
+                                GQ = float(x[9].split(":")[gq_idx])
                                 ad_idx = x[8].split(":").index("AD")
-                                AD = int(x[9].split(":")[ad_idx].split(",")[0])
-                                DP = int(x[9].split(":")[ad_idx].split(",")[1])                                
+                                AD = float(x[9].split(":")[ad_idx].split(",")[0])
+                                DP = float(x[9].split(":")[ad_idx].split(",")[1])                                
                                 if "AC=1" in x[7]: #<0.50 goes to REF, >0.5 goes to ALT
                                     if (DP >= 10) and (MQ >= 20) and (GQ >= 30) and (QUAL >= 30):
                                         if rejects:
                                             g.write(line) #no snps should pass in mtGenome since it is haploid
                                     elif (DP >= 10): #shouldnt be het, push to homozygous
-                                        if float(AD/DP) > 0.50:
+                                        if (AD/DP) > 0.50:
                                             x9 = x[9].split(":")
                                             x9[0] = "1/1"
                                             x[9] = ":".join(x9)                                            
                                             mt.write("\t".join(x)+"\n")
-                                        elif float(AD/DP) <= 0.50:
+                                        elif (AD/DP) <= 0.50:
                                             x9 = x[9].split(":")
                                             x9[0] = "0/0"
                                             x[9] = ":".join(x9)                                            
@@ -202,16 +200,16 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                         g.write(line)
                         else: #this is normal diploid
                             x = line.split()
-                            AF = int(x[9].split(":")[1].split(",")[1]) / (float(x[9].split(":")[1].split(",")[1]) + float(x[9].split(":")[1].split(",")[0]))                                
+                            AF = float(x[9].split(":")[1].split(",")[1]) / (float(x[9].split(":")[1].split(",")[1]) + float(x[9].split(":")[1].split(",")[0]))                                
                             dp = re.search(r'DP=\d*\.?\d*',x[7])
-                            DP = int(dp.group().split("=")[1])                              
+                            DP = float(dp.group().split("=")[1])                              
                             fs = re.search(r'FS=\d*\.?\d*',x[7])                               
                             FS = float(fs.group().split("=")[1])
                             mq = re.search(r'MQ=\d*\.?\d*',x[7])                              
                             MQ = float(mq.group().split("=")[1])
                             QUAL = float(x[5])
                             gq_idx = x[8].split(":").index("GQ")                               
-                            GQ = int(x[9].split(":")[gq_idx])
+                            GQ = float(x[9].split(":")[gq_idx])
                             qd = re.search(r'QD=\d*\.?\d*',x[7]) 
                             QD = float(qd.group().split("=")[1]) #GATK only
                             
@@ -221,8 +219,8 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                             RPRS = float(rprs.group().split("=")[1]) #GATK only
 
                             ad_idx = x[8].split(":").index("AD")
-                            AD = int(x[9].split(":")[ad_idx].split(",")[0])
-                            DP1 = int(x[9].split(":")[ad_idx].split(",")[1])                            
+                            AD = float(x[9].split(":")[ad_idx].split(",")[0])
+                            DP1 = float(x[9].split(":")[ad_idx].split(",")[1])                            
                             if "AC=1" in x[7]: #0/1
                                 #filter step accept if ...                        
                                 if (AF >= 0.3) and (QD >= 2) and (QUAL >= 30) and (MQ >= 20) and (DP >= 20) and (FS <= 60) and (GQ >= 30) and (MQRS >= -12.5) and (RPRS >= -8):
@@ -230,12 +228,12 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                     DPQ.append(DP)
                                     QxD.append(QUAL)
                                 elif (DP >= 20) and (MQ >= 20):
-                                    if float(AD/DP1) >= 0.70:
+                                    if (AD/DP1) >= 0.70:
                                         x9 = x[9].split(":")
                                         x9[0] = "1/1"
                                         x[9] = ":".join(x9)                                            
                                         f.write("\t".join(x)+"\n")
-                                    elif float(AD/DP1) < 0.30:
+                                    elif (AD/DP1) < 0.30:
                                         x9 = x[9].split(":")
                                         x9[0] = "0/0"
                                         x[9] = ":".join(x9)                                            
@@ -244,12 +242,12 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                         g.write(line)                                      
                             elif "AC=2" in x[7]: #1/1
                                  #filter step accept if...
-                                if ((MQ >= 20) and (DP >= 20) and (QD >= 2) and (GQ > 30)) or ((DP >= 10) and (MQ >= 20) and (QD >= 2) and (GQ > 30) and (float(AD/DP1) >= .90)):
+                                if ((MQ >= 20) and (DP >= 20) and (QD >= 2) and (GQ > 30)) or ((DP >= 10) and (MQ >= 20) and (QD >= 2) and (GQ > 30) and ((AD/DP1) >= .90)):
                                     f.write(line)                                
                                 elif rejects:
                                     g.write(line)
                             elif "AC=0" in x[7]: #0/0                       
-                                if ((MQ >= 20) and (DP >= 20) and (QD >= 2) and (GQ > 30)) or ((DP >= 10) and (MQ >= 20) and (QD >= 2) and (GQ > 30) and (float(AD/DP1) <= .10)):
+                                if ((MQ >= 20) and (DP >= 20) and (QD >= 2) and (GQ > 30)) or ((DP >= 10) and (MQ >= 20) and (QD >= 2) and (GQ > 30) and ((AD/DP1) <= .10)):
                                     f.write(line)                                
                                 elif rejects:
                                     g.write(line)
@@ -263,19 +261,19 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                 x = line.split()
                                 for ind in range(9,samples+9):
                                     ad_idx = x[8].split(":").index("AD")
-                                    AD = int(x[ind].split(":")[ad_idx].split(",")[0])
-                                    DP1 = int(x[ind].split(":")[ad_idx].split(",")[1]) 
+                                    AD = float(x[ind].split(":")[ad_idx].split(",")[0])
+                                    DP1 = float(x[ind].split(":")[ad_idx].split(",")[1]) 
                                     dp_idx = x[8].split(":").index("DP")
-                                    DP = int(x[ind].split(":")[dp_idx])
+                                    DP = float(x[ind].split(":")[dp_idx])
                                     gq_idx = x[8].split(":").index("GQ")
-                                    GQ = int(x[ind].split(":")[gq_idx])
+                                    GQ = float(x[ind].split(":")[gq_idx])
                                     GT = x[ind].split(":")[0]
                                     if "0/1" in GT:
-                                        if (GQ >= 30) and (DP >= 10) and (float(AD/DP1) >= 0.50):
+                                        if (GQ >= 30) and (DP >= 10) and ((AD/DP1) >= 0.50):
                                             x9 = x[ind].split(":")
                                             x9[0] = "1/1"
                                             x[ind] = ":".join(x9)                                                                                   
-                                        elif (GQ >= 30) and (DP >= 10) and (float(AD/DP1) < 0.50):
+                                        elif (GQ >= 30) and (DP >= 10) and ((AD/DP1) < 0.50):
                                             x9 = x[ind].split(":")
                                             x9[0] = "0/0"
                                             x[ind] = ":".join(x9) 
@@ -302,21 +300,21 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                             x = line.split()
                             for ind in range(9,samples+9):
                                 ad_idx = x[8].split(":").index("AD")
-                                AD = int(x[ind].split(":")[ad_idx].split(",")[0])
-                                DP1 = int(x[ind].split(":")[ad_idx].split(",")[1]) 
+                                AD = float(x[ind].split(":")[ad_idx].split(",")[0])
+                                DP1 = float(x[ind].split(":")[ad_idx].split(",")[1]) 
                                 dp_idx = x[8].split(":").index("DP")
-                                DP = int(x[ind].split(":")[dp_idx])
+                                DP = float(x[ind].split(":")[dp_idx])
                                 gq_idx = x[8].split(":").index("GQ")
-                                GQ = int(x[ind].split(":")[gq_idx])
+                                GQ = float(x[ind].split(":")[gq_idx])
                                 GT = x[ind].split(":")[0]
                                 if "0/1" in GT:
-                                    if (GQ >= 30) and (DP >= 20) and (float(AD/DP1) >= 0.30):
+                                    if (GQ >= 30) and (DP >= 20) and ((AD/DP1) >= 0.30):
                                         pass
-                                    elif (GQ >= 30) and (DP >= 10) and (float(AD/DP1) >= 0.70):
+                                    elif (GQ >= 30) and (DP >= 10) and ((AD/DP1) >= 0.70):
                                         x9 = x[ind].split(":")
                                         x9[0] = "1/1"
                                         x[ind] = ":".join(x9)                                                                                   
-                                    elif (GQ >= 30) and (DP >= 10) and (float(AD/DP1) <= 0.30):
+                                    elif (GQ >= 30) and (DP >= 10) and ((AD/DP1) <= 0.30):
                                         x9 = x[ind].split(":")
                                         x9[0] = "0/0"
                                         x[ind] = ":".join(x9) 
@@ -325,14 +323,14 @@ def snp_filter_gatk(vcfIN,vcfOUT,rejects,mito,samples):
                                         x9[0] = "./."
                                         x[ind] = ":".join(x9) 
                                 elif "0/0" in GT:
-                                    if ((GQ >= 30) and (DP >= 20)) or ((GQ >= 30) and (DP >= 10) and (float(AD/DP1) <= 0.10)):
+                                    if ((GQ >= 30) and (DP >= 20)) or ((GQ >= 30) and (DP >= 10) and ((AD/DP1) <= 0.10)):
                                         pass
                                     else:
                                         x9 = x[ind].split(":")
                                         x9[0] = "./."
                                         x[ind] = ":".join(x9) 
                                 elif "1/1" in GT:
-                                    if ((GQ >= 30) and (DP >= 20)) or ((GQ >= 30) and (DP >= 10) and (float(AD/DP1) >= 0.90)):
+                                    if ((GQ >= 30) and (DP >= 20)) or ((GQ >= 30) and (DP >= 10) and ((AD/DP1) >= 0.90)):
                                         pass
                                     else:
                                         x9 = x[ind].split(":")
