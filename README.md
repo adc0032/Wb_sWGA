@@ -33,7 +33,7 @@ if there are 2 lines with the same coordinate it always prints the 1st line.
 This assumes that fix_mnps has selected the most common allele freq as the first line
 
 #### run_createmasks.sh
-creates 4 masks: gap mask, mappability mask, low-complexit/repeat mask, coverage mask
-  paths are dependent software: bedtools, GapDistrFromFasta.pl (found in Wb_Genome_L3 repository), RepeatMasker, and hengli's programs in seqbility-20091110 and bwa
+creates 4 masks: gap mask, mappability mask, low-complexit/repeat mask, coverage mask.
+Paths are dependent software: bedtools, GapDistrFromFasta.pl (found in Wb_Genome_L3 repository), RepeatMasker, and hengli's programs in seqbility-20091110 and bwa
 
 
