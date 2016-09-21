@@ -6,7 +6,7 @@ for each line (no indels) were the 5th column is >2 and contains a ","
 This script prints 2 lines. These can then be properly filtered.
 @author: stsmall
 """
-import re, copy, argparse
+import copy, argparse
 
 def get_args():
   parser = argparse.ArgumentParser(description='splits lines with MNPs into 2 lines with the same coordinates')  

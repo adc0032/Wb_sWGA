@@ -5,10 +5,11 @@ filter_snps.py [-mt -g -r -f] -s INFILE OUTFILE
 
 purpose: filters SNPs from an a freebayes file or gatk file with 1 or more samples.
 
-File prep straight from fb/gatk with indels: vcffilter -f 'DP < 10' -s FOO.vcf | vt decompose_blocksub | vcffixup - | vcfstreamsort | vt normalize -r {ref} -q - 2> /dev/null | vcfuniqalleles > out.vcf 
-bcftools filter -g5 -g10 'type=snps'" #this will give only SNPs
+File prep straight from fb/gatk with indels: 
+vcffilter -f 'QUAL > 30' -s FOO.vcf | vt decompose_blocksub - 2> /dev/null | vcffixup - | vcfstreamsort | vt normalize -r {ref} -q - 2> /dev/null | vcfuniqalleles > out.norm.vcf
+bcftools filter -g5 -g10 -i"'type=snps'" #this will give only SNPs
 fix_mnps.py
-filter_snps.py ~this script
+filter_snps.py ~this script #depth, freq
 vcf_flatten.py
 
 Dependencies: anaconda (scipy)
