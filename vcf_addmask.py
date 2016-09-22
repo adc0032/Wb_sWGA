@@ -27,7 +27,7 @@ def mask_vcf(vcfIN,vcfOUT,mask_dict):
                 if line.startswith("#"):
                     mask_vcf.write(line)
                 else:
-                    if not [i for i,j in mask_dict[line.split[0]] if i <= int(line.split()[1]) <= j]:
+                    if not [i for i,j in mask_dict[line.split()[0]] if i <= int(line.split()[1]) <= j]:
                         mask_vcf.write(line)
 def main():
     mask_vcf(sys.argv[2],sys.argv[3],read_mask(sys.argv[1]))
