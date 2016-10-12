@@ -12,8 +12,17 @@ parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file'
 parser.add_argument('-s', '--samples', type=int, required=True, help="number of samples to expect")
 args = parser.parse_args()
 
+class AutoVivification(dict):
+    """Implementation of perl's autovivification feature."""
+    def __getitem__(self, item):
+        try:
+            return dict.__getitem__(self, item)
+        except KeyError:
+            value = self[item] = type(self)()
+            return value
+
 def pos_mask(vcfin,samples):
-    mask={}
+    mask=AutoVivification()
     with open(vcfin,'r') as vcf:
         for line in vcf:
             if "##" in line:
