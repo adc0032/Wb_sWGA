@@ -28,7 +28,7 @@ def pos_mask(vcfin,samples):
     return mask
     
 def main():
-    mask = pos_mask(args.INVCF, args.samples)
+    mask = pos_mask(args.INvcf, args.samples)
     for ind in mask.keys():
         f=open(ind +".FilteredSites.mask",'w')
         for chrom in mask[ind]:
