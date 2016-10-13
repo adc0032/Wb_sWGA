@@ -15,12 +15,14 @@ args = parser.parse_args()
 
 def mafFilter(vcfin,samples,lower,upper):
     f = open(vcfin + ".maffilter",'w')
+    countmaf = 0
     with open(vcfin,'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
                 f.write(line)
             else:    
                 x=line.split()
+                print x
                 for i in range(0,samples):
                     if "0/1" in x[9+i].split(":")[0]:
                         dp = int(x[9+i].split(":")[2])
@@ -31,13 +33,14 @@ def mafFilter(vcfin,samples,lower,upper):
                             x9 = x[9+i].split(":")
                             x9[0] = "0/0"
                             x[9+i] = ":".join(x9)
-                            print x[9+i]
+                            countmaf += 1
                         elif maf > upper:
                             print maf
                             x9 = x[9+i].split(":")
                             x9[0] = "1/1"
                             x[9+i] = ":".join(x9)
-                            print x[9+i]
+                            countmaf += 1
+                print x
                 f.write("%s\n" %"\t".join(x))
     f.close()
 def main():
