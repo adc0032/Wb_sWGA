@@ -22,7 +22,6 @@ def mafFilter(vcfin,samples,lower,upper):
                 f.write(line)
             else:    
                 x=line.split()
-                print x
                 for i in range(0,samples):
                     if "0/1" in x[9+i].split(":")[0]:
                         dp = int(x[9+i].split(":")[2])
@@ -30,17 +29,20 @@ def mafFilter(vcfin,samples,lower,upper):
                         maf = float(ao)/dp
                         if maf < lower:
                             print maf
+                            print x
                             x9 = x[9+i].split(":")
                             x9[0] = "0/0"
                             x[9+i] = ":".join(x9)
                             countmaf += 1
+                            print x
                         elif maf > upper:
                             print maf
+                            print x
                             x9 = x[9+i].split(":")
                             x9[0] = "1/1"
                             x[9+i] = ":".join(x9)
                             countmaf += 1
-                print x
+                            print x
                 f.write("%s\n" %"\t".join(x))
     f.close()
 def main():
