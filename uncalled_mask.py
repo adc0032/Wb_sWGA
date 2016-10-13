@@ -42,7 +42,7 @@ def main():
         f=open(ind +".FilteredSites.mask",'w')
         for chrom in mask[ind]:
             for site in mask[ind][chrom]:
-                f.write("%s\t%s\n" %(chrom, site))
+                f.write("%s\t%s\n" %(chrom, mask[ind][chrom][site]))
         f.close() 
 if __name__ == '__main__':
     main()
