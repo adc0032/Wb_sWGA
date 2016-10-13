@@ -6,7 +6,7 @@ position mask vcf mask.out
 @author: scott
 """
 import argparse
-
+import collections
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file') 
 parser.add_argument('-s', '--samples', type=int, required=True, help="number of samples to expect")
@@ -22,7 +22,7 @@ class AutoVivification(dict):
             return value
 
 def pos_mask(vcfin,samples):
-    mask=AutoVivification()
+    mask = collections.defaultdict(lambda: collections.defaultdict(list))
     with open(vcfin,'r') as vcf:
         for line in vcf:
             if "##" in line:
@@ -33,7 +33,7 @@ def pos_mask(vcfin,samples):
                 x=line.split()
                 for i in range(0,samples):
                     if "." in x[9+i].split(":")[0]:
-                        mask[indv[i]][x[0]]=x[1] 
+                        mask[indv[i]][x[0]].append(x[1]) 
     return mask
     
 def main():
@@ -42,7 +42,7 @@ def main():
         f=open(ind +".FilteredSites.mask",'w')
         for chrom in mask[ind]:
             for site in mask[ind][chrom]:
-                f.write("%s\t%s\n" %(chrom, mask[ind][chrom][site]))
+                f.write("%s\t%s\n" %(chrom, site))
         f.close() 
 if __name__ == '__main__':
     main()
