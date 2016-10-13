@@ -27,13 +27,17 @@ def mafFilter(vcfin,samples,lower,upper):
                         ao = int(x[9+i].split(":")[6])
                         maf = float(ao)/dp
                         if maf < lower:
+                            print maf
                             x9 = x[9+i].split(":")
                             x9[0] = "0/0"
                             x[9+i] = ":".join(x9)
+                            print line
                         elif maf > upper:
+                            print maf
                             x9 = x[9+i].split(":")
                             x9[0] = "1/1"
                             x[9+i] = ":".join(x9)
+                            print line
                 f.write("%s\n" %"\t".join(x))
     f.close()
 def main():
