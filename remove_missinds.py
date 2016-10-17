@@ -22,7 +22,8 @@ for line in iter(proc.stdout.readline,''):
     if line.startswith("INDV"):
         pass
     else:
-        f.write(line.split()[1]+"\n")
+        if float(line.split()[4]) >= args.p:
+            f.write(line.split()[1]+"\n")
 f.close()
 
 command = command = "vcftools --vcf " + args.INvcf + " --remove remove_inds.out --recode --recode-INFO-all --out " + args.INvcf + ".nomiss"
