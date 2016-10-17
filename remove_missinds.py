@@ -22,7 +22,7 @@ for line in iter(proc.stdout.readline,''):
     if line.startswith("INDV"):
         pass
     else:
-        if float(line.split()[4]) >= args.miss
+        if float(line.split()[4]) >= args.miss:
             f.write(line.split()[1]+"\n")
 f.close()
 
