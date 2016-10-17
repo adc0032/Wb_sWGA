@@ -17,13 +17,14 @@ print command
 proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
 proc.wait()
 
+
 f=open("remove_inds.out",'w')
 for line in iter(proc.stdout.readline,''):
     if line.startswith("INDV"):
         pass
     else:
         if float(line.split()[4]) >= args.miss:
-            f.write(line.split()[1]+"\n")
+            f.write(line.split()[0]+"\n")
 f.close()
 
 command = command = "vcftools --vcf " + args.INvcf + " --remove remove_inds.out --recode --recode-INFO-all --out " + args.INvcf + ".nomiss"
