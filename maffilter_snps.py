@@ -10,8 +10,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file') 
 parser.add_argument('-s', '--samples', type=int, required=True, help="number of samples to expect")
-parser.add_argument('-l',"--lower", type=float,default=.30, help="lower allele freq cutoff")
-parser.add_argument('-u',"--upper", type=float,default=.70, help="upper allele freq cutoff")
+parser.add_argument('-l',"--lower", type=float,default=.20, help="lower allele freq cutoff")
+parser.add_argument('-u',"--upper", type=float,default=.80, help="upper allele freq cutoff")
 parser.add_argument('-a',"--aocount",type=int,default=6,help="minimum number of alternate alleles for a site to be het")
 args = parser.parse_args()
 
@@ -51,9 +51,7 @@ def mafFilter(vcfin,samples,lower,upper):
                                 x9[0] = "1/1"
                                 x[9+i] = ":".join(x9)                        
                             else:
-                                x9 = x[9+i].split(":")
-                                x9[0] = "."
-                                x[9+i] = ":".join(x9)
+                                x[9+i] = ".:.:.:.:.:.:.:.:."
                                 
                 f.write("%s\n" %"\t".join(x))
     f.close()
