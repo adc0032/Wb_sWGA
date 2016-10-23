@@ -29,6 +29,7 @@ def mafFilter(vcfin,samples,lower,upper):
                         dp = int(x[9+i].split(":")[2])
                         ao = int(x[9+i].split(":")[6])
                         maf = float(ao)/dp #maf freq
+                        print x[9+i]
                         if ao >= args.aocount: #alt allele count
                             print x[9+i]
                             if maf < lower:
@@ -54,7 +55,7 @@ def mafFilter(vcfin,samples,lower,upper):
                                 x[9+i] = ":".join(x9)                        
                             else:
                                 x[9+i] = ".:.:.:.:.:.:.:.:."
-                        print x[9+i]    
+                        print x[9+i] + "\n"    
                 f.write("%s\n" %"\t".join(x))
     f.close()
     return countmaf
