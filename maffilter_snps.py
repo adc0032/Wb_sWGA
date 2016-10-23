@@ -15,9 +15,9 @@ parser.add_argument('-u',"--upper", type=float,default=.80, help="upper allele f
 parser.add_argument('-a',"--aocount",type=int,default=6,help="minimum number of alternate alleles for a site to be het")
 args = parser.parse_args()
 
-def mafFilter(vcfin,samples,lower,upper):
+def mafFilter(vcfin,samples,lower,upper,aocount):
     f = open(vcfin + ".maffilter",'w')
-    countmaf = 0
+    #countmaf = 0
     with open(vcfin,'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
@@ -29,39 +29,38 @@ def mafFilter(vcfin,samples,lower,upper):
                         dp = int(x[9+i].split(":")[2])
                         ao = int(x[9+i].split(":")[6])
                         maf = float(ao)/dp #maf freq
-                        print x[9+i]
-                        if ao >= args.aocount: #alt allele count
-                            print x[9+i]
+                        #print x[9+i]
+                        if ao >= aocount: #alt allele count
+                            #print x[9+i]
                             if maf < lower:
                                 x9 = x[9+i].split(":")
                                 x9[0] = "0/0"
                                 x[9+i] = ":".join(x9)
-                                countmaf += 1
+                                #countmaf += 1
                             elif maf > upper:
                                 x9 = x[9+i].split(":")
                                 x9[0] = "1/1"
                                 x[9+i] = ":".join(x9)
-                                countmaf += 1
-                        elif ao < args.aocount:
-                            print x[9+i]
+                                #countmaf += 1
+                        elif ao < aocount:
+                            #print x[9+i]
                             if maf < lower:
                                 x9 = x[9+i].split(":")
                                 x9[0] = "0/0"
                                 x[9+i] = ":".join(x9)
-                                countmaf += 1
+                                #countmaf += 1
                             elif maf > upper:
                                 x9 = x[9+i].split(":")
                                 x9[0] = "1/1"
                                 x[9+i] = ":".join(x9)                        
                             else:
                                 x[9+i] = ".:.:.:.:.:.:.:.:."
-                        print x[9+i] + "\n"    
+                        #print x[9+i] + "\n"    
                 f.write("%s\n" %"\t".join(x))
     f.close()
-    return countmaf
+    #return countmaf
 def main():
-    countmaf = mafFilter(args.INvcf, args.samples, args.lower,args.upper)
-    print countmaf
+    mafFilter(args.INvcf, args.samples, args.lower,args.upper, args.aocount)
 if __name__ == '__main__':
     main()
             
