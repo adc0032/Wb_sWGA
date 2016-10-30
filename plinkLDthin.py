@@ -20,7 +20,8 @@ def ldthin_include(vcfin,prunein):
         for line in prune:
             x = line.split()[0].split(":")
             extract[x[0]].append(x[1])
-    f = open(vcfin + ".LDthin",'w')
+    fout = os.path.join(os.getcwd(),vcfin + ".LDthin" )
+    f = open(fout,'w')
     with open(vcfin,'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
@@ -30,7 +31,6 @@ def ldthin_include(vcfin,prunein):
                     f.write(line)
     f.close()
 def main():
-    os.chdir(os.getcwd())
     ldthin_include(args.INvcf, args.pruneIN)
 if __name__ == '__main__':
     main()
