@@ -11,7 +11,7 @@ import argparse
 from collections import defaultdict
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file') 
-parser.add_argument('pruneIN',metavar="pruneIN", type=str,default=.80, help="upper allele freq cutoff")
+parser.add_argument('pruneIN',metavar="pruneIN", type=str,help="prune.in file from plink")
 args = parser.parse_args()
 
 def ldthin_include(vcfin,prunein):
