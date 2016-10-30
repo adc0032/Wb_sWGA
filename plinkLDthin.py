@@ -7,7 +7,7 @@ plink1.9/plink --vcf snp_calls/Wb.10k.54.miss.recode.vcf.chrnames --indep-pairwi
 @author: scott
 """
 
-import argparse
+import argparse, os
 from collections import defaultdict
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file') 
@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 def ldthin_include(vcfin,prunein):
     extract = defaultdict(list)
-    with open(prunein) as prune:
+    with open(prunein,'r') as prune:
         for line in prune:
             x = line.split()[0].split(":")
             extract[x[0]].append(x[1])
@@ -26,10 +26,11 @@ def ldthin_include(vcfin,prunein):
             if line.startswith("#"):
                 f.write(line)
             else:
-                if any(line.split()[1] == x[0] for x in extract[line.split()[0]]):
+                if line.split()[1] in extract[line.split()[0]]:
                     f.write(line)
     f.close()
 def main():
+    os.chdir(os.getcwd())
     ldthin_include(args.INvcf, args.pruneIN)
 if __name__ == '__main__':
     main()
