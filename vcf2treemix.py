@@ -44,7 +44,7 @@ def vcf2treemix(vcfin, populations, coordlist):
                     snppop.append("{},{}".format(pop_0,pop_1))
                     pop_0 = 0
                     pop_1 = 0
-                    i = pop
+                    i = int(pop)
                 f.write("{}\n".format(" ".join(snppop)))
     f.close()
     
