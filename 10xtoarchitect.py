@@ -9,7 +9,7 @@ consumes a sam file mapped with bwa and option -X and a barcode file a list of u
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('sam', metavar="sam",type=str,help='path to mapped sam file') 
-parser.add_argument('-b', '--barcode', type=int, required=True, help="number of samples to expect")
+parser.add_argument('-b', '--barcode', type=str, required=True, help="barcode file")
 args = parser.parse_args()
 
 def makebamwellID(sam,barcode):
