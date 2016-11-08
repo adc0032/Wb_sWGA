@@ -28,7 +28,7 @@ def makebamwellID(sam,barcode):
                 x=line.split()
                 if "BX" in x[-1]:
                     ids = x[-1].split(":")[-1]
-                    x[0] = "well_{}".format(bc[ids]) + x[0]
+                    x[0] = "well{}_".format(bc[ids]) + x[0]
                     f.write("\t".join(x)+"\n")
     f.close()
 
