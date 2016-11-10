@@ -21,3 +21,9 @@ def counthet(invcf):
                 x=line.split()
                 if x.count("0/1") > 1:
                     f.write(line)
+    f.close()
+    
+def main():
+    counthet(args.INvcf)
+if __name__ == '__main__':
+    main()
