@@ -197,7 +197,7 @@ def DxyFromVcf(args):
     # @TCC TODO Make make this a generator... that would be cool (and more efficient memory wise)
     # used from args... (listed here to be explicit)
     verbose = args.verbose
-    in_vcf = args.in_vcf
+    in_vcf = "/scratch365/ssmall2/Wb_analysis/analysis/dxy/Wb.10k.54.recode.vcf"
     x_samples = args.x_samples
     y_samples = args.y_samples
     # per locus thresholds/filter values
@@ -213,12 +213,12 @@ def DxyFromVcf(args):
 
     # create the vcf.Reader object; pyVCF is way cool: http://pyvcf.readthedocs.org/en/latest/
     
-    vcf_reader = vcf.Reader(open("Wb.10k.54.recode.vcf",'r'))
-
+    vcf_reader = vcf.Reader(open(in_vcf))
+    print vcf_reader.samples
     # verify samples in x and y groups are actually in the vcf
     for samp in set(x_samples+y_samples):
         if( samp not in vcf_reader.samples ):
-            raise Exception("sample '{}' not in vcf file '{}'".format(samp, in_vcf.name))
+            raise Exception("sample '{}' not in vcf file '{}'".format(samp, "vcf"))
 
     # bookkeeping (including purely informative)
     num_sites = 0
