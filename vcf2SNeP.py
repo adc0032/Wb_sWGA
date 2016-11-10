@@ -19,7 +19,7 @@ def counthet(invcf,snep):
                 f.write(line)
             else:
                 if line.count("0/1:") > 1:
-                    if snep[line.split()[0]] > 1:
+                    if int(snep[line.split()[0]]) > 1:
                         f.write(line)
     f.close()
     
@@ -35,10 +35,10 @@ def countlink(invcf):
                 pass
             else:
                 if line.count("0/1") > 1:
-                    if chrom != line.split()[0]:
+                    if chrom not in line.split()[0]:
                         snep[chrom] = chrom_count
                         chrom_count = 0
-                    else:
+                    elif chrom in line.split()[0]:
                         chrom = line.split()[0]
                         chrom_count += 1
     return snep
