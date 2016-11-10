@@ -29,7 +29,7 @@ def countlink(invcf):
     snep = {}
     chrom_count = 0
     chrom = "Chr2_1_2161195_150"
-    with open("Wb.Kenya.SNeP.recode.vcf",'r') as vcf:
+    with open(invcf,'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
                 pass
