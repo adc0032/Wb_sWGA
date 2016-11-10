@@ -112,8 +112,8 @@ def Main(argv=None):
     aparser.add_argument('-i', '--in-vcf', type=argparse.FileType('r'), default=sys.stdin)
 
     # populations/groups
-    aparser.add_argument('-x', '--x-samples', help='x sample name list')
-    aparser.add_argument('-y', '--y-samples', help='y sample name list')
+    aparser.add_argument('-x', '--x-samples', nargs='*',help='x sample name list')
+    aparser.add_argument('-y', '--y-samples', nargs='*',help='y sample name list')
 
     # filtering otpions
     aparser.add_argument('--allow-non-snp', action='store_true', help='Allow variants other than just SNPs')
