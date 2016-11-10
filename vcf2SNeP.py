@@ -16,7 +16,7 @@ def counthet(invcf):
     with open(invcf,'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
-                pass
+                f.write(line)
             else:
                 if line.count("0/1:") > 1:
                     f.write(line)
