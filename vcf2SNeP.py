@@ -42,6 +42,7 @@ def countlink(invcf):
                     elif chrom in line.split()[0]:
                         chrom = line.split()[0]
                         chrom_count += 1
+    snep[chrom] = chrom_count
     return snep
     
 def main():
