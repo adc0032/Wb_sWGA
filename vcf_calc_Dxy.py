@@ -217,8 +217,10 @@ def DxyFromVcf(args):
     print vcf_reader.samples
     print x_samples
     print y_samples
+    print set(x_samples+y_samples)
     # verify samples in x and y groups are actually in the vcf
     for samp in set(x_samples+y_samples):
+        print samp
         if( samp not in vcf_reader.samples ):
             raise Exception("sample '{}' not in vcf file '{}'".format(samp, "vcf"))
 
