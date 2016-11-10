@@ -212,7 +212,7 @@ def DxyFromVcf(args):
     info_outfp = sys.stderr # where informative and summary info goes (must be set)
 
     # create the vcf.Reader object; pyVCF is way cool: http://pyvcf.readthedocs.org/en/latest/
-    vcf_reader = vcf.Reader(open(in_vcf,'r'))
+    vcf_reader = vcf.Reader(open(str(in_vcf),'r'))
 
     # verify samples in x and y groups are actually in the vcf
     for samp in set(x_samples+y_samples):
