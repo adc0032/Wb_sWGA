@@ -33,6 +33,7 @@ def countlink(invcf):
             if line.startswith("#CHROM"):
                 line = vcf.next()
                 chrom = line.split()[0]
+    print chrom
     with open(invcf,'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
