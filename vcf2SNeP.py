@@ -28,7 +28,11 @@ def counthet(invcf,snep):
 def countlink(invcf):
     snep = {}
     chrom_count = 0
-    chrom = "Chr2_1_2161195_150"
+    with open(invcf,'r') as vcf:
+        for line in vcf:
+            if line.startswith("#CHROM"):
+                line = vcf.next()
+                chrom = line.split()[0]
     with open(invcf,'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
