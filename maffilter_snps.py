@@ -25,37 +25,40 @@ def mafFilter(vcfin,samples,lower,upper,aocount):
             else:    
                 x=line.split()
                 for i in range(0,samples):
-                    if "0/1" in x[9+i].split(":")[0]:
-                        dp = int(x[9+i].split(":")[2])
-                        ao = int(x[9+i].split(":")[6])
-                        maf = float(ao)/dp #maf freq
-                        #print x[9+i]
-                        if ao >= aocount: #alt allele count
+                    try:
+                        if "0/1" in x[9+i].split(":")[0]:
+                            dp = int(x[9+i].split(":")[2])
+                            ao = int(x[9+i].split(":")[6])                                                               
+                            maf = float(ao)/dp #maf freq
                             #print x[9+i]
-                            if maf < lower:
-                                x9 = x[9+i].split(":")
-                                x9[0] = "0/0"
-                                x[9+i] = ":".join(x9)
-                                #countmaf += 1
-                            elif maf > upper:
-                                x9 = x[9+i].split(":")
-                                x9[0] = "1/1"
-                                x[9+i] = ":".join(x9)
-                                #countmaf += 1
-                        elif ao < aocount:
-                            #print x[9+i]
-                            if maf < lower:
-                                x9 = x[9+i].split(":")
-                                x9[0] = "0/0"
-                                x[9+i] = ":".join(x9)
-                                #countmaf += 1
-                            elif maf > upper:
-                                x9 = x[9+i].split(":")
-                                x9[0] = "1/1"
-                                x[9+i] = ":".join(x9)                        
-                            else:
-                                x[9+i] = ".:.:.:.:.:.:.:.:."
-                        #print x[9+i] + "\n"    
+                            if ao >= aocount: #alt allele count
+                                #print x[9+i]
+                                if maf < lower:
+                                    x9 = x[9+i].split(":")
+                                    x9[0] = "0/0"
+                                    x[9+i] = ":".join(x9)
+                                    #countmaf += 1
+                                elif maf > upper:
+                                    x9 = x[9+i].split(":")
+                                    x9[0] = "1/1"
+                                    x[9+i] = ":".join(x9)
+                                    #countmaf += 1
+                            elif ao < aocount:
+                                #print x[9+i]
+                                if maf < lower:
+                                    x9 = x[9+i].split(":")
+                                    x9[0] = "0/0"
+                                    x[9+i] = ":".join(x9)
+                                    #countmaf += 1
+                                elif maf > upper:
+                                    x9 = x[9+i].split(":")
+                                    x9[0] = "1/1"
+                                    x[9+i] = ":".join(x9)                        
+                                else:
+                                    x[9+i] = ".:.:.:.:.:.:.:.:."
+                            #print x[9+i] + "\n"  
+                    except ValueError:
+                        print "\n" + vcfin + "\t" + i + "\t" + x[9+i] + "\n"
                 f.write("%s\n" %"\t".join(x))
     f.close()
     #return countmaf
