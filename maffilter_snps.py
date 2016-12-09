@@ -20,7 +20,10 @@ def mafFilter(vcfin,samples,lower,upper,aocount):
     #countmaf = 0
     with open(vcfin,'r') as vcf:
         for line in vcf:
-            if line.startswith("#"):
+            if line.startswith("##"):
+                f.write(line)
+            elif line.startswith("CHROM"):
+                sampleid = line.split() 
                 f.write(line)
             else:    
                 x=line.split()
@@ -58,7 +61,7 @@ def mafFilter(vcfin,samples,lower,upper,aocount):
                                     x[9+i] = ".:.:.:.:.:.:.:.:."
                             #print x[9+i] + "\n"  
                     except ValueError:
-                        print "\n%s\t%i\t%s\n" %(vcfin,i,x[9+i])
+                        print "\n%s\t%s\t%s\t%i\t%s\n" %(vcfin,x[0],x[1],sampleid[9+i],x[9+i])
                 f.write("%s\n" %"\t".join(x))
     f.close()
     #return countmaf
