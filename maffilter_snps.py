@@ -58,7 +58,7 @@ def mafFilter(vcfin,samples,lower,upper,aocount):
                                     x[9+i] = ".:.:.:.:.:.:.:.:."
                             #print x[9+i] + "\n"  
                     except ValueError:
-                        print "\n" + vcfin + "\t" + i + "\t" + x[9+i] + "\n"
+                        print "\n%s\t%i\t%s\n" %(vcfin,i,x[9+i])
                 f.write("%s\n" %"\t".join(x))
     f.close()
     #return countmaf
