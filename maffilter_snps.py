@@ -22,7 +22,7 @@ def mafFilter(vcfin,samples,lower,upper,aocount):
         for line in vcf:
             if line.startswith("##"):
                 f.write(line)
-            elif line.startswith("CHROM"):
+            elif line.startswith("#CHROM"):
                 sampleid = line.split() 
                 f.write(line)
             else:    
