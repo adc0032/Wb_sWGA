@@ -22,6 +22,8 @@ def makestitchgen(invcf):
         for line in vcf:
             if line.startswith("#CHROM"):
                 f.write("/t".join(line.split()[9:]) + "\n")
+            elif line.startswith("##"):
+                pass
             else:
                 x = line.strip().split()
                 samples = range(9, len(x))
