@@ -25,7 +25,7 @@ def makestitchgen(invcf):
             gt = []
             for s in samples:
                 gt_s = x[s].split(":")[0]
-                if gt_s == ".":
+                if x[s] == ".":
                     gt.append("NA")
                 else:
                     gt.append(str(gt_s.count('1')))
