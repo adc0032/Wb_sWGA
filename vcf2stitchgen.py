@@ -20,6 +20,8 @@ def makestitchgen(invcf):
     f = open("{}.gen".format(invcf), 'w')
     with open(invcf, 'r') as vcf:
         for line in vcf:
+            if line.startswith("#CHROM"):
+                f.write("/t".join(line.split()[9:]) + "\n")
             x = line.strip().split()
             samples = range(9, len(x))
             gt = []
