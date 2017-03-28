@@ -22,16 +22,17 @@ def makestitchgen(invcf):
         for line in vcf:
             if line.startswith("#CHROM"):
                 f.write("/t".join(line.split()[9:]) + "\n")
-            x = line.strip().split()
-            samples = range(9, len(x))
-            gt = []
-            for s in samples:
-                gt_s = x[s].split(":")[0]
-                if gt_s == "./.":
-                    gt.append("NA")
-                else:
-                    gt.append(str(gt_s.count('1')))
-            f.write("\t".join(gt) + '\n')
+            else:
+                x = line.strip().split()
+                samples = range(9, len(x))
+                gt = []
+                for s in samples:
+                    gt_s = x[s].split(":")[0]
+                    if gt_s == "./.":
+                        gt.append("NA")
+                    else:
+                        gt.append(str(gt_s.count('1')))
+                f.write("\t".join(gt) + '\n')
     f.close()
     return(None)
 
