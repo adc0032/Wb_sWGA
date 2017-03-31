@@ -8,7 +8,7 @@ Created on Tue Mar 28 13:27:55 2017
 import argparse
 parser = argparse.ArgumentParser()
 
-parser.add_argument('INvcf', metavar="INmsfile", type=str,
+parser.add_argument('INvcf', metavar="INvcf", type=str,
                     help='path to vcf file')
 args = parser.parse_args()
 
