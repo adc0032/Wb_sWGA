@@ -45,8 +45,8 @@ def maf2vcf(maf, ref):
                         pass
                     line = next(maf)
                     aa = line.split()
-                    pos = aa[2]
-                    size = aa[5]
+                    pos = int(aa[2])
+                    size = int(aa[5])
                     if "-" in aa[4]:
                         pos_1 = size - pos
                     else:
