@@ -51,7 +51,7 @@ def maf2vcf(maf, ref):
                         pos_1 = size - pos
                     else:
                         pos_1 = pos
-                f.write("{}\t{}\t{}\n".format(aa[0], pos_1, ancallele))
+                f.write("{}\t{}\t{}\n".format(aa[1][2:], pos_1, ancallele))
     return(None)
 
 if __name__ == '__main__':
