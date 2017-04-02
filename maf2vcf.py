@@ -27,7 +27,7 @@ def maf2vcf(maf, ref):
         for line in maf:
             if line.startswith("s"):
                 if ref in line:
-                    aa = line.spilt()
+                    aa = line.split()
                     ancallele = aa[6]
                     if "-" in aa[4]:
                         # flip to opposite base
