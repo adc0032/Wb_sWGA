@@ -56,7 +56,7 @@ def stitch2vcf(vcf, stitch):
                         else:
                             AD = "0,20"
                     gltemp = [(-10*log10(float(a)))
-                              for a in fixgt[6].split(",")]
+                              for a in fixgt[1].split(",")]
                     gl = ",".join(map(str, gltemp))  # PL
                 oldgt = x[miss].split(":")
                 oldgt[0] = newgt
