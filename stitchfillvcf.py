@@ -60,31 +60,28 @@ def stitch2vcf(vcf, stitch):
                         gltemp = [-10*log10(float(a) + .000001) for a in fixgt[1].split(",")]
                     gl = ",".join(map(str, gltemp))  # PL
                     oldgt = x[missgt].split(":")
-                    fields = x[8].split(":")
-                    fields[-1] = "GL"
-                    print(fields)
-                    print(oldgt)
                     if "PGT" not in x[8]:
-                        fields.insert(4, "PGT")
-                        fields.insert(5, "PID")
                         oldgt.insert(4, ".")
                         oldgt.insert(5, ".")
                     oldgt[0] = newgt
                     oldgt[1] = AD
                     oldgt[2] = '20'
                     oldgt[3] = '99'
-                    try:
-                        oldgt[6] = gl
-                        x[missgt] = ":".join(oldgt)
-                        x[8] = ":".join(fields)
-                    except:
-                        import ipdb; ipdb.set_trace()
+                    oldgt[6] = gl
+                    x[missgt] = ":".join(oldgt)
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
                     gl = x[sample].split(":")
                     glnew = [float(a)/-10.0 for a in gl[-1].split(",")]
                     gl[-1] = ",".join(map(str, glnew))
                     x[sample] = ":".join(gl)
+                # addfields
+                fields = x[8].split(":")
+                fields[-1] = "GL"
+                if "PGT" not in x[8]:
+                    fields.insert(4, "PGT")
+                    fields.insert(5, "PID")
+                x[8] = ":".join(fields)
                 f.write("{}\n".format("\t".join(x)))
 
     f.close()
