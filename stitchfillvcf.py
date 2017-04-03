@@ -41,7 +41,7 @@ def stitch2vcf(vcf, stitch):
             else:
                 x = line.split()
                 # fill missing
-                import ipdb; ipdb.set_trace()
+                #import ipdb; ipdb.set_trace()
                 miss = [i for i, s in enumerate(x) if re.search(r'\./\.', s)]
                 for missgt in miss:
                     fixgt = impute[x[1]][missgt].split(":")
