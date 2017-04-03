@@ -41,26 +41,30 @@ def stitch2vcf(vcf, stitch):
             else:
                 x = line.split()
                 # fill missing
-                #import ipdb; ipdb.set_trace()
+                # import ipdb; ipdb.set_trace()
                 miss = [i for i, s in enumerate(x) if re.search(r'\./\.', s)]
                 for missgt in miss:
                     fixgt = impute[x[1]][missgt].split(":")
-                    if fixgt == "./.":
+                    if fixgt[0] == "./.":
                         pass
                     else:
                         newgt = fixgt[0]
                         if newgt == '0/0':
-                            fixgt[1] = "20,0"    # AD
+                            AD = "20,0"    # AD
                         elif newgt == "0/1":
-                            fixgt[1] = "10,10"
+                            AD = "10,10"
                         else:
-                            fixgt[1] = "0,20"
-                    fixgt[2] = "20"  # DP
-                    fixgt[3] = "99"  # GQ
+                            AD = "0,20"
                     gltemp = [(-10*log10(float(a)))
                               for a in fixgt[6].split(",")]
-                    fixgt[6] = ",".join(map(str, gltemp))  # PL
-                x[miss] = ":".join(fixgt)
+                    gl = ",".join(map(str, gltemp))  # PL
+                oldgt = x[miss].split(":")
+                oldgt[0] = newgt
+                oldgt[1] = AD
+                oldgt[2] = '20'
+                oldgt[3] = '99'
+                oldgt[6] = gl
+                x[miss] = ":".join(oldgt)
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
                     gl = x[sample].split(":")
