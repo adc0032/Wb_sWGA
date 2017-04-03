@@ -54,7 +54,6 @@ def stitch2vcf(vcf, stitch):
                             AD = "10,10"
                         else:
                             AD = "0,20"
-                    # import ipdb; ipdb.set_trace()
                     try:
                         gltemp = [-10*log10(float(a)) for a in fixgt[1].split(",")]
                     except ValueError:
@@ -73,6 +72,7 @@ def stitch2vcf(vcf, stitch):
                 oldgt[2] = '20'
                 oldgt[3] = '99'
                 oldgt[6] = gl
+                import ipdb; ipdb.set_trace()
                 x[missgt] = ":".join(oldgt)
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
