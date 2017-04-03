@@ -5,9 +5,9 @@ Created on Mon Apr  3 12:24:29 2017
 
 @author: scott
 """
-from collections import defaultdict
 import re
 from math import log10
+import numpy as np
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -21,7 +21,6 @@ args = parser.parse_args()
 def stitch2vcf(vcf, stitch):
     """takes a stitch-ed vcf and the original vcf and fills missing sites
     """
-    # impute = defaultdict(list)
     impute = {}
     with open(stitch, 'r') as stitchvcf:
         for line in stitchvcf:
@@ -30,7 +29,6 @@ def stitch2vcf(vcf, stitch):
             else:
                 x = line.strip().split()
                 # assume all the same chromosome
-                # impute[x[1]].append(x)
                 impute[x[1]] = x
     f = open(vcf + '.impute', 'w')
 
@@ -55,9 +53,11 @@ def stitch2vcf(vcf, stitch):
                         else:
                             AD = "0,20"
                     try:
-                        gltemp = [-10*log10(float(a)) for a in fixgt[1].split(",")]
+                        gltemp = np.round([-10*log10(float(a))
+                                           for a in fixgt[1].split(",")], 3)
                     except ValueError:
-                        gltemp = [-10*log10(float(a) + .000001) for a in fixgt[1].split(",")]
+                        gltemp = np.round([-10*log10(float(a) + .000001)
+                                           for a in fixgt[1].split(",")], 3)
                     gl = ",".join(map(str, gltemp))  # PL
                     oldgt = x[missgt].split(":")
                     if "PGT" not in x[8]:
@@ -72,7 +72,8 @@ def stitch2vcf(vcf, stitch):
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
                     gl = x[sample].split(":")
-                    glnew = [float(a)/-10.0 for a in gl[-1].split(",")]
+                    glnew = np.round([float(a)/-10.0
+                                      for a in gl[-1].split(",")], 3)
                     gl[-1] = ",".join(map(str, glnew))
                     x[sample] = ":".join(gl)
                 # addfields
