@@ -41,7 +41,6 @@ def stitch2vcf(vcf, stitch):
             else:
                 x = line.split()
                 # fill missing
-                # import ipdb; ipdb.set_trace()
                 miss = [i for i, s in enumerate(x) if re.search(r'\./\.', s)]
                 for missgt in miss:
                     fixgt = impute[x[1]][missgt].split(":")
@@ -55,6 +54,7 @@ def stitch2vcf(vcf, stitch):
                             AD = "10,10"
                         else:
                             AD = "0,20"
+                    import ipdb; ipdb.set_trace()
                     gltemp = [(-10*log10(float(a)))
                               for a in fixgt[1].split(",")]
                     gl = ",".join(map(str, gltemp))  # PL
