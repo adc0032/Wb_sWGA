@@ -21,7 +21,8 @@ args = parser.parse_args()
 def stitch2vcf(vcf, stitch):
     """takes a stitch-ed vcf and the original vcf and fills missing sites
     """
-    impute = defaultdict(list)
+    # impute = defaultdict(list)
+    impute = {}
     with open(stitch, 'r') as stitchvcf:
         for line in stitchvcf:
             if line.startswith("#"):
@@ -29,8 +30,8 @@ def stitch2vcf(vcf, stitch):
             else:
                 x = line.strip().split()
                 # assume all the same chromosome
-                impute[x[1]].append(x)
-
+                # impute[x[1]].append(x)
+                impute[x[1]] = x
     f = open(vcf + '.impute', 'w')
 
     with open(vcf, 'r') as vcffile:
