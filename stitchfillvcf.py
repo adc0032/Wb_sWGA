@@ -62,6 +62,7 @@ def stitch2vcf(vcf, stitch):
                     oldgt = x[missgt].split(":")
                     fields = x[8].split(":")
                     fields[-1] = "GL"
+                    import ipdb; ipdb.set_trace()
                     if len(fields) < 6:
                         fields.insert(4, "PGT")
                         fields.insert(5, "PID")
