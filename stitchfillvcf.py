@@ -35,8 +35,9 @@ def stitch2vcf(vcf, stitch):
 
     with open(vcf, 'r') as vcffile:
         for line in vcffile:
-            if line.startswith("#"):
+            if line.startswith("##") or line.startswith("#"):
                 f.write(line)
+                import ipdb; ipdb.set_trace()
             else:
                 x = line.split()
                 # fill missing
@@ -65,7 +66,7 @@ def stitch2vcf(vcf, stitch):
                     glnew = [float(a)/-10.0 for a in gl.split(",")]
                     gl[-1] = ",".join(map(str, glnew))
                     x[sample] = ":".join(gl)
-            f.write("{}\n".format("\t".join(x)))
+                f.write("{}\n".format("\t".join(x)))
 
     f.close()
 
