@@ -70,7 +70,7 @@ def stitch2vcf(vcf, stitch):
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
                     gl = x[sample].split(":")
-                    glnew = [float(a)/-10.0 for a in gl.split(",")]
+                    glnew = [float(a)/-10.0 for a in gl[-1].split(",")]
                     gl[-1] = ",".join(map(str, glnew))
                     x[sample] = ":".join(gl)
                 f.write("{}\n".format("\t".join(x)))
