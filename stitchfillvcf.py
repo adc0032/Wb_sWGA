@@ -60,13 +60,13 @@ def stitch2vcf(vcf, stitch):
                     except ValueError:
                         gltemp = [-10*log10(float(a) + .000001) for a in fixgt[1].split(",")]
                     gl = ",".join(map(str, gltemp))  # PL
-                oldgt = x[miss].split(":")
+                oldgt = x[missgt].split(":")
                 oldgt[0] = newgt
                 oldgt[1] = AD
                 oldgt[2] = '20'
                 oldgt[3] = '99'
                 oldgt[6] = gl
-                x[miss] = ":".join(oldgt)
+                x[missgt] = ":".join(oldgt)
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
                     gl = x[sample].split(":")
