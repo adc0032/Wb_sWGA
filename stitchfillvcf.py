@@ -22,8 +22,8 @@ def stitch2vcf(vcf, stitch):
     """takes a stitch-ed vcf and the original vcf and fills missing sites
     """
     impute = defaultdict(list)
-    with open(stitch, 'r') as stitch:
-        for line in stitch:
+    with open(stitch, 'r') as stitchvcf:
+        for line in stitchvcf:
             if line.startswith("#"):
                 pass
             else:
@@ -31,10 +31,10 @@ def stitch2vcf(vcf, stitch):
                 # assume all the same chromosome
                 impute[x[1]].append(x)
 
-    f = open('vcf', 'w')
+    f = open(vcf + '.impute', 'w')
 
-    with open(vcf, 'r') as vcf:
-        for line in vcf:
+    with open(vcf, 'r') as vcffile:
+        for line in vcffile:
             if line.startswith("#"):
                 f.write(line)
             else:
@@ -42,10 +42,10 @@ def stitch2vcf(vcf, stitch):
                 # fill missing
                 miss = [i for i, s in enumerate(x) if re.search(r'\./\.', s)]
                 for missgt in miss:
-                    if impute[x[1]][missgt] == "./.":
+                    fixgt = impute[x[1]][missgt].split(":")
+                    if fixgt == "./.":
                         pass
                     else:
-                        fixgt = impute[x[1]][missgt].split(":")
                         newgt = fixgt[0]
                         if newgt == '0/0':
                             fixgt[1] = "20,0"    # AD
