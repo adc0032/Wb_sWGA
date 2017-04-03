@@ -54,13 +54,20 @@ def stitch2vcf(vcf, stitch):
                             AD = "10,10"
                         else:
                             AD = "0,20"
-                    #import ipdb; ipdb.set_trace()
+                    # import ipdb; ipdb.set_trace()
                     try:
                         gltemp = [-10*log10(float(a)) for a in fixgt[1].split(",")]
                     except ValueError:
                         gltemp = [-10*log10(float(a) + .000001) for a in fixgt[1].split(",")]
                     gl = ",".join(map(str, gltemp))  # PL
                 oldgt = x[missgt].split(":")
+                fields = x[8].split(":")
+                fields[-1] = "GL"
+                if len(fields) < 6:
+                    fields.insert(4, "PGT")
+                    fields.insert(5, "PID")
+                    oldgt.insert(4) = "."
+                    oldgt.insert(5) = "."
                 oldgt[0] = newgt
                 oldgt[1] = AD
                 oldgt[2] = '20'
