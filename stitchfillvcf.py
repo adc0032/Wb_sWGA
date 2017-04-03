@@ -66,8 +66,8 @@ def stitch2vcf(vcf, stitch):
                 if len(fields) < 6:
                     fields.insert(4, "PGT")
                     fields.insert(5, "PID")
-                    oldgt.insert(4) = "."
-                    oldgt.insert(5) = "."
+                    oldgt.insert(4, ".")
+                    oldgt.insert(5, ".")
                 oldgt[0] = newgt
                 oldgt[1] = AD
                 oldgt[2] = '20'
