@@ -62,7 +62,9 @@ def stitch2vcf(vcf, stitch):
                     oldgt = x[missgt].split(":")
                     fields = x[8].split(":")
                     fields[-1] = "GL"
-                    if len(fields) < 6:
+                    print(fields)
+                    print(oldgt)
+                    if "PGT" not in x[8]:
                         fields.insert(4, "PGT")
                         fields.insert(5, "PID")
                         oldgt.insert(4, ".")
