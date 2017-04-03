@@ -29,7 +29,7 @@ def stitch2vcf(vcf, stitch):
             else:
                 x = line.strip().split()
                 # assume all the same chromosome
-                impute[x[1]].append(x.split())
+                impute[x[1]].append(x)
 
     f = open('vcf', 'w')
 
