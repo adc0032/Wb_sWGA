@@ -72,8 +72,11 @@ def stitch2vcf(vcf, stitch):
                 oldgt[2] = '20'
                 oldgt[3] = '99'
                 oldgt[6] = gl
-                import ipdb; ipdb.set_trace()
-                x[missgt] = ":".join(oldgt)
+                try:
+                    x[missgt] = ":".join(oldgt)
+                    x[8] = ":".join(fields)
+                except:
+                    import ipdb; ipdb.set_trace()
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
                     gl = x[sample].split(":")
