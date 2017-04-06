@@ -33,9 +33,20 @@ def maf2vcf_mrefs(maf):
                         size = int(aa[5])
                         chrom = aa[1].split(".")[1]
                         if "-" in aa[4]:
+                            if aa[6] == 'A':
+                                rallele = 'T'
+                            elif aa[6] == 'T':
+                                rallele = 'A'
+                            elif aa[6] == 'C':
+                                rallele = 'G'
+                            elif aa[6] == 'G':
+                                rallele = 'C'
+                            else:
+                                print("ERROR allele not iupac")
                             pos_1 = size - pos
                         else:
                             pos_1 = pos
+                            rallele = aa[6]
                     else:
                         # read in other refs
                         aa = line.split()
@@ -57,7 +68,8 @@ def maf2vcf_mrefs(maf):
                     line = next(maf)
                 if ancallele:
                     f.write("{}\t{}\t{}\t{}\n".format(chrom, pos_1 + 1,
-                                                      ancallele, refout))
+                                                      rallele, ancallele,
+                                                      refout))
                 else:
                     pass
     return(None)
