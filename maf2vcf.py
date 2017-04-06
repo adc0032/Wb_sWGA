@@ -67,9 +67,9 @@ def maf2vcf_mrefs(maf):
                             ancallele += aa[6]
                     line = next(maf)
                 if ancallele:
-                    f.write("{}\t{}\t{}\t{}\n".format(chrom, pos_1 + 1,
-                                                      rallele, ancallele,
-                                                      refout))
+                    f.write("{}\t{}\t{}\t{}\t{}\n".format(chrom, pos_1 + 1,
+                                                          rallele, ancallele,
+                                                          refout))
                 else:
                     pass
     return(None)
