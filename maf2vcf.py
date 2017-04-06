@@ -11,9 +11,56 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('INmaf', metavar="INmaf", type=str,
                     help='path to maf file')
-parser.add_argument('-r', "--ref", type=str, required=True,
-                    help="ref of alignment")
 args = parser.parse_args()
+
+
+def maf2vcf_mrefs(maf):
+    """take a file output from mafExtractor that has positions of
+       alignments and corrects the ancestral allele for direction.
+       Then prints to file.
+    """
+    f = open(maf + ".aa", 'w')
+    with open(maf, 'r') as maf:
+        for line in maf:
+            if line.startswith("a"):
+                ancallele = ''
+                refout = ''
+                line = next(maf)
+                while line.startswith("s"):
+                    if "Wb" in line:
+                        aa = line.split()
+                        pos = int(aa[2])
+                        size = int(aa[5])
+                        chrom = aa[1].split(".")[1]
+                        if "-" in aa[4]:
+                            pos_1 = size - pos
+                        else:
+                            pos_1 = pos
+                    else:
+                        # read in other refs
+                        aa = line.split()
+                        refout += aa[1][0]
+                        if "-" in aa[4]:
+                            # flip to opposite base
+                            if aa[6] == 'A':
+                                ancallele += 'T'
+                            elif aa[6] == 'T':
+                                ancallele += 'A'
+                            elif aa[6] == 'C':
+                                ancallele += 'G'
+                            elif aa[6] == 'G':
+                                ancallele += 'C'
+                            else:
+                                print("ERROR allele not iupac")
+                        else:
+                            ancallele += aa[6]
+                    line = next(maf)
+                if ancallele:
+                    f.write("{}\t{}\t{}\t{}\n".format(chrom, pos_1 + 1,
+                                                      ancallele, refout))
+                else:
+                    pass
+    return(None)
 
 
 def maf2vcf(maf, ref):
@@ -31,13 +78,13 @@ def maf2vcf(maf, ref):
                     ancallele = aa[6]
                     if "-" in aa[4]:
                         # flip to opposite base
-                        if aa[4] == 'A':
+                        if aa[6] == 'A':
                             ancallele = 'T'
-                        elif aa[4] == 'T':
+                        elif aa[6] == 'T':
                             ancallele = 'A'
-                        elif aa[4] == 'C':
+                        elif aa[6] == 'C':
                             ancallele = 'G'
-                        elif aa[4] == 'G':
+                        elif aa[6] == 'G':
                             ancallele = 'C'
                         else:
                             print("ERROR allele not iupac")
@@ -55,4 +102,4 @@ def maf2vcf(maf, ref):
     return(None)
 
 if __name__ == '__main__':
-    maf2vcf(args.INmaf, args.ref)
+    maf2vcf_mrefs(args.INmaf)
