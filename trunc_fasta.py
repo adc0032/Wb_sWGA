@@ -7,26 +7,34 @@ python change_fasta.py fasta -c
 """
 import argparse
 
+
 def get_args():
-  parser = argparse.ArgumentParser(description='configures fasta file to different character breaks')  
-  parser.add_argument('-c','--char', type=int, help='number of characters per line, default is all in 1 line')
-  parser.add_argument('fasta_file', metavar="fasta",type=str,help='path to fasta file')   
-  args = parser.parse_args()
-  return args
-  
-def trunc_fasta(foofasta,char):
-    with open("{}.trunc-{}.fasta".format(foofasta.rstrip(".fasta"),char),'w') as f:
-        with open(foofasta,'r') as fasta:
-            line = fasta.next()            
-            f.write(line)            
+    parser = argparse.ArgumentParser(description='configures fasta file to different character breaks')
+    parser.add_argument('-c', '--char', type=int,
+                        help='number of characters default is all in 1 line')
+    parser.add_argument('fasta_file', metavar="fasta", type=str,
+                        help='path to fasta file')
+    args = parser.parse_args()
+    return(args)
+
+
+def trunc_fasta(foofasta, char):
+    """
+    """
+    with open("{}.trunc-{}.fasta".format(foofasta.rstrip(".fasta"), char), 'w') as f:
+        with open(foofasta, 'r') as fasta:
+            line = fasta.next()
+            f.write(line)
             for line in fasta:
                 if line.startswith(">"):
                     f.write("\n" + line)
                 else:
                     f.write(line.strip())
+
+
 def main():
-    args=get_args()
+    args = get_args()
     trunc_fasta(args.fasta_file, args.char)
-        
+
 if __name__ == '__main__':
     main()

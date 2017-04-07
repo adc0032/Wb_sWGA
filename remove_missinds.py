@@ -3,23 +3,28 @@
 """
 Created on Mon Oct 17 16:28:56 2016
 remove_missing.py
-wrapper for vcftools to remove individual samples from a vcf with a percent missing
+wrapper for vcftools to remove individual samples from a vcf with a percent
+missing
 @author: scott
 """
-import argparse,subprocess
+import argparse
+import subprocess
+
 parser = argparse.ArgumentParser()
-parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file') 
-parser.add_argument('-p',"--miss", type=float,default=1, help="percent missing above which an ind is removed from the vcf")
+parser.add_argument('INvcf', metavar="INvcf", type=str,
+                    help='path to vcf IN file')
+parser.add_argument('-p', "--miss", type=float, default=1,
+                    help="percent missing after which an ind is removed")
 args = parser.parse_args()
 
 command = "vcftools --vcf " + args.INvcf + " --missing-indv --stdout"
-print command        
+print command
 proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
 proc.wait()
 
 
-f=open("remove_inds.out",'w')
-for line in iter(proc.stdout.readline,''):
+f = open("remove_inds.out", 'w')
+for line in iter(proc.stdout.readline, ''):
     if line.startswith("INDV"):
         pass
     else:
@@ -27,7 +32,7 @@ for line in iter(proc.stdout.readline,''):
             f.write(line.split()[0]+"\n")
 f.close()
 
-command = command = "vcftools --vcf " + args.INvcf + " --remove remove_inds.out --recode --recode-INFO-all --out " + args.INvcf + ".nomiss"
-print command        
+command = "vcftools --vcf " + args.INvcf + " --remove remove_inds.out --recode --recode-INFO-all --out " + args.INvcf + ".nomiss"
+print command
 proc = subprocess.Popen(command, shell=True)
 proc.wait()

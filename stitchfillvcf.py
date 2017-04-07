@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Apr  3 12:24:29 2017
+This program should be run on a vcf that has been filtered by removing sites
+found to be in repeated regions and minimum filtering via XXX
+
 
 @author: scott
 """
@@ -44,7 +47,7 @@ def stitch2vcf(vcf, stitch):
                     fixgt = impute[x[1]][missgt].split(":")
                     if fixgt[0] == "./.":
                         pass
-                        print("fixgt was missing")
+                        print("no imputed gt, missing")
                     else:
                         newgt = fixgt[0]
                         if newgt == '0/0':
@@ -61,14 +64,11 @@ def stitch2vcf(vcf, stitch):
                                            for a in fixgt[1].split(",")], 3)
                     gl = ",".join(map(str, gltemp))  # PL
                     oldgt = x[missgt].split(":")
-                    if "PGT" not in x[8]:
-                        oldgt.insert(4, ".")
-                        oldgt.insert(5, ".")
                     oldgt[0] = newgt
                     oldgt[1] = AD
                     oldgt[2] = '20'
                     oldgt[3] = '99'
-                    oldgt[6] = gl
+                    oldgt[4] = gl
                     x[missgt] = ":".join(oldgt)
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
@@ -80,12 +80,8 @@ def stitch2vcf(vcf, stitch):
                 # addfields
                 fields = x[8].split(":")
                 fields[-1] = "GL"
-                if "PGT" not in x[8]:
-                    fields.insert(4, "PGT")
-                    fields.insert(5, "PID")
                 x[8] = ":".join(fields)
                 f.write("{}\n".format("\t".join(x)))
-
     f.close()
 
     return(None)

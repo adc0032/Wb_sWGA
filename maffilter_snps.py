@@ -8,65 +8,61 @@ to be a SNP, ao >= 6, maf >.20
 """
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('INvcf', metavar="INvcf",type=str,help='path to vcf IN file') 
-parser.add_argument('-s', '--samples', type=int, required=True, help="number of samples to expect")
-parser.add_argument('-l',"--lower", type=float,default=.20, help="lower allele freq cutoff")
-parser.add_argument('-u',"--upper", type=float,default=.80, help="upper allele freq cutoff")
-parser.add_argument('-a',"--aocount",type=int,default=6,help="minimum number of alternate alleles for a site to be het")
+parser.add_argument('INvcf', metavar="INvcf", type=str,
+                    help='path to vcf IN file')
+parser.add_argument('-l', "--lower", type=float, default=.20,
+                    help="lower allele freq cutoff")
+parser.add_argument('-u', "--upper", type=float, default=.80,
+                    help="upper allele freq cutoff")
+parser.add_argument('-a', "--aocount", type=int, default=6,
+                    help="minimum number of alternate alleles to be het")
 args = parser.parse_args()
 
-def mafFilter(vcfin,samples,lower,upper,aocount):
-    f = open(vcfin + ".maffilter",'w')
-    #countmaf = 0
-    with open(vcfin,'r') as vcf:
+
+def mafFilter(vcfin, lower, upper, aocount):
+    """
+    """
+    f = open(vcfin + ".maffilter", 'w')
+    # countmaf = 0
+    with open(vcfin, 'r') as vcf:
         for line in vcf:
-            if line.startswith("##"):
+            if line.startswith("##") or line.startswith("#"):
                 f.write(line)
-            elif line.startswith("#CHROM"):
-                sampleid = line.split() 
-                f.write(line)
-            else:    
-                x=line.split()
-                for i in range(0,samples):
+            else:
+                x = line.split()
+                for sample in range(9, len(x)):
                     try:
-                        if "0/1" in x[9+i].split(":")[0]:
-                            dp = int(x[9+i].split(":")[2])
-                            ao = int(x[9+i].split(":")[6])                                                               
-                            maf = float(ao)/dp #maf freq
-                            #print x[9+i]
-                            if ao >= aocount: #alt allele count
-                                #print x[9+i]
+                        gt = x[sample].split(":")
+                        if "0/1" in gt[0] or "0|1" in gt[0] or "1|0" in gt[0]:
+                            dp = int(gt[2])
+                            ao = int(gt[1].split(",")[1])
+                            maf = float(ao) / dp  # maf freq
+                            if ao >= aocount:  # alt allele count
                                 if maf < lower:
-                                    x9 = x[9+i].split(":")
-                                    x9[0] = "0/0"
-                                    x[9+i] = ":".join(x9)
-                                    #countmaf += 1
+                                    gt[0] = "0/0"
+                                    x[sample] = ":".join(gt)
                                 elif maf > upper:
-                                    x9 = x[9+i].split(":")
-                                    x9[0] = "1/1"
-                                    x[9+i] = ":".join(x9)
-                                    #countmaf += 1
+                                    gt[0] = "1/1"
+                                    x[sample] = ":".join(gt)
+                                else:  # remains a het
+                                    pass
                             elif ao < aocount:
-                                #print x[9+i]
                                 if maf < lower:
-                                    x9 = x[9+i].split(":")
-                                    x9[0] = "0/0"
-                                    x[9+i] = ":".join(x9)
-                                    #countmaf += 1
+                                    gt[0] = "0/0"
+                                    x[sample] = ":".join(gt)
                                 elif maf > upper:
-                                    x9 = x[9+i].split(":")
-                                    x9[0] = "1/1"
-                                    x[9+i] = ":".join(x9)                        
-                                else:
-                                    x[9+i] = ".:.:.:.:.:.:.:.:."
-                            #print x[9+i] + "\n"  
+                                    gt[0] = "1/1"
+                                    x[sample] = ":".join(gt)
+                                else:  # het in freq but no meet min aocount
+                                    x[sample] = "./.:.:.:.:."
+                            else:
+                                pass
                     except ValueError:
-                        print "\n%s\t%s\t%s\t%s\t%s\n" %(vcfin,x[0],x[1],sampleid[9+i],x[9+i])
-                f.write("%s\n" %"\t".join(x))
+                        print("\n{}\t{}\t{}\t{}\t{}\n"
+                              .format(x[0], x[1], x[sample]))
+                f.write("{}\n".format("\t".join(x)))
     f.close()
-    #return countmaf
-def main():
-    mafFilter(args.INvcf, args.samples, args.lower,args.upper, args.aocount)
+    return(None)
+
 if __name__ == '__main__':
-    main()
-            
+    mafFilter(args.INvcf, args.lower, args.upper, args.aocount)
