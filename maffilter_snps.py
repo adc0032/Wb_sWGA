@@ -12,7 +12,7 @@ parser.add_argument('INvcf', metavar="INvcf", type=str,
                     help='path to vcf IN file')
 parser.add_argument('-l', "--lower", type=float, default=.20,
                     help="lower allele freq cutoff")
-parser.add_argument('-u', "--upper", type=float, default=.80,
+parser.add_argument('-u', "--upper", type=float, default=.99,
                     help="upper allele freq cutoff")
 parser.add_argument('-a', "--aocount", type=int, default=6,
                     help="minimum number of alternate alleles to be het")

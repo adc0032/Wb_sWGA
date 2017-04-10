@@ -10,8 +10,6 @@ import collections
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf", type=str,
                     help='path to vcf IN file')
-parser.add_argument('-s', '--samples', type=int, required=True,
-                    help="number of samples to expect")
 args = parser.parse_args()
 
 
@@ -37,9 +35,9 @@ def pos_mask(vcfin, samples):
                 indv = line.split()[9:]
             else:
                 x = line.split()
-                for i in range(0, samples):
-                    if "." in x[9+i].split(":")[0]:
-                        mask[indv[i]][x[0]].append(x[1])
+                for sample in range(9, len(x)):
+                    if "." in x[sample].split(":")[0]:
+                        mask[indv[sample]][x[0]].append(x[1])
     return(mask)
 
 if __name__ == '__main__':
