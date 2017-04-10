@@ -12,7 +12,7 @@ from collections import defaultdict
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf", type=str,
                     help='path to vcf file')
-parser.add_argument('-aa', "ancestral", type=str,
+parser.add_argument('-aa', "--ancestral", type=str,
                     help='path to ancestral bed')
 args = parser.parse_args()
 
