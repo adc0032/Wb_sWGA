@@ -33,7 +33,6 @@ def addAA2vcf(vcfIN, aaIN):
                 f.write(line)
             else:
                 x = line.strip().split()
-                fields = x[7].split(";")
                 aaref = [i[1] for i in ancallele[x[0]] if i[0] == x[1]]
                 aa = [i[2] for i in ancallele[x[0]] if i[0] == x[1]]
                 aa_align = [i[3] for i in ancallele[x[0]] if i[0] == x[1]]
@@ -47,8 +46,12 @@ def addAA2vcf(vcfIN, aaIN):
                 else:
                     pass
                 assert aaref == x[3]  # check that aaref == x[3]
-                fields.insert("AA:{}".format(aa), 0)
-                x[7] = ";".join(fields)
+                if ";" in x[7]:
+                    fields = x[7].split(";")
+                    fields.insert("AA:{}".format(aa), 0)
+                    x[7] = ";".join(fields)
+                else:
+                    x[7] = "AA:{}".format(aa)
             f.write("{}\n".format("\t".join(x)))
     return(None)
 
