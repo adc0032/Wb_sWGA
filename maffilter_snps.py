@@ -57,7 +57,7 @@ def mafFilter(vcfin, lower, upper, aocount):
                                     x[sample] = "./.:.:.:.:."
                             else:
                                 pass
-                    except ValueError:
+                    except:
                         print("{}\t{}\t{}\n"
                               .format(x[0], x[1], x[sample]))
                 f.write("{}\n".format("\t".join(x)))
