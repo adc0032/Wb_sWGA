@@ -58,7 +58,7 @@ def mafFilter(vcfin, lower, upper, aocount):
                             else:
                                 pass
                     except ValueError:
-                        print("\n{}\t{}\t{}\t{}\t{}\n"
+                        print("{}\t{}\t{}\n"
                               .format(x[0], x[1], x[sample]))
                 f.write("{}\n".format("\t".join(x)))
     f.close()
