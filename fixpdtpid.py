@@ -29,23 +29,14 @@ def fixPGTPID(vcf):
                     if "PL:PGT:PID" in x[8]:
                         for sample in range(9, len(x)):
                             gt = x[sample].split(":")
-                            if "|" in gt[5]:
-                                newgt = [gt[5], gt[1], gt[2], gt[3], gt[4]]
-                                x[sample] = ":".join(newgt)
-                            else:
-                                newgt = [gt[0], gt[1], gt[2], gt[3], gt[4]]
-                                x[sample] = ":".join(newgt)
+                            newgt = [gt[0], gt[1], gt[2], gt[3], gt[4]]
+                            x[sample] = ":".join(newgt)
                         x[8] = "GT:AD:DP:GQ:PL"
                         f.write("{}\n".format("\t".join(x)))
                     elif "PGT:PID:PL" in x[8]:
                         for sample in range(9, len(x)):
-                            gt = x[sample].split(":")
-                            if "|" in gt[4]:
-                                newgt = [gt[4], gt[1], gt[2], gt[3], gt[6]]
-                                x[sample] = ":".join(newgt)
-                            else:
-                                newgt = [gt[0], gt[1], gt[2], gt[3], gt[6]]
-                                x[sample] = ":".join(newgt)
+                            newgt = [gt[0], gt[1], gt[2], gt[3], gt[6]]
+                            x[sample] = ":".join(newgt)
                         x[8] = "GT:AD:DP:GQ:PL"
                         f.write("{}\n".format("\t".join(x)))
                 else:
