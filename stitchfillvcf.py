@@ -34,7 +34,7 @@ def stitch2vcf(vcf, stitch):
                 # assume all the same chromosome
                 impute[x[1]] = x
     f = open(vcf + '.impute', 'w')
-
+    still_miss = 0
     with open(vcf, 'r') as vcffile:
         for line in vcffile:
             if line.startswith("##") or line.startswith("#"):
@@ -46,8 +46,8 @@ def stitch2vcf(vcf, stitch):
                 for missgt in miss:
                     fixgt = impute[x[1]][missgt].split(":")
                     if fixgt[0] == "./.":
-                        pass
-                        print("no imputed gt, missing")
+                        still_miss += 1
+                        print("no imputed gt, missing\t{}".format(still_miss))
                     else:
                         newgt = fixgt[0]
                         if newgt == '0/0':
