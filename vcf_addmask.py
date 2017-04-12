@@ -61,7 +61,8 @@ def mask_vcfbisect(vcfIN, mask_dict):
                     start = mask_dict[x[0] + "_s"][poslist]
                     end = mask_dict[x[0] + "_e"][poslist]
                     if pos >= start and pos <= end:
-                        print("{}\t{}\t{}\t".format(pos, start, end))
+                        pass
+                        # print("{}\t{}\t{}\t".format(pos, start, end))
                     else:
                         mask_vcf.write(line)
     return(None)
