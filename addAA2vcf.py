@@ -49,15 +49,18 @@ def addAA2vcf(vcfIN, aaIN):
                             pass
                     else:
                         pass
-                    assert aaref == x[3]  # check that aaref == x[3]
+                    try:
+                        assert aaref == x[3]  # check that aaref == x[3]
+                    except AssertionError:
+                        print("{}\t{}\t{}\t{}".format(x[0], x[1], aaref, x[3]))
                 else:
                     aa = x[3]
                 if ";" in x[7]:
                     fields = x[7].split(";")
-                    fields.insert(0, "AA:{}".format(aa))
+                    fields.insert(0, "AA={}".format(aa))
                     x[7] = ";".join(fields)
                 else:
-                    x[7] = "AA:{}".format(aa)
+                    x[7] = "AA={}".format(aa)
                 f.write("{}\n".format("\t".join(x)))
     return(None)
 
