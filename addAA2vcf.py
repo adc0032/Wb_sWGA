@@ -45,7 +45,10 @@ def addAA2vcf(vcfIN, aaIN):
                         pass
                 else:
                     pass
-                assert aaref == x[3]  # check that aaref == x[3]
+                try:
+                    assert aaref == x[3]  # check that aaref == x[3]
+                except:
+                    import ipdb; ipdb.set_trace()
                 if ";" in x[7]:
                     fields = x[7].split(";")
                     fields.insert("AA:{}".format(aa), 0)
