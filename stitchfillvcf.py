@@ -57,10 +57,10 @@ def stitch2vcf(vcf, stitch):
                         else:
                             AD = "0,20"
                     try:
-                        gltemp = np.round([-10*log10(float(a))
+                        gltemp = np.round([-10 * log10(float(a))
                                            for a in fixgt[1].split(",")], 3)
                     except ValueError:
-                        gltemp = np.round([-10*log10(float(a) + .000001)
+                        gltemp = np.round([-10 * log10(float(a) + .000001)
                                            for a in fixgt[1].split(",")], 3)
                     gl = ",".join(map(str, gltemp))  # PL
                     oldgt = x[missgt].split(":")
@@ -73,8 +73,8 @@ def stitch2vcf(vcf, stitch):
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
                     gl = x[sample].split(":")
-                    glnew = np.round([float(a)/-10.0
-                                      for a in gl[-1].split(",")], 3)
+                    glnew = [float(a)/-10.0
+                             for a in gl[-1].split(",")]
                     gl[-1] = ",".join(map(str, glnew))
                     x[sample] = ":".join(gl)
                 # addfields

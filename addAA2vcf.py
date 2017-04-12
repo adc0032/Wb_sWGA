@@ -60,7 +60,7 @@ def addAA2vcf(vcfIN, aaIN):
                               x[3], x[4]))
                 else:
                     aa = x[3]
-                    print("None for {}\t{}".format(x[0], x[1]))
+                    # print("None for {}\t{}".format(x[0], x[1]))
                     none += 1
                 if ";" in x[7]:
                     fields = x[7].split(";")
