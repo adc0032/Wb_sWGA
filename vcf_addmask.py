@@ -10,6 +10,7 @@ usage:python vcfmask.py MASK.bed vcfIN vcfOUT
 
 import collections
 import argparse
+import bisect
 
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf", type=str,
@@ -30,6 +31,39 @@ def read_mask(file_mask):
     return(mask_dict)
 
 
+def read_maskbisect(file_mask):
+    """
+    """
+    mask_dict = collections.defaultdict(list)
+    with open(file_mask, 'r') as mask:
+        for line in mask:
+            x = line.strip().split()
+            mask_dict[x[0] + "_s"].append(int(x[1]))
+            mask_dict[x[0] + "_e"].append(int(x[2]))
+    return(mask_dict)
+
+
+def mask_vcfbisect(vcfIN, mask_dict):
+    """
+    """
+    with open(vcfIN + ".masked", 'w') as mask_vcf:
+        with open(vcfIN, 'r') as vcf:
+            for line in vcf:
+                if line.startswith("#"):
+                    mask_vcf.write(line)
+                else:
+                    x = line.splt()
+                    pos = int(x[1])
+                    poslist = bisect.bisect_left(mask_dict[x[0] + "_s"], pos)
+                    start = mask_dict[x[0] + "_s"][poslist]
+                    end = mask_dict[x[0] + "_e"][poslist]
+                    if pos >= start and pos <= end:
+                        pass
+                    else:
+                        mask_vcf.write(line)
+    return(None)
+
+
 def mask_vcf(vcfIN, mask_dict):
     """
     """
@@ -46,4 +80,5 @@ def mask_vcf(vcfIN, mask_dict):
 
 
 if __name__ == '__main__':
-    mask_vcf(args.INvcf, read_mask(args.bed))
+    # mask_vcf(args.INvcf, read_mask(args.bed))
+    mask_vcfbisect(args.INvcf, read_maskbisect(args.bed))
