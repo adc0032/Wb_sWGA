@@ -52,7 +52,8 @@ def addAA2vcf(vcfIN, aaIN):
                     try:
                         assert aaref == x[3]  # check that aaref == x[3]
                     except AssertionError:
-                        print("{}\t{}\t{}\t{}".format(x[0], x[1], aaref, x[3]))
+                        print("{}\t{}\t{}\t{}\t{}".format(x[0], x[1], aaref,
+                              x[3], x[4]))
                 else:
                     aa = x[3]
                 if ";" in x[7]:
