@@ -57,7 +57,7 @@ def mask_vcfbisect(vcfIN, mask_dict):
                     x = line.split()
                     pos = int(x[1])
                     # import ipdb;ipdb.set_trace()
-                    poslist = bisect.bisect_left(mask_dict[x[0] + "_s"], pos) - 1
+                    poslist = bisect.bisect(mask_dict[x[0] + "_s"], pos) - 1
                     start = mask_dict[x[0] + "_s"][poslist]
                     end = mask_dict[x[0] + "_e"][poslist]
                     if pos >= start and pos <= end:
