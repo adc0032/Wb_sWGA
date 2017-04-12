@@ -47,7 +47,6 @@ def stitch2vcf(vcf, stitch):
                     fixgt = impute[x[1]][missgt].split(":")
                     if fixgt[0] == "./.":
                         still_miss += 1
-                        print("no imputed gt, missing\t{}".format(still_miss))
                     else:
                         newgt = fixgt[0]
                         if newgt == '0/0':
@@ -83,7 +82,7 @@ def stitch2vcf(vcf, stitch):
                 x[8] = ":".join(fields)
                 f.write("{}\n".format("\t".join(x)))
     f.close()
-
+    print("missing\t{}".format(still_miss))
     return(None)
 
 if __name__ == '__main__':
