@@ -20,6 +20,8 @@ args = parser.parse_args()
 def addAA2vcf(vcfIN, aaIN):
     """add AA field to vcf
     """
+    none = 0
+    some = 0
     ancallele = defaultdict(list)
     with open(aaIN, 'r') as aa:
         for line in aa:
@@ -37,6 +39,7 @@ def addAA2vcf(vcfIN, aaIN):
                 aa = [i[2] for i in ancallele[x[0]] if i[0] == x[1]]
                 aa_align = [i[3] for i in ancallele[x[0]] if i[0] == x[1]]
                 if aaref:
+                    some += 1
                     aaref = aaref[0]
                     aa = aa[0]
                     aa_align = aa_align[0]
@@ -49,6 +52,7 @@ def addAA2vcf(vcfIN, aaIN):
                             pass
                     else:
                         pass
+
                     try:
                         assert aaref == x[3]  # check that aaref == x[3]
                     except AssertionError:
@@ -56,6 +60,8 @@ def addAA2vcf(vcfIN, aaIN):
                               x[3], x[4]))
                 else:
                     aa = x[3]
+                    print("None for {}\t{}".format(x[0], x[1]))
+                    none += 1
                 if ";" in x[7]:
                     fields = x[7].split(";")
                     fields.insert(0, "AA={}".format(aa))
@@ -63,6 +69,7 @@ def addAA2vcf(vcfIN, aaIN):
                 else:
                     x[7] = "AA={}".format(aa)
                 f.write("{}\n".format("\t".join(x)))
+    print("None={}\tSome={}\n".format(none, some))
     return(None)
 
 if __name__ == '__main__':
