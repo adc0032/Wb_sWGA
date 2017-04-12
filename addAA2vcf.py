@@ -36,26 +36,29 @@ def addAA2vcf(vcfIN, aaIN):
                 aaref = [i[1] for i in ancallele[x[0]] if i[0] == x[1]]
                 aa = [i[2] for i in ancallele[x[0]] if i[0] == x[1]]
                 aa_align = [i[3] for i in ancallele[x[0]] if i[0] == x[1]]
-                if len(aa_align) > 1:
-                    if "b" in aa_align:
-                        aa = aa[aa_align.index("b")]
-                    elif "l" in aa_align:
-                        aa = aa[aa_align.index("l")]
+                if aaref:
+                    aaref = aaref[0]
+                    aa = aa[0]
+                    aa_align = aa_align[0]
+                    if len(aa_align) > 1:
+                        if "b" in aa_align:
+                            aa = aa[aa_align.index("b")]
+                        elif "l" in aa_align:
+                            aa = aa[aa_align.index("l")]
+                        else:
+                            pass
                     else:
                         pass
-                else:
-                    pass
-                try:
                     assert aaref == x[3]  # check that aaref == x[3]
-                except:
-                    import ipdb; ipdb.set_trace()
+                else:
+                    aa = x[3]
                 if ";" in x[7]:
                     fields = x[7].split(";")
                     fields.insert("AA:{}".format(aa), 0)
                     x[7] = ";".join(fields)
                 else:
                     x[7] = "AA:{}".format(aa)
-            f.write("{}\n".format("\t".join(x)))
+                f.write("{}\n".format("\t".join(x)))
     return(None)
 
 if __name__ == '__main__':
