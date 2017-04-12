@@ -17,6 +17,8 @@ parser.add_argument('INvcf', metavar="INvcf", type=str,
                     help='path to vcf file')
 parser.add_argument('-b', "--bed", type=str, required=True,
                     help="mask bed")
+parser.add_argument('-c', "--chrom", type=str, required=False,
+                    help="which chrom")
 args = parser.parse_args()
 
 
@@ -52,7 +54,7 @@ def mask_vcfbisect(vcfIN, mask_dict):
                 if line.startswith("#"):
                     mask_vcf.write(line)
                 else:
-                    x = line.splt()
+                    x = line.split()
                     pos = int(x[1])
                     poslist = bisect.bisect_left(mask_dict[x[0] + "_s"], pos)
                     start = mask_dict[x[0] + "_s"][poslist]
