@@ -54,7 +54,7 @@ def addAA2vcf(vcfIN, aaIN):
                     aa = x[3]
                 if ";" in x[7]:
                     fields = x[7].split(";")
-                    fields.insert("AA:{}".format(aa), 0)
+                    fields.insert(0, "AA:{}".format(aa))
                     x[7] = ";".join(fields)
                 else:
                     x[7] = "AA:{}".format(aa)
