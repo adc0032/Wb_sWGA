@@ -10,7 +10,6 @@ found to be in repeated regions and minimum filtering via XXX
 """
 import re
 from math import log10
-import numpy as np
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -84,7 +83,11 @@ def stitch2vcf(vcf, stitch):
                 fields = x[8].split(":")
                 fields[-1] = "GL"
                 x[8] = ":".join(fields)
-                f.write("{}\n".format("\t".join(x)))
+                if "0/0" in line or "1/1" in line or "0/1" in line:
+                    f.write("{}\n".format("\t".join(x)))
+                else:
+                    # line is empty
+                    print(line)
     f.close()
     print("missing\t{}".format(still_miss))
     return(None)
