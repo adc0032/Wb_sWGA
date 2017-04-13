@@ -47,7 +47,7 @@ def stitch2vcf(vcf, stitch):
                     fixgt = impute[x[1]][missgt].split(":")
                     if fixgt[0] == "./.":
                         still_miss += 1
-                        newgt = "./."
+                        oldgt = ["./.", ".", ".", ".", "."]
                     else:
                         newgt = fixgt[0]
                         if newgt == '0/0':
@@ -56,19 +56,19 @@ def stitch2vcf(vcf, stitch):
                             AD = "10,10"
                         else:
                             AD = "0,20"
-                    try:
-                        gltemp = np.round([-10 * log10(float(a))
-                                           for a in fixgt[1].split(",")], 3)
-                    except ValueError:
-                        gltemp = np.round([-10 * log10(float(a) + .000001)
-                                           for a in fixgt[1].split(",")], 3)
-                    gl = ",".join(map(str, gltemp))  # PL
-                    oldgt = x[missgt].split(":")
-                    oldgt[0] = newgt
-                    oldgt[1] = AD
-                    oldgt[2] = '20'
-                    oldgt[3] = '99'
-                    oldgt[4] = gl
+                        try:
+                            gltemp = [-10 * log10(float(a))
+                                      for a in fixgt[1].split(",")]
+                        except ValueError:
+                            gltemp = [-10 * log10(float(a) + .000001)
+                                      for a in fixgt[1].split(",")]
+                        gl = ",".join(map(str, gltemp))  # PL
+                        oldgt = x[missgt].split(":")
+                        oldgt[0] = newgt
+                        oldgt[1] = AD
+                        oldgt[2] = '20'
+                        oldgt[3] = '99'
+                        oldgt[4] = gl
                     x[missgt] = ":".join(oldgt)
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
