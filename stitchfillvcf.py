@@ -72,11 +72,14 @@ def stitch2vcf(vcf, stitch):
                     x[missgt] = ":".join(oldgt)
                 # rewrite PL as GL; GL = PL/-10.0
                 for sample in range(9, len(x)):
-                    gl = x[sample].split(":")
-                    glnew = [float(a)/-10.0
-                             for a in gl[-1].split(",")]
-                    gl[-1] = ",".join(map(str, glnew))
-                    x[sample] = ":".join(gl)
+                    if "./." not in x[sample]:
+                        gl = x[sample].split(":")
+                        glnew = [float(a)/-10.0
+                                 for a in gl[-1].split(",")]
+                        gl[-1] = ",".join(map(str, glnew))
+                        x[sample] = ":".join(gl)
+                    else:
+                        pass
                 # addfields
                 fields = x[8].split(":")
                 fields[-1] = "GL"
