@@ -47,6 +47,7 @@ def stitch2vcf(vcf, stitch):
                     fixgt = impute[x[1]][missgt].split(":")
                     if fixgt[0] == "./.":
                         still_miss += 1
+                        newgt = "./."
                     else:
                         newgt = fixgt[0]
                         if newgt == '0/0':
