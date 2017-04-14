@@ -27,13 +27,13 @@ def pos_mask(vcfin):
     """
     """
     mask = collections.defaultdict(lambda: collections.defaultdict(list))
-    t = open(vcfin + "miss", 'w')
+    t = open(vcfin + ".miss", 'w')
     with open(vcfin, 'r') as vcf:
         for line in vcf:
             if "##" in line:
                 t.write(line)
             elif "#CHROM" in line:
-                indv = line.split()[9:]
+                indv = line.split()
                 t.write(line)
             else:
                 x = line.strip().split()
