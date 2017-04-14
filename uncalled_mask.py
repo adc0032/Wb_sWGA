@@ -23,7 +23,7 @@ class AutoVivification(dict):
             return value
 
 
-def pos_mask(vcfin, samples):
+def pos_mask(vcfin):
     """
     """
     mask = collections.defaultdict(lambda: collections.defaultdict(list))
@@ -46,7 +46,7 @@ def pos_mask(vcfin, samples):
     return(mask)
 
 if __name__ == '__main__':
-    mask = pos_mask(args.INvcf, args.samples)
+    mask = pos_mask(args.INvcf)
     for ind in mask.keys():
         f = open(ind + ".FilteredSites.mask", 'w')
         for chrom in mask[ind]:
