@@ -27,17 +27,22 @@ def pos_mask(vcfin, samples):
     """
     """
     mask = collections.defaultdict(lambda: collections.defaultdict(list))
+    t = open(vcfin + "miss", 'w')
     with open(vcfin, 'r') as vcf:
         for line in vcf:
             if "##" in line:
-                pass
+                t.write(line)
             elif "#CHROM" in line:
                 indv = line.split()[9:]
+                t.write(line)
             else:
-                x = line.split()
+                x = line.strip().split()
                 for sample in range(9, len(x)):
-                    if "." in x[sample].split(":")[0]:
+                    if ".:.:." in x[sample]:
                         mask[indv[sample]][x[0]].append(x[1])
+                        x[sample] = "./.:.:.:.:."
+                t.write("{}\n".format("\t".join(x)))
+    t.close()
     return(mask)
 
 if __name__ == '__main__':
