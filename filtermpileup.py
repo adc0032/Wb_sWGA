@@ -62,7 +62,8 @@ def mean_cov(mpile):
             mq_mean.append(np.mean(mapq))
             mq_std.append(np.std(mapq))
     mpile_filter(cov_mean, cov_std, mq_mean, mq_std, chrom_n, mpile)
-    return(mq_mean, mq_std)
+    return(mq_mean, mq_std, cov_mean, cov_std)
 
 if __name__ == '__main__':
-    mean_cov(args.mpile)
+    mqm, mqs, cm, cs = mean_cov(args.mpile)
+    print("mean mapq : {}\n std mapq : {}\n mean cov : {}\n std cov : {}\n".format(mqm, mqs, cm, cs))
