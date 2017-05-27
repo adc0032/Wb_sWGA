@@ -49,13 +49,16 @@ def mean_cov(mpile):
             chrom = line.strip().split()[0]
             cov = []
             mapq = []
-            while chrom == line.strip().split()[0]:
-                x = line.strip().split()
-                cov.append(int(x[3]))
-                if int(x[3]) != 0:
-                    mq = [ord(i) - 33 for i in list(x[6])]
-                    mapq.append(np.mean(mq))
-                line = next(pile)
+            try:
+                while chrom == line.strip().split()[0]:
+                    x = line.strip().split()
+                    cov.append(int(x[3]))
+                    if int(x[3]) != 0:
+                        mq = [ord(i) - 33 for i in list(x[6])]
+                        mapq.append(np.mean(mq))
+                    line = next(pile)
+            except StopIteration:
+                pass
             chrom_n.append(chrom)
             cov_mean.append(np.mean(cov))
             cov_std.append(np.std(cov))
