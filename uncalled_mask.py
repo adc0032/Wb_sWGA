@@ -38,7 +38,7 @@ def pos_mask(vcfin):
             else:
                 x = line.strip().split()
                 for sample in range(9, len(x)):
-                    if ".:.:." in x[sample]:
+                    if ".:." in x[sample]:
                         mask[indv[sample]][x[0]].append(x[1])
                         x[sample] = "./.:.:.:.:."
                 t.write("{}\n".format("\t".join(x)))

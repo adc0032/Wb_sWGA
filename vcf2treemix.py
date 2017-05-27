@@ -20,7 +20,7 @@ parser.add_argument('-c', "--coords", nargs='*', required=True,
 args = parser.parse_args()
 
 
-def vcf2treemix(vcfin, populations, coordlist):
+def vcf2treemix_fx(vcfin, populations, coordlist):
     """
     """
     f = open(vcfin + ".trm", 'w')
@@ -33,11 +33,9 @@ def vcf2treemix(vcfin, populations, coordlist):
             if line.startswith("##"):
                 pass
             elif line.startswith("#CHROM"):
-                taxa = line.strip().split()[8:]
+                taxa = line.strip().split()[9:]
             elif line.strip() != "":
                 fields = line.strip().split()
-                if len(fields[4]) > 1:
-                    continue
                 pop_0 = 0
                 pop_1 = 0
                 snppop = []
@@ -55,9 +53,5 @@ def vcf2treemix(vcfin, populations, coordlist):
                 f.write("{}\n".format(" ".join(snppop)))
     f.close()
 
-
-def main():
-    vcf2treemix(args.INvcf, args.populations, args.coords)
-
 if __name__ == '__main__':
-    main()
+    vcf2treemix_fx(args.INvcf, args.populations, args.coords)
