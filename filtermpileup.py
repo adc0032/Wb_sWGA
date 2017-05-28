@@ -30,7 +30,7 @@ def mpile_filter(cov_mean, cov_std, mq_mean, mq_std, chrom_n, mpile):
                 f.write(line)
             elif int(x[3]) != 0:
                 mq = [ord(i) - 33 for i in list(x[6])]
-                if np.mean(mq) > 10:
+                if np.mean(mq) < 10:
                     f.write(line)
     f.close()
     return(None)
