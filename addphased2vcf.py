@@ -36,7 +36,7 @@ def phased2vcf(vcf, phase):
                 f.write(line)
             else:
                 x = line.strip().split()
-                y = phased[x[1]].split()
+                y = phased[x[1]]
                 # replace gt
                 for sample in range(9, len(x)):
                     gt_old = x[sample].split(":")
