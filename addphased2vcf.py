@@ -35,12 +35,12 @@ def phased2vcf(vcf, phase):
             if line.startswith("##") or line.startswith("#"):
                 f.write(line)
             else:
-                x = line.strip().split()
-                y = phased[x[1]]
-                # replace gt
-                for sample in range(9, len(x)):
-                    gt_old = x[sample].split(":")
-                    try:
+                try:
+                    x = line.strip().split()
+                    y = phased[x[1]]
+                    # replace gt
+                    for sample in range(9, len(x)):
+                        gt_old = x[sample].split(":")
                         gt_new = y[sample]
                         if gt_old[0] == "./.":
                             gt_old[0] = ".|."
@@ -55,10 +55,10 @@ def phased2vcf(vcf, phase):
                                 gt_old[0] = gt_new
                         else:
                             print(x[sample])
-                    except KeyError:
+                        x[sample] = ":".join(gt_old)
+                    f.write("{}\n".format("\t".join(x)))
+                except KeyError:
                         print(x[1])
-                    x[sample] = ":".join(gt_old)
-                f.write("{}\n".format("\t".join(x)))
     f.close()
     return(None)
 
