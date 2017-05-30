@@ -40,20 +40,23 @@ def phased2vcf(vcf, phase):
                 # replace gt
                 for sample in range(9, len(x)):
                     gt_old = x[sample].split(":")
-                    gt_new = y[sample]
-                    if gt_old[0] == "./.":
-                        gt_old[0] = ".|."
-                    elif gt_old[0] == "0/1":
-                        if gt_new == "0|1" or gt_new == "1|0":
-                            gt_old[0] = gt_new
-                    elif gt_old[0] == "0/0":
-                        if gt_new == "0|0":
-                            gt_old[0] = gt_new
-                    elif gt_old[0] == "1/1":
-                        if gt_new == "1|1":
-                            gt_old[0] = gt_new
-                    else:
-                        print(x[sample])
+                    try:
+                        gt_new = y[sample]
+                        if gt_old[0] == "./.":
+                            gt_old[0] = ".|."
+                        elif gt_old[0] == "0/1":
+                            if gt_new == "0|1" or gt_new == "1|0":
+                                gt_old[0] = gt_new
+                        elif gt_old[0] == "0/0":
+                            if gt_new == "0|0":
+                                gt_old[0] = gt_new
+                        elif gt_old[0] == "1/1":
+                            if gt_new == "1|1":
+                                gt_old[0] = gt_new
+                        else:
+                            print(x[sample])
+                    except KeyError:
+                        print(x[1])
                     x[sample] = ":".join(gt_old)
                 f.write("{}\n".format("\t".join(x)))
     f.close()
