@@ -54,17 +54,20 @@ def mask_vcfbisect(vcfIN, mask_dict):
                 if line.startswith("#"):
                     mask_vcf.write(line)
                 else:
-                    x = line.split()
-                    pos = int(x[1])
-                    # import ipdb;ipdb.set_trace()
-                    poslist = bisect.bisect(mask_dict[x[0] + "_s"], pos) - 1
-                    start = mask_dict[x[0] + "_s"][poslist]
-                    end = mask_dict[x[0] + "_e"][poslist]
-                    if pos >= start and pos <= end:
-                        pass
-                        # print("{}\t{}\t{}\t".format(pos, start, end))
-                    else:
-                        mask_vcf.write(line)
+                    try:
+                        x = line.split()
+                        pos = int(x[1])
+                        # import ipdb;ipdb.set_trace()
+                        poslist = bisect.bisect(mask_dict[x[0] + "_s"], pos) - 1
+                        start = mask_dict[x[0] + "_s"][poslist]
+                        end = mask_dict[x[0] + "_e"][poslist]
+                        if pos >= start and pos <= end:
+                            pass
+                            # print("{}\t{}\t{}\t".format(pos, start, end))
+                        else:
+                            mask_vcf.write(line)
+                    except IndexError:
+                        continue
     return(None)
 
 
