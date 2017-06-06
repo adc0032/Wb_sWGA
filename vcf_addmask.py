@@ -55,7 +55,7 @@ def mask_vcfbisect(vcfIN, mask_dict):
                     mask_vcf.write(line)
                 else:
                     try:
-                        x = line.split()
+                        x = line.strip().split()
                         pos = int(x[1])
                         # import ipdb;ipdb.set_trace()
                         poslist = bisect.bisect(mask_dict[x[0] + "_s"], pos) - 1
@@ -67,7 +67,7 @@ def mask_vcfbisect(vcfIN, mask_dict):
                         else:
                             mask_vcf.write(line)
                     except IndexError:
-                        continue
+                        mask_vcf.write(line)
     return(None)
 
 
