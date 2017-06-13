@@ -8,7 +8,7 @@ Created on Tue Jun 13 13:03:54 2017
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('LINKS', metavar="links", type=str,
+parser.add_argument('links', metavar="links", type=str,
                     help='path to links file')
 parser.add_argument('-1', "--sp1", type=str, required=True,
                     help="species 1 outputfile")
