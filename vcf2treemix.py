@@ -4,7 +4,7 @@
 Created on Wed Nov  2 11:59:41 2016
 vcf2treemix
 @author: scott
-'''python wb.vcf -p 4 -c [8,18,29,52]'''
+'''python wb.vcf -p 4 -c 8 18 29 52'''
 
 """
 
@@ -34,21 +34,22 @@ def vcf2treemix_fx(vcfin, populations, coordlist):
                 pass
             elif line.startswith("#CHROM"):
                 taxa = line.strip().split()[9:]
+                print(" ".join(taxa))
             elif line.strip() != "":
                 fields = line.strip().split()
-                pop_0 = 0
-                pop_1 = 0
+                gt_0 = 0
+                gt_1 = 0
                 snppop = []
                 i = 0
                 for pop in coordlist:
                     while i < int(pop):
                         geno = fields[9 + i].split(":")[0]
-                        pop_0 += geno.count("0")
-                        pop_1 += geno.count("1")
+                        gt_0 += geno.count("0")
+                        gt_1 += geno.count("1")
                         i += 1
-                    snppop.append("{},{}".format(pop_0, pop_1))
-                    pop_0 = 0
-                    pop_1 = 0
+                    snppop.append("{},{}".format(gt_0, gt_1))
+                    gt_0 = 0
+                    gt_1 = 0
                     i = int(pop)
                 f.write("{}\n".format(" ".join(snppop)))
     f.close()
