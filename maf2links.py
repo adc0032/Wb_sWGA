@@ -70,6 +70,7 @@ def makelinks(links, sp1, sp2):
 def withchrom(fname, chrom, karyodict):
     """
     """
+    import ipdb; ipdb.set_trace()
     with open(fname, 'w') as karyo:
         for c in chrom:
             if c in karyodict.keys():
