@@ -70,7 +70,6 @@ def makelinks(links, sp1, sp2):
 def withchrom(fname, chrom, karyodict):
     """
     """
-    import ipdb; ipdb.set_trace()
     with open(fname, 'w') as karyo:
         for c in chrom:
             if c in karyodict.keys():
@@ -95,6 +94,7 @@ def makekaryo(sp1chrom, sp2chrom, fai1, fai2):
                 chrom = x[0]
                 size = x[1]
                 karyodict[chrom] = size
+        import ipdb; ipdb.set_trace()
         if fai1:
             fname = "circos.{}.{}.karyotype.txt".format(fai1_name, fai_pair)
             withchrom(fname, sp1chrom, karyodict)
