@@ -9,8 +9,9 @@ grep -v "^--" links.0 | grep -v "^a" | cut -f2-
 
 Then run:
 python maf2links links -1 $sp -2 $sp -f1 $sp1.fai -f2 $sp2.fai
-After running merge the 2 files using the command:
-paste <(paste < sp1.circos.links ) <(paste < sp2.circos.links )>final.links
+
+Next:
+sort -k1,1 -k2,2n FOO
 @author: scott
 """
 import argparse
@@ -54,7 +55,7 @@ def makelinks(links, sp1, sp2):
                 start = size - align_s
                 end = start - align_l
             else:
-                print("\nNo Direction indivated".format(line))
+                print("\nNo Direction indicated".format(line))
             if species == sp1:
                 sp1_links.append("{} {} {}".format(chrom, start, end))
                 sp1_chrom.append(chrom)
@@ -71,7 +72,7 @@ def withchrom(fname, chrom, karyodict):
     """
     """
     with open(fname, 'w') as karyo:
-        for c in chrom:
+        for c in set(chrom):
             if c in karyodict.keys():
                 karyo.write("chr - {} {} 0 {} black\n".format(c, c,
                             karyodict[c]))
