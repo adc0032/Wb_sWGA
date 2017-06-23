@@ -70,10 +70,11 @@ def makelinks(links, sp1, sp2):
 def withchrom(fname, chrom, karyodict):
     """
     """
-    with open(fname, 'w') as kary:
+    with open(fname, 'w') as karyo:
         for c in chrom:
-            if c in karyodict:
-                kary.write("chr - {} {} 0 {} black".format(c, c, karyodict[c]))
+            if c in karyodict.keys():
+                karyo.write("chr - {} {} 0 {} black".format(c, c,
+                            karyodict[c]))
     return(None)
 
 
@@ -81,6 +82,7 @@ def makekaryo(sp1chrom, sp2chrom, fai1, fai2):
     """
     Makes karyotype files for circos
     """
+#    import ipdb; ipdb.set_trace()
     fai1_name = fai1.split(".")[0]
     fai2_name = fai2.split(".")[0]
     fai_pair = "{}-{}".format(fai1_name, fai2_name)
