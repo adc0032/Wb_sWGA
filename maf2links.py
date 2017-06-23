@@ -73,7 +73,7 @@ def withchrom(fname, chrom, karyodict):
     with open(fname, 'w') as karyo:
         for c in chrom:
             if c in karyodict.keys():
-                karyo.write("chr - {} {} 0 {} black".format(c, c,
+                karyo.write("chr - {} {} 0 {} black\n".format(c, c,
                             karyodict[c]))
     return(None)
 
@@ -94,11 +94,10 @@ def makekaryo(sp1chrom, sp2chrom, fai1, fai2):
                 chrom = x[0]
                 size = x[1]
                 karyodict[chrom] = size
-        import ipdb; ipdb.set_trace()
-        if fai1:
+        if fai is fai1:
             fname = "circos.{}.{}.karyotype.txt".format(fai1_name, fai_pair)
             withchrom(fname, sp1chrom, karyodict)
-        elif fai2:
+        elif fai is fai2:
             fname = "circos.{}.{}.karyotype.txt".format(fai2_name, fai_pair)
             withchrom(fname, sp2chrom, karyodict)
     return(None)
