@@ -56,12 +56,12 @@ def makelinks(links, sp1, sp2):
             else:
                 print("\nNo Direction indivated".format(line))
             if species == sp1:
-                sp1_links.append("{}\t{}\t{}\n".format(chrom, start, end))
+                sp1_links.append("{} {} {}".format(chrom, start, end))
                 sp1_chrom.append(chrom)
             elif species == sp2:
-                sp2_links.append("{}\t{}\t{}\n".format(chrom, start, end))
+                sp2_links.append("{} {} {}".format(chrom, start, end))
                 sp2_chrom.append(chrom)
-    [f.write("{}\t{}\n".format(i, j)) for i, j in zip(sp1_links, sp2_links)]
+    [f.write("{} {}\n".format(i, j)) for i, j in zip(sp1_links, sp2_links)]
     f.close()
 
     return(sp1_chrom, sp2_chrom)
@@ -93,10 +93,10 @@ def makekaryo(sp1chrom, sp2chrom, fai1, fai2):
                 size = x[1]
                 karyodict[chrom] = size
         if fai1:
-            fname = "circos.{}.{}-{}.karyotype.txt".format(fai1_name, fai_pair)
+            fname = "circos.{}.{}.karyotype.txt".format(fai1_name, fai_pair)
             withchrom(fname, sp1chrom, karyodict)
         elif fai2:
-            fname = "circos.{}.{}-{}.karyotype.txt".format(fai2_name, fai_pair)
+            fname = "circos.{}.{}.karyotype.txt".format(fai2_name, fai_pair)
             withchrom(fname, sp2chrom, karyodict)
     return(None)
 
