@@ -3,7 +3,7 @@
 """
 Created on Tue Jun 13 13:03:54 2017
 before running:
-sed 's/ \+/\t/g' maf | cut -f1-6 | grep -v "score=0" > links
+sed 's/ \+/\t/g' maf | cut -f1-7 | grep -v "score=0" > links
 grep -P -A2 'score=(?!0)' links > links.0
 grep -v "^--" links.0 | grep -v "^a" | cut -f2-
 
