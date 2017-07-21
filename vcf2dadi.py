@@ -34,9 +34,11 @@ def parse_vcf(vcfin, popinfo, ingroup, outgroup):
     peddict = defaultdict(list)
     with open(popinfo, 'r') as ped:
         for line in ped:
-            x = line.strip().split()
-            import ipdb; ipdb.set_trace()
-            peddict[x[0]].append(x[1])
+            if line.strip():
+                x = line.strip().split()
+                peddict[x[0]].append(x[1])
+            else:
+                continue
     poplist = peddict.keys()
     # open file
     dadi = open("dadi.notriplets.in", 'w')
@@ -90,9 +92,11 @@ def parse_fasta(fasta_ref, fasta_out, ingroup):
             if line.startswith(">"):
                 chrom = line.strip().lsplit(">")
                 line = next(fasta)
+                # line = fasta.next()
                 while not line.startswith(">"):
                     f += line.strip()
                     line = next(fasta)
+                    # line = fasta.next()
                 rdict[chrom] = f
                 f = ''
     # load outgroup fasta
@@ -102,16 +106,19 @@ def parse_fasta(fasta_ref, fasta_out, ingroup):
             if line.startswith(">"):
                 chrom = line.strip().lsplit(">")
                 line = next(fasta)
+                # line = fasta.next()
                 while not line.startswith(">"):
                     r += line.strip()
                     line = next(fasta)
+                    # line = fasta.next()
                 odict[chrom] = r
                 r = ''
     # get first chrom
     with open("dadi.notriplets.in", 'r') as dadi:
         for line in dadi:
             if line.startswith(ingroup):
-                line = dadi.next()
+                line = next(dadi)
+                # line = dadi.next()
                 x = line.strip().split()
                 chrom = x[-2]
     # remake dadi infile
