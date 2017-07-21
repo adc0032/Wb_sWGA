@@ -50,7 +50,7 @@ def parse_vcf(vcfin, popinfo, ingroup, outgroup):
     with open(vcfin, 'r') as vcf:
         for line in vcf:
             if not line.startswith("##"):
-                if line.startwith("#CHROM"):
+                if line.startswith("#CHROM"):
                     pop_iix = line.strip().split()
                 else:
                     x = line.strip().split()
