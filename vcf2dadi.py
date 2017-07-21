@@ -35,6 +35,7 @@ def parse_vcf(vcfin, popinfo, ingroup, outgroup):
     with open(popinfo, 'r') as ped:
         for line in ped:
             x = line.strip().split()
+            import ipdb; ipdb.set_trace()
             peddict[x[0]].append(x[1])
     poplist = peddict.keys()
     # open file
