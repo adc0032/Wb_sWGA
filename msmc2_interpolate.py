@@ -74,7 +74,7 @@ def msmc_boots(pops, coords, num):
         # build array from boot values
         r = -1
         f = []
-        boot_array = np.ones([reps, num])
+        boot_array = np.empty(shape=(reps, num))
         with open("{}.boots".format(p), 'r') as boot:
             for line in boot:
                 x = line.strip().split()
