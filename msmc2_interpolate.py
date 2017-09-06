@@ -102,11 +102,10 @@ def msmc_boots(pops, coords, num):
                     f.append(float(x[3]))
                 else:
                     f.append(float(x[3]))
-        import ipdb;ipdb.set_trace()
         # calc mean and quantiles from boots for a pop
-        bmean = np.mean(boot_array, axis=1)
-        five = np.percentile(boot_array, 5, axis=1)
-        nine_five = np.percentile(boot_array, 95, axis=1)
+        bmean = np.mean(boot_array, axis=0)
+        five = np.percentile(boot_array, 2.5, axis=0)
+        nine_five = np.percentile(boot_array, 97.5, axis=0)
         for i, b in enumerate(bmean):
             f.write("{}\t{}\{}\t{}\t{}\n".format(p, coords[i], b, five[i],
                                                  nine_five[i]))
