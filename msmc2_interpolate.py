@@ -83,7 +83,7 @@ def msmc_boots(pops, coords, num):
     for p in pops:
         # count reps
         reps = 0
-        with open("{}.boots".format(p), 'r') as boot:
+        with open("{}.msmc2.boots".format(p), 'r') as boot:
             for line in boot:
                 if line.startswith('0'):
                     reps += 1
