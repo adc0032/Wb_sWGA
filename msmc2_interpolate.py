@@ -106,9 +106,12 @@ def msmc_boots(pops, coords, num):
         bmean = np.mean(boot_array, axis=0)
         five = np.percentile(boot_array, 2.5, axis=0)
         nine_five = np.percentile(boot_array, 97.5, axis=0)
+        # write to file
+        foo = open("{}.boots.out".format(p), 'w')
         for i, b in enumerate(bmean):
-            f.write("{}\t{}\{}\t{}\t{}\n".format(p, coords[i], b, five[i],
-                                                 nine_five[i]))
+            foo.write("{}\t{}\{}\t{}\t{}\n".format(p, coords[i], b, five[i],
+                                                   nine_five[i]))
+        foo.close()
     return(None)
 
 
