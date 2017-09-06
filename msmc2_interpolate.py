@@ -22,6 +22,7 @@ mean and 95% CI.
 
 import argparse
 import numpy as np
+from collections import defaultdict
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--infile', type=str, help='infile base name; expects:'
                     'POP.msmc2.interpolate')
@@ -32,14 +33,17 @@ parser.add_argument('--boots', action="store_true", help="calculate"
                     " POP.msmc2.boots")
 parser.add_argument('-n', "--ntime", type=int, required=True,
                     help='number of time frags')
+parser.add_argument('--coord', action="store_true", help="use first individual"
+                    "from current pop for coords POP.msmc2.boots; default is"
+                    "1st ind from first pop for all files")
 args = parser.parse_args()
 
 
-def msmc_interpolate(infile, pops, num):
+def msmc_interpolate(infile, pops, num, coord):
     """
     """
     # read directory containing mulitple files each belonging to 1 population
-    demodict = {}
+    demodict = defaultdict(list)
     for p in pops:
         time_r = []
         lambda_size = []
@@ -48,16 +52,19 @@ def msmc_interpolate(infile, pops, num):
                 x = line.strip().split()
                 time_r.append(x[2])  # uses right time boundary
                 lambda_size.append(x[3])
-        demodict[p] = (time_r, lambda_size)
+        demodict[p].append((time_r, lambda_size))
     # interpolate by first pop, first individual's coordinates
-    time_r = []
-    lambda_size = []
-    coords = demodict[pops[0]][0][:num+1]
-    with open("msmc2.interpolated.out", 'w') as f:
-        for p1 in demodict.keys():
-            interp = np.interp(coords, demodict[p1][0], demodict[p1][1])
-            for i, j in zip(coords, interp):
-                f.write("{}\t{}\t{}\n".format(p1, i, j))
+    coords = demodict[pops[0]][0][0][:num+1]
+    for p1 in demodict.keys():
+        if coord:
+            coords = demodict[p1][0][0][:num+1]
+        with open("{}.msmc2.interpolated.out".format(p1), 'w') as f:
+            for n, ind in enumerate(demodict[p1]):
+                interp = np.interp(coords, ind[0], ind[1])
+                x = 1
+                for i, j in zip(coords, interp):
+                    f.write("{}\t{}\t{}\t{}\t{}\n".format(p1, n, x, i, j))
+                    x += 1
     return(coords)
 
 
@@ -74,7 +81,7 @@ def msmc_boots(pops, coords, num):
         # build array from boot values
         r = -1
         f = []
-        boot_array = np.empty(shape=(reps, num))
+        boot_array = np.empty(shape=(reps, num+1))
         with open("{}.boots".format(p), 'r') as boot:
             for line in boot:
                 x = line.strip().split()
@@ -93,7 +100,7 @@ def msmc_boots(pops, coords, num):
         for i, b in enumerate(bmean):
             f.write("{}\t{}\{}\t{}\t{}\n".format(p, coords[i], b, five[i],
                                                  nine_five[i]))
-    return(none)
+    return(None)
 
 
 if __name__ == "__main__":
@@ -103,6 +110,7 @@ if __name__ == "__main__":
         infile = "msmc2.interpolate"
     pops = args.pop
     num = args.ntime
+    coord = args.coord
     coords = msmc_interpolate(infile, pops, num)
     if args.boots:
         msmc_boots(pops, coords, num)
