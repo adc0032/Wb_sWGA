@@ -111,6 +111,6 @@ if __name__ == "__main__":
     pops = args.pop
     num = args.ntime
     coord = args.coord
-    coords = msmc_interpolate(infile, pops, num)
+    coords = msmc_interpolate(infile, pops, num, coord)
     if args.boots:
         msmc_boots(pops, coords, num)
