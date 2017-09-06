@@ -24,8 +24,8 @@ import argparse
 import numpy as np
 from collections import defaultdict
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', '--infile', type=str, help='infile base name; expects:'
-                    'POP.msmc2.interpolate')
+parser.add_argument('-f', '--infile', type=str, help='infile base name;'
+                    'expects: POP.msmc2.interpolate')
 parser.add_argument('-p', "--pop", nargs='+', required=True,
                     help='name pop1 pop2')
 parser.add_argument('--boots', action="store_true", help="calculate"
@@ -72,7 +72,7 @@ def msmc_interpolate(infile, pops, num, coord):
                 interp = np.interp(coords, ind[0], ind[1])
                 x = 1
                 for i, j in zip(coords, interp):
-                    f.write("{}\t{}\t{}\t{}\t{}\n".format(p1, n, x, i, j))
+                    f.write("{}\t{}\t{}\t{}\t{}\n".format(p1, n+1, x, i, j))
                     x += 1
     return(coords)
 
@@ -102,8 +102,9 @@ def msmc_boots(pops, coords, num):
                     f.append(float(x[3]))
                 else:
                     f.append(float(x[3]))
+        import ipdb;ipdb.set_trace()
         # calc mean and quantiles from boots for a pop
-        bmean = np.mean(boot_array)
+        bmean = np.mean(boot_array, axis=1)
         five = np.percentile(boot_array, 5, axis=1)
         nine_five = np.percentile(boot_array, 95, axis=1)
         for i, b in enumerate(bmean):
