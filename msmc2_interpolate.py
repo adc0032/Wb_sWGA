@@ -109,8 +109,8 @@ def msmc_boots(pops, coords, num):
         # write to file
         foo = open("{}.boots.out".format(p), 'w')
         for i, b in enumerate(bmean):
-            foo.write("{}\t{}\{}\t{}\t{}\n".format(p, coords[i], b, five[i],
-                                                   nine_five[i]))
+            foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[i], b, five[i],
+                                                    nine_five[i]))
         foo.close()
     return(None)
 
