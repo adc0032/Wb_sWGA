@@ -50,8 +50,17 @@ def msmc_interpolate(infile, pops, num, coord):
         with open("{}.{}".format(p, infile), 'r') as msmc:
             for line in msmc:
                 x = line.strip().split()
-                time_r.append(x[2])  # uses right time boundary
-                lambda_size.append(x[3])
+                if line.startswith('0'):
+                    if time_r:
+                        demodict[p].append((time_r, lambda_size))
+                    time_r = []
+                    time_r.append(x[2])
+                    lambda_size = []
+                    lambda_size.append(x[3])
+                else:
+                    time_r.append(x[2])  # uses right time boundary
+                    lambda_size.append(x[3])
+        # print last entry since else it only records when it encounters 0
         demodict[p].append((time_r, lambda_size))
     # interpolate by first pop, first individual's coordinates
     coords = demodict[pops[0]][0][0][:num+1]
