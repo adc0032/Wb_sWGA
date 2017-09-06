@@ -23,11 +23,11 @@ mean and 95% CI.
 import argparse
 import numpy as np
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', '--infile', help='infile base name; expects:'
+parser.add_argument('-f', '--infile', type=str, help='infile base name; expects:'
                     'POP.msmc2.interpolate')
 parser.add_argument('-p', "--pop", nargs='+', required=True,
                     help='name pop1 pop2')
-parser.add_argument('--boots', action="store_true", type=str, help="calculate"
+parser.add_argument('--boots', action="store_true", help="calculate"
                     "mean and std for bootstraps, expect name to be"
                     " POP.msmc2.boots")
 parser.add_argument('-n', "--ntime", type=int, required=True,
