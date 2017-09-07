@@ -76,10 +76,13 @@ def msmc_interpolate(infile, pops, num, coord):
                 for i, j in zip(coords, interp):
                     f.write("{}\t{}\t{}\t{}\t{}\n".format(p1, n+1, x, i, j))
                     x += 1
-    return(coords_p)
+    if coord:
+        return(coords_p)
+    else:
+        return(coords)
 
 
-def msmc_boots(pops, coords, num):
+def msmc_boots(pops, coords, coord, num):
     """File must be named POP.msmc2.boots
     """
     for c, p in enumerate(pops):
@@ -111,8 +114,12 @@ def msmc_boots(pops, coords, num):
         # write to file
         foo = open("{}.boots.out".format(p), 'w')
         for i, b in enumerate(bmean):
-            foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[c][i], b,
-                                                    five[i], nine_five[i]))
+            if coord:
+                foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[c][i], b,
+                                                        five[i], nine_five[i]))
+            else:
+                foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[i], b,
+                                                        five[i], nine_five[i]))
         foo.close()
     return(None)
 
@@ -127,4 +134,4 @@ if __name__ == "__main__":
     coord = args.coord
     coords = msmc_interpolate(infile, pops, num, coord)
     if args.boots:
-        msmc_boots(pops, coords, num)
+        msmc_boots(pops, coords, coord, num)
