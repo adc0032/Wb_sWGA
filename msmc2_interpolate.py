@@ -64,9 +64,11 @@ def msmc_interpolate(infile, pops, num, coord):
         demodict[p].append((time_r, lambda_size))
     # interpolate by first pop, first individual's coordinates
     coords = demodict[pops[0]][0][0][:num+1]
+    coords_p = []
     for p1 in demodict.keys():
         if coord:
             coords = demodict[p1][0][0][:num+1]
+            coords_p.append(coords)
         with open("{}.msmc2.interpolated.out".format(p1), 'w') as f:
             for n, ind in enumerate(demodict[p1]):
                 interp = np.interp(coords, ind[0], ind[1])
@@ -74,13 +76,13 @@ def msmc_interpolate(infile, pops, num, coord):
                 for i, j in zip(coords, interp):
                     f.write("{}\t{}\t{}\t{}\t{}\n".format(p1, n+1, x, i, j))
                     x += 1
-    return(coords)
+    return(coords_p)
 
 
 def msmc_boots(pops, coords, num):
     """File must be named POP.msmc2.boots
     """
-    for p in pops:
+    for c, p in enumerate(pops):
         # count reps
         reps = 0
         with open("{}.msmc2.boots".format(p), 'r') as boot:
@@ -109,8 +111,8 @@ def msmc_boots(pops, coords, num):
         # write to file
         foo = open("{}.boots.out".format(p), 'w')
         for i, b in enumerate(bmean):
-            foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[i], b, five[i],
-                                                    nine_five[i]))
+            foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[c][i], b,
+                                                    five[i], nine_five[i]))
         foo.close()
     return(None)
 
