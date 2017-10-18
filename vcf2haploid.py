@@ -42,10 +42,13 @@ def makehap(vcfIN):
                             elif "0/0" in gt:
                                 gt = "0"
                             elif "0/1" in gt:
-                                if pl.index(str(max(map(float, pl)))) == 0:
-                                    gt = "0"
-                                else:
-                                    gt = "1"
+                                try:
+                                    if pl.index(str(max(map(float, pl)))) == 0:
+                                        gt = "0"
+                                    else:
+                                        gt = "1"
+                                except:
+                                    import ipdb;ipdb.set_trace()
                             geno[0] = gt
                             geno[1] = "."
                             geno[-1] = ",".join(pl)
