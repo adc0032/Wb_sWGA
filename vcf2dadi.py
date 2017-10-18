@@ -146,7 +146,7 @@ def parse_fasta(fasta_ref, fasta_out, ingroup):
                     else:
                         x[1] = odict[chrom][pos_a-1:pos_a+2]
                     dtrip.write("{}\n".format("\t".join(x)))
-                except:
+                except Exception:
                     pass  # this will not write the position
     dtrip.close()
     return(None)
