@@ -41,11 +41,11 @@ def makehap(vcfIN):
                                 gt = "1"
                             elif "0/0" in gt:
                                 gt = "0"
-                            elif "0/1" or "1/0" in gt:
-                                if pl.index(max(pl)) == 0:
+                            elif "0/1" in gt:
+                                if pl.index(max(map(float, pl))) == 0:
                                     gt = "0"
                                 else:
-                                    gt == "1"
+                                    gt = "1"
                             geno[0] = gt
                             geno[1] = "."
                             geno[-1] = ",".join(pl)
