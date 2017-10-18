@@ -27,7 +27,6 @@ def addAA2vcf(vcfIN, aaIN):
         for line in aa:
             x = line.strip().split()
             ancallele[x[0]].append(x[1:])
-
     f = open(vcfIN + ".AA", 'w')
     with open(vcfIN, 'r') as vcf:
         for line in vcf:
@@ -59,7 +58,7 @@ def addAA2vcf(vcfIN, aaIN):
                         print("{}\t{}\t{}\t{}\t{}".format(x[0], x[1], aaref,
                               x[3], x[4]))
                 else:
-                    aa = x[3]
+                    aa = x[3].lower()
                     # print("None for {}\t{}".format(x[0], x[1]))
                     none += 1
                 if ";" in x[7]:
@@ -71,6 +70,7 @@ def addAA2vcf(vcfIN, aaIN):
                 f.write("{}\n".format("\t".join(x)))
     print("None={}\tSome={}\n".format(none, some))
     return(None)
+
 
 if __name__ == '__main__':
     addAA2vcf(args.INvcf, args.ancestral)
