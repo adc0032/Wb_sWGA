@@ -43,11 +43,13 @@ def makehap(vcfIN):
                                 gt = "0"
                             elif "0/1" in gt:
                                 try:
-                                    if pl.index(str(max(map(int, pl)))) == 0:
+                                    plnumb = map(float, pl)
+                                    ix = plnumb.index(max(plnumb))
+                                    if ix == 0:
                                         gt = "0"
                                     else:
                                         gt = "1"
-                                except:
+                                except ValueError:
                                     import ipdb;ipdb.set_trace()
                             geno[0] = gt
                             geno[1] = "."
