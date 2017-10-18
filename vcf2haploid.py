@@ -43,7 +43,7 @@ def makehap(vcfIN):
                                 gt = "0"
                             elif "0/1" in gt:
                                 try:
-                                    if pl.index(str(max(map(float, pl)))) == 0:
+                                    if pl.index(str(max(map(int, pl)))) == 0:
                                         gt = "0"
                                     else:
                                         gt = "1"
