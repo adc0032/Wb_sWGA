@@ -7,6 +7,7 @@ make sweepfinder file for sweeD and sweepfinder2
 if AA is in vcf column will use this info for fold/unfold
 """
 import argparse
+import numpy as np
 from collections import defaultdict
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf", type=str,
@@ -34,7 +35,53 @@ def firstchrom(vcfin):
     return(chrom, int(pos1), pop_iix)
 
 
-def vcf2sf2(vcfin, popinfo, pops, sizes, rand=True):
+def countsf2(pop, x,  pop_iix, peddict):
+    """
+    """
+    pos = int(x[1])
+    aa = x[4]
+    ra = x[3]
+    if "AA" in x[7].split(";")[0]:
+        anc = x[7].split(";")[0].split("=")[1]
+    else:
+        anc == "0"
+    count = 0
+    number = 0
+    for sample in peddict[pop]:
+        p = pop_iix.index(sample)
+        gt = x[p].split(":")[0]
+        if anc == ra:
+            count += gt.count("1")
+            number += gt.count("/")
+            fold = 0
+        elif anc == aa:
+            count += gt.count("0")
+            number += gt.count("/")
+            fold = 0
+        else:
+            count += gt.count("1")
+            number += gt.count("/")
+            fold = 1
+    if (count is not 0) and (fold is not 0):
+        return((pos, count, 2 * number, fold))
+    else:
+        return(None)
+
+
+def printsf2(sf2, chrom):
+    """
+    """
+    for pop in sf2.keys():
+        f = open("{}.{}.sf2in".format(pop, chrom), 'w')
+        f.write("poistion\tx\tn\tfolded\n")
+        for snp in sf2[pop]:
+            f.write("{}\t{}\t{}\t{}\n".format(snp[0], snp[1],
+                    snp[2], snp[3]))
+        f.close()
+    return(None)
+
+
+def getpopinfo(popinfo, sizes, pops, rand=True):
     """
     """
     # parse ped
@@ -43,7 +90,7 @@ def vcf2sf2(vcfin, popinfo, pops, sizes, rand=True):
         for line in ped:
             if line.strip():
                 x = line.strip().split()
-                if (x[0] in pops) or (pops == '0'):
+                if (x[0] in pops):
                     peddict[x[0]].append(x[1])
             else:
                 continue
@@ -59,54 +106,40 @@ def vcf2sf2(vcfin, popinfo, pops, sizes, rand=True):
             for pop in poplist:
                 i = pops.index(pop)
                 peddict[pop] = peddict[pop][:sizes[i]]
+    return(peddict)
+
+
+def vcf2sf2(vcfin, peddict):
+    """
+    """
+    poplist = peddict.keys()
     # get initial
     chrom, pos1, pop_iix = firstchrom(vcfin)
-    # make able file
-    abledict = {}
-    for pop in poplist:
-        abledict[pop] = [''] * 2 * len(peddict[pop])
-    b = 0
-    with open("able.in", 'w') as able:
-        with open(vcfin, 'r') as vcf:
-            for line in vcf:
-                if not line.startswith("#"):
-                    x = line.strip().split()
-                    pos = int(x[1])
-                    if (pos <= (block + b)) and (x[0] == chrom):
-                        for pop in poplist:
-                            for i, sample in enumerate(peddict[pop]):
-                                p = pop_iix.index(sample)
-                                abledict = makeable(i, pop, p, x, abledict)
-                    else:
-                        able.write("\n//\n#{}_{}-{}\n".format(chrom, b,
-                                                              block+b))
-                        if abledict[pop][0] == '':
-                            pass
-                        else:
-                            for pop in poplist:
-                                for samp in abledict[pop]:
-                                    able.write("{}\n".format(samp))
-                        b += block
-                        for pop in poplist:
-                            abledict[pop] = [''] * 2 * len(peddict[pop])
-                        # restart
-                        if (pos <= (block + b)) and (x[0] == chrom):
-                            for pop in poplist:
-                                abledict[pop] = [''] * 2 * len(peddict[pop])
-                                for i, sample in enumerate(peddict[pop]):
-                                    p = pop_iix.index(sample)
-                                    abledict = makeable(i, pop, p, x, abledict)
-                        else:
-                            able.write("\n//\n#{}_{}-{}\n".format(chrom, b,
-                                                                  block+b))
-                            b += block
-                    # update chrom
-                    chrom = x[0]
+    # make sf2 file
+    sf2 = defaultdict(list)
+    with open(vcfin, 'r') as vcf:
+        for line in vcf:
+            if not line.startswith("#"):
+                x = line.strip().split()
+                if x[0] == chrom:
+                    for pop in poplist:
+                        countsout = countsf2(pop, x, pop_iix, peddict)
+                        if countsout:
+                            sf2[pop] = countsout
+                else:
+                    printsf2(sf2, chrom)
+                    # restart as new chrom
+                    sf2 = defaultdict(list)
+                    for pop in poplist:
+                        countsout = countsf2(pop, x, pop_iix, peddict)
+                        if countsout:
+                            sf2[pop] = countsout
+            chrom = x[0]
+    # catch the last entry
+    if sf2:
+        printsf2(sf2, chrom)
 
-
-def able2vcf_bin(vcf, block, popinfo, pops):
-    """
-    """
+    return(None)
 
 
 if __name__ == "__main__":
@@ -114,4 +147,5 @@ if __name__ == "__main__":
     popinfo = args.pedfile
     pops = args.poplist
     sizes = args.size
-    vcf2sf2(vcf, popinfo, pops, sizes)
+    peddict = getpopinfo(popinfo, sizes, pops)
+    vcf2sf2(vcf, peddict)
