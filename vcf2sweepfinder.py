@@ -38,12 +38,13 @@ def firstchrom(vcfin):
 def countsf2(pop, x,  pop_iix, peddict):
     """
     """
+    folded_c = 0
+    unfolded_c = 0
     pos = int(x[1])
     aa = x[4]
     ra = x[3]
     if "AA" in x[7].split(";")[0]:
         anc = x[7].split(";")[0].split("=")[1]
-        import ipdb;ipdb.set_trace()
     else:
         anc == "0"
     count = 0
@@ -59,6 +60,7 @@ def countsf2(pop, x,  pop_iix, peddict):
                     number += 2
                 else:
                     number += 1
+                unfolded_c += 1
             elif anc == aa:
                 count += gt.count("0")
                 fold = 0
@@ -66,6 +68,7 @@ def countsf2(pop, x,  pop_iix, peddict):
                     number += 2
                 else:
                     number += 1
+                unfolded_c += 1
             else:
                 count += gt.count("1")
                 fold = 1
@@ -73,7 +76,8 @@ def countsf2(pop, x,  pop_iix, peddict):
                     number += 2
                 else:
                     number += 1
-
+                folded_c += 1
+    print("{} : {}".format(folded_c, unfolded_c))
     if (count is not 0) and (fold is not 0):
         return((pos, count, number, fold))
     else:
