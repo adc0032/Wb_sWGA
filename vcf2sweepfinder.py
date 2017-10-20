@@ -86,7 +86,6 @@ def printsf2(sf2, chrom):
         f = open("{}.{}.sf2in".format(pop, chrom), 'w')
         f.write("poistion\tx\tn\tfolded\n")
         for snp in sf2[pop]:
-            import ipdb;ipdb.set_trace()
             f.write("{}\t{}\t{}\t{}\n".format(snp[0], snp[1],
                     snp[2], snp[3]))
         f.close()
@@ -137,7 +136,7 @@ def vcf2sf2(vcfin, peddict):
                     for pop in poplist:
                         countsout = countsf2(pop, x, pop_iix, peddict)
                         if countsout:
-                            sf2[pop] = countsout
+                            sf2[pop].append(countsout)
                 else:
                     printsf2(sf2, chrom)
                     # restart as new chrom
@@ -145,7 +144,7 @@ def vcf2sf2(vcfin, peddict):
                     for pop in poplist:
                         countsout = countsf2(pop, x, pop_iix, peddict)
                         if countsout:
-                            sf2[pop] = countsout
+                            sf2[pop].append(countsout)
                 chrom = x[0]
     # catch the last entry
     if sf2:
