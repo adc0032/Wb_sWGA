@@ -43,6 +43,7 @@ def countsf2(pop, x,  pop_iix, peddict):
     ra = x[3]
     if "AA" in x[7].split(";")[0]:
         anc = x[7].split(";")[0].split("=")[1]
+        import ipdb;ipdb.set_trace()
     else:
         anc == "0"
     count = 0
