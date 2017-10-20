@@ -10,7 +10,7 @@ import argparse
 import numpy as np
 from collections import defaultdict
 parser = argparse.ArgumentParser()
-parser.add_argument('INvcf', metavar="INvcf", type=str,
+parser.add_argument('-i', "--vcf", type=str,
                     help='path to vcf file')
 parser.add_argument('-ped', "--pedfile", type=str, required=True,
                     help="path to pedfile with pop and individuals")
@@ -145,7 +145,7 @@ def vcf2sf2(vcfin, peddict):
                         countsout = countsf2(pop, x, pop_iix, peddict)
                         if countsout:
                             sf2[pop] = countsout
-            chrom = x[0]
+                chrom = x[0]
     # catch the last entry
     if sf2:
         printsf2(sf2, chrom)
