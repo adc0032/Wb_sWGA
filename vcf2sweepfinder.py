@@ -86,6 +86,7 @@ def printsf2(sf2, chrom):
         f = open("{}.{}.sf2in".format(pop, chrom), 'w')
         f.write("poistion\tx\tn\tfolded\n")
         for snp in sf2[pop]:
+            import ipdb;ipdb.set_trace()
             f.write("{}\t{}\t{}\t{}\n".format(snp[0], snp[1],
                     snp[2], snp[3]))
         f.close()
