@@ -47,6 +47,7 @@ def countsf2(pop, x,  pop_iix, peddict):
         anc == "0"
     count = 0
     number = 0
+    fold = 0
     for sample in peddict[pop]:
         p = pop_iix.index(sample)
         gt = x[p].split(":")[0]
@@ -58,6 +59,7 @@ def countsf2(pop, x,  pop_iix, peddict):
                     number += 2
                 else:
                     number += 1
+                print("{}, {}:{}".format(pop, x[0], x[1]))
             elif anc == aa:
                 count += gt.count("0")
                 fold = 0
@@ -65,6 +67,7 @@ def countsf2(pop, x,  pop_iix, peddict):
                     number += 2
                 else:
                     number += 1
+                print("{}, {}:{}".format(pop, x[0], x[1]))
             else:
                 count += gt.count("1")
                 fold = 1
