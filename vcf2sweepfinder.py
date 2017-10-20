@@ -154,7 +154,7 @@ def vcf2sf2(vcfin, peddict):
 
 
 if __name__ == "__main__":
-    vcf = args.INvcf
+    vcf = args.vcf
     popinfo = args.pedfile
     pops = args.poplist
     sizes = args.size
