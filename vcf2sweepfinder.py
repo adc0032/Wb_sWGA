@@ -50,20 +50,31 @@ def countsf2(pop, x,  pop_iix, peddict):
     for sample in peddict[pop]:
         p = pop_iix.index(sample)
         gt = x[p].split(":")[0]
-        if anc == ra:
-            count += gt.count("1")
-            number += gt.count("/")
-            fold = 0
-        elif anc == aa:
-            count += gt.count("0")
-            number += gt.count("/")
-            fold = 0
-        else:
-            count += gt.count("1")
-            number += gt.count("/")
-            fold = 1
+        if "." not in gt:
+            if anc == ra:
+                count += gt.count("1")
+                fold = 0
+                if "/" in gt:
+                    number += 2
+                else:
+                    number += 1
+            elif anc == aa:
+                count += gt.count("0")
+                fold = 0
+                if "/" in gt:
+                    number += 2
+                else:
+                    number += 1
+            else:
+                count += gt.count("1")
+                fold = 1
+                if "/" in gt:
+                    number += 2
+                else:
+                    number += 1
+
     if (count is not 0) and (fold is not 0):
-        return((pos, count, 2 * number, fold))
+        return((pos, count, number, fold))
     else:
         return(None)
 
