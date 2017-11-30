@@ -27,9 +27,7 @@ def fixPGTPID(vcf):
                 x = line.split()
                 if x[5] == 'inf':
                     x[5] = '500'
-                if "*" in x[4]:
-                    pass
-                else:
+                if "*" not in x[4]:
                     if "PGT" in x[8] or "PID" in x[8]:
                         formats = x[8]
                         for sample in range(9, len(x)):
