@@ -25,11 +25,11 @@ def fixPGTPID(vcf):
                 f.write(line)
             else:
                 x = line.split()
+                formats = x[8].split(":")
                 if x[5] == 'inf':
                     x[5] = '500'
                 if "*" not in x[4]:
-                    if "PGT" in x[8] or "PID" in x[8]:
-                        formats = x[8]
+                    if "PGT" in formats or "PID" in formats:
                         for sample in range(9, len(x)):
                             gt = x[sample].split(":")
                             ad = gt[formats.index('AD')]
@@ -43,7 +43,6 @@ def fixPGTPID(vcf):
                     elif "." in x[4]:
                         # fix invariant
                         try:
-                            formats = x[8]
                             for sample in range(9, len(x)):
                                 gt = x[sample].split(":")
                                 gq = gt[formats.index('RGQ')]
