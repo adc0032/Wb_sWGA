@@ -28,7 +28,7 @@ def fixPGTPID(vcf):
                 formats = x[8].split(":")
                 if x[5] == 'inf':
                     x[5] = '500'
-                if "*" not in x[4]:
+                if "*" not in x[4] and len(formats) > 1:
                     if "PGT" in formats or "PID" in formats:
                         for sample in range(9, len(x)):
                             gt = x[sample].split(":")
