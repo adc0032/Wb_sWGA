@@ -57,7 +57,7 @@ def fixPGTPID(vcf):
                                 x[sample] = ":".join(newgt)
                             x[8] = "GT:AD:DP:GQ:PL"
                             f.write("{}\n".format("\t".join(x)))
-                        except IndexError:
+                        except ValueError:
                             import ipdb;ipdb.set_trace()
                     else:
                         f.write(line)
