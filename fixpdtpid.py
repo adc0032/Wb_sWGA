@@ -42,21 +42,24 @@ def fixPGTPID(vcf):
                         f.write("{}\n".format("\t".join(x)))
                     elif "." in x[4]:
                         # fix invariant
-                        formats = x[8]
-                        for sample in range(9, len(x)):
-                            gt = x[sample].split(":")
-                            gq = gt[formats.index('RGQ')]
-                            dp = gt[formats.index('DP')]
-                            try:
-                                ad = gt[formats.index('AD')]
-                            except ValueError:
-                                ad = dp
-                            pl = '0,500,500'
-                            adv = ad.split(",")[0]
-                            newgt = [gt[0], adv, dp, gq, pl]
-                            x[sample] = ":".join(newgt)
-                        x[8] = "GT:AD:DP:GQ:PL"
-                        f.write("{}\n".format("\t".join(x)))
+                        try:
+                            formats = x[8]
+                            for sample in range(9, len(x)):
+                                gt = x[sample].split(":")
+                                gq = gt[formats.index('RGQ')]
+                                dp = gt[formats.index('DP')]
+                                try:
+                                    ad = gt[formats.index('AD')]
+                                except ValueError:
+                                    ad = dp
+                                pl = '0,500,500'
+                                adv = ad.split(",")[0]
+                                newgt = [gt[0], adv, dp, gq, pl]
+                                x[sample] = ":".join(newgt)
+                            x[8] = "GT:AD:DP:GQ:PL"
+                            f.write("{}\n".format("\t".join(x)))
+                        except IndexError:
+                            import ipdb;ipdb.set_trace()
                     else:
                         f.write(line)
     f.close()
