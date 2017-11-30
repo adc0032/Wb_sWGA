@@ -45,7 +45,10 @@ def fixPGTPID(vcf):
                         try:
                             for sample in range(9, len(x)):
                                 gt = x[sample].split(":")
-                                gq = gt[formats.index('RGQ')]
+                                try:
+                                    gq = gt[formats.index('RGQ')]
+                                except ValueError:
+                                    gq = '99'
                                 dp = gt[formats.index('DP')]
                                 try:
                                     ad = gt[formats.index('AD')]
