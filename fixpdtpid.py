@@ -25,25 +25,45 @@ def fixPGTPID(vcf):
                 f.write(line)
             else:
                 x = line.split()
-                if "PGT" in x[8]:
-                    if "PL:PGT:PID" in x[8]:
-                        for sample in range(9, len(x)):
-                            gt = x[sample].split(":")
-                            newgt = [gt[0], gt[1], gt[2], gt[3], gt[4]]
-                            x[sample] = ":".join(newgt)
-                        x[8] = "GT:AD:DP:GQ:PL"
-                        f.write("{}\n".format("\t".join(x)))
-                    elif "PGT:PID:PL" in x[8]:
-                        for sample in range(9, len(x)):
-                            gt = x[sample].split(":")
-                            newgt = [gt[0], gt[1], gt[2], gt[3], gt[6]]
-                            x[sample] = ":".join(newgt)
-                        x[8] = "GT:AD:DP:GQ:PL"
-                        f.write("{}\n".format("\t".join(x)))
+                if x[5] == 'inf':
+                    x[5] = '500'
+                if "*" in x[4]:
+                    pass
                 else:
-                    f.write(line)
+                    if "PGT" in x[8] or "PID" in x[8]:
+                        formats = x[8]
+                        for sample in range(9, len(x)):
+                            gt = x[sample].split(":")
+                            ad = gt[formats.index('AD')]
+                            dp = gt[formats.index('DP')]
+                            gq = gt[formats.index('GQ')]
+                            pl = gt[formats.index('PL')]
+                            newgt = [gt[0], ad, dp, gq, pl]
+                            x[sample] = ":".join(newgt)
+                        x[8] = "GT:AD:DP:GQ:PL"
+                        f.write("{}\n".format("\t".join(x)))
+                    elif "." in x[4]:
+                        # fix invariant
+                        formats = x[8]
+                        for sample in range(9, len(x)):
+                            gt = x[sample].split(":")
+                            ad = gt[formats.index('AD')]
+                            dp = gt[formats.index('DP')]
+                            try:
+                                gq = gt[formats.index('RGQ')]
+                            except ValueError:
+                                gq = '99'
+                            pl = '0,500,500'
+                            adv = ad.split(",")[0]
+                            newgt = [gt[0], adv, dp, gq, pl]
+                            x[sample] = ":".join(newgt)
+                        x[8] = "GT:AD:DP:GQ:PL"
+                        f.write("{}\n".format("\t".join(x)))
+                    else:
+                        f.write(line)
     f.close()
     return(None)
+
 
 if __name__ == '__main__':
     fixPGTPID(args.INvcf)

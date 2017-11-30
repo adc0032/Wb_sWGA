@@ -3,12 +3,13 @@
 """
 Created on Thu Nov  2 17:28:28 2017
 vcf2rehh.py
-makes a map.inp file for rehh assumes that there is an 'AA' column denoting the
-ancestral allele state
+makes a map.inp file for rehh assumes that there is an 'AA' field denoting the
+ancestral allele state in the VCF
 
 1st run: vcf2rehh.py -i vcf.AA -n chr
 2nd run: plink --vcf phased.vcf --recode fastphase --out FOO --allow-extra-chr
 --double-id
+2nd a: bcftools convert
 
 @author: stsmall
 """
