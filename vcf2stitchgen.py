@@ -34,7 +34,6 @@ def makestitchgen(invcf):
                         gt.append("NA")
                     else:
                         gt.append(str(gt_s.count('1')))
-                import ipdb;ipdb.set_trace()
                 f.write("\t".join(gt) + '\n')
     f.close()
     return(None)
