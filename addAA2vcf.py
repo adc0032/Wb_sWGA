@@ -41,7 +41,8 @@ def addAA2vcf(vcfIN, aaIN):
                 if len(fields) == 1 and "." in fields:
                     x[8] = "AA={}".format(Aalt)
                 else:
-                    x[8].insert(0, "AA={}".format(Aalt))
+                    fields.insert(0, "AA={}".format(Aalt))
+                    x[8] = fields
                 f.write("{}\n".format("\t".join(x)))
     return(None)
 
