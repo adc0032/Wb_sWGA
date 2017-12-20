@@ -26,6 +26,8 @@ def addAA2vcf(vcfIN, aaIN):
             x = line.strip().split()
             anc_alleledict[x[0]][x[1]] = ((x[3], x[4]))
     f = open(vcfIN + ".AA", 'w')
+    keyerror = 0
+    referror = 0
     with open(vcfIN, 'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
@@ -37,9 +39,10 @@ def addAA2vcf(vcfIN, aaIN):
                     try:
                         assert Aref == x[3]
                     except AssertionError:
-                        import ipdb; ipdb.set_trace()
+                        referror += 1
                 except KeyError:
                     Aalt = "N"
+                    keyerror += 1
                 fields = x[7].split(";")
                 if len(fields) == 1 and "." in fields:
                     x[7] = "AA={}".format(Aalt)
@@ -47,6 +50,8 @@ def addAA2vcf(vcfIN, aaIN):
                     fields.insert(0, "AA={}".format(Aalt))
                     x[7] = ";".join(fields)
                 f.write("{}\n".format("\t".join(x)))
+    f.close()
+    print("key errors :{}\nref errors: {}".format(keyerror, referror))
     return(None)
 
 
