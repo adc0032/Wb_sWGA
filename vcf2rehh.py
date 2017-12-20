@@ -17,7 +17,7 @@ denoting the ancestral allele state in the VCF
 """
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('-v', "--vcf", type=str, help='path to vcf file')
+parser.add_argument('-v', "--vcfFile", type=str, help='path to vcf file')
 parser.add_argument('-i', "--inp", type=str, help='path to inp files')
 parser.add_argument('-p', "--pops", type=str, nargs="+", required=True,
                     help='poplist')
