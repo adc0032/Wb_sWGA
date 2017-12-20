@@ -27,7 +27,7 @@ args = parser.parse_args()
 def vcf2map(vcfFile):
     """
     """
-    f = open(vcfFile + "inp", 'w')
+    f = open(vcfFile + ".map", 'w')
     with open(vcfFile, 'r') as vcf:
         for line in vcf:
             if line.startswith("#"):
@@ -47,7 +47,7 @@ def vcf2map(vcfFile):
                 else:
                     anc = x[3]
                     der = x[4]
-                f.write("{}/t{}/t{}/t{}/t{}/n".format(snpid, x[0], x[1], anc, der))
+                f.write("{}\t{}\t{}\t{}\t{}\n".format(snpid, x[0], x[1], anc, der))
     f.close()
     return(None)
 
@@ -72,6 +72,7 @@ def inp2rehh(inp, poplist):
                 except IndexError:
                     pass
     f.write("END GENOTYPES")
+    f.close()
     return(None)
 
 
