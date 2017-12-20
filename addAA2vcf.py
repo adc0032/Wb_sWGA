@@ -34,7 +34,10 @@ def addAA2vcf(vcfIN, aaIN):
                 x = line.strip().split()
                 try:
                     Aref, Aalt = anc_alleledict[x[0]][x[1]]
-                    assert Aref == x[3]
+                    try:
+                        assert Aref == x[3]
+                    except AssertionError:
+                        import ipdb; ipdb.set_trace()
                 except KeyError:
                     Aalt = "N"
                 fields = x[8].split(";")
