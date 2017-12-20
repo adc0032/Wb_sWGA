@@ -63,11 +63,12 @@ def inp2rehh(inp, poplist):
                 header = line.strip().split()
                 pop = header[0]
                 try:
+                    #import ipdb;ipdb.set_trace()
                     ix = [i for i, h in enumerate(poplist) if pop in h][0]
                     f.write("{} # subpop. label: {} (internally {})\n".format(pop, ix, ix))
-                    line = fs.next()
+                    line = next(fs)
                     f.write(line)
-                    line = fs.next()
+                    line = next(fs)
                     f.write(line)
                 except IndexError:
                     pass
