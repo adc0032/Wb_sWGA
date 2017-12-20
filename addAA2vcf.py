@@ -39,6 +39,7 @@ def addAA2vcf(vcfIN, aaIN):
                         assert Aref == x[3]
                     except AssertionError:
                         referror += 1
+                        Aalt = "N"
                 except KeyError:
                     Aalt = x[3]
                 fields = x[7].split(";")
