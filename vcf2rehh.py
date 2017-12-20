@@ -62,12 +62,15 @@ def inp2rehh(inp, poplist):
             if line.startswith("#"):
                 header = line.strip().split()
                 pop = header[0]
-                ix = [i for i, h in enumerate(poplist) if pop in h][0]
-                f.write("{} # subpop. label: {} (internally {})\n".format(pop, ix, ix))
-                line = fs.next()
-                f.write(line)
-                line = fs.next()
-                f.write(line)
+                try:
+                    ix = [i for i, h in enumerate(poplist) if pop in h][0]
+                    f.write("{} # subpop. label: {} (internally {})\n".format(pop, ix, ix))
+                    line = fs.next()
+                    f.write(line)
+                    line = fs.next()
+                    f.write(line)
+                except IndexError:
+                    pass
     f.write("END GENOTYPES")
     return(None)
 
