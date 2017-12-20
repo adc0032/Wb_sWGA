@@ -17,12 +17,14 @@ denoting the ancestral allele state in the VCF
 """
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('-v', "--vcf", type=str,
-                    help='path to vcf file')
+parser.add_argument('-v', "--vcf", type=str, help='path to vcf file')
+parser.add_argument('-i', "--inp", type=str, help='path to inp files')
+parser.add_argument('-p', "--pops", type=str, nargs="+", required=True,
+                    help='poplist')
 args = parser.parse_args()
 
 
-def vcf2inp(vcfFile):
+def vcf2map(vcfFile):
     """
     """
     f = open(vcfFile + "inp", 'w')
@@ -50,5 +52,26 @@ def vcf2inp(vcfFile):
     return(None)
 
 
+def inp2rehh(inp, poplist):
+    """
+    """
+    f = open(inp + ".fp", 'w')
+    f.write("BEGIN GENOTYPES\n")
+    with open(inp, 'r') as fs:
+        for line in fs:
+            if line.startswith("#"):
+                header = line.strip().split()
+                pop = header[0]
+                ix = [i for i, h in enumerate(poplist) if pop in h][0]
+                f.write("{} # subpop. label: {} (internally {})\n".format(pop, ix, ix))
+                line = fs.next()
+                f.write(line)
+                line = fs.next()
+                f.write(line)
+    f.write("END GENOTYPES")
+    return(None)
+
+
 if __name__ == "__main__":
-    vcf2inp(args.vcfFile)
+    vcf2map(args.vcfFile)
+    inp2rehh(args.inp, args.pops)
