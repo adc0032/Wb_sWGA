@@ -26,7 +26,6 @@ def addAA2vcf(vcfIN, aaIN):
             x = line.strip().split()
             anc_alleledict[x[0]][x[1]] = ((x[3], x[4]))
     f = open(vcfIN + ".AA", 'w')
-    keyerror = 0
     referror = 0
     with open(vcfIN, 'r') as vcf:
         for line in vcf:
@@ -41,8 +40,7 @@ def addAA2vcf(vcfIN, aaIN):
                     except AssertionError:
                         referror += 1
                 except KeyError:
-                    Aalt = "N"
-                    keyerror += 1
+                    Aalt = x[3]
                 fields = x[7].split(";")
                 if len(fields) == 1 and "." in fields:
                     x[7] = "AA={}".format(Aalt)
@@ -51,7 +49,7 @@ def addAA2vcf(vcfIN, aaIN):
                     x[7] = ";".join(fields)
                 f.write("{}\n".format("\t".join(x)))
     f.close()
-    print("key errors :{}\nref errors: {}".format(keyerror, referror))
+    print("ref errors: {}".format(referror))
     return(None)
 
 
