@@ -13,7 +13,7 @@ from math import log10
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('INvcf', metavar="INvcf", type=str,
+parser.add_argument('-v', "--vcfFile", type=str, required=True,
                     help='path to vcf file')
 parser.add_argument('-s', "--stitch", type=str, required=True,
                     help="stitch vcf")
@@ -21,7 +21,7 @@ args = parser.parse_args()
 
 
 def stitch2vcf(vcf, stitch):
-    """takes a stitch-ed vcf and the original vcf and fills missing sites
+    """Add imputed genotypes to VCF file
     """
     impute = {}
     with open(stitch, 'r') as stitchvcf:
@@ -39,50 +39,39 @@ def stitch2vcf(vcf, stitch):
             if line.startswith("##") or line.startswith("#"):
                 f.write(line)
             else:
-                x = line.split()
+                x = line.strip().split()
                 # fill missing
                 miss = [i for i, s in enumerate(x) if re.search(r'\./\.', s)]
                 for missgt in miss:
                     fixgt = impute[x[1]][missgt].split(":")
-                    if fixgt[0] == "./.":
+                    newgt = fixgt[0]
+                    if newgt == "./.":
                         still_miss += 1
                         oldgt = ["./.", ".", ".", ".", "."]
-                    else:
-                        newgt = fixgt[0]
+                    elif newgt == '0/0' or newgt == '1/1':
                         if newgt == '0/0':
                             AD = "20,0"    # AD
-                        elif newgt == "0/1":
-                            AD = "10,10"
-                        else:
+                        elif newgt == "1/1":
                             AD = "0,20"
+                        else:
+                            pass
                         try:
-                            gltemp = [-10 * log10(float(a))
-                                      for a in fixgt[1].split(",")]
+                            gl = [-10 * log10(float(a))
+                                  for a in fixgt[1].split(",")]
                         except ValueError:
-                            gltemp = [-10 * log10(float(a) + .000001)
-                                      for a in fixgt[1].split(",")]
-                        gl = ",".join(map(str, gltemp))  # PL
+                            gl = [-10 * log10(float(a) + .000001)
+                                  for a in fixgt[1].split(",")]
+                        raw_pl = [-10 * float(i) for i in gl]
+                        norm_pl = min(raw_pl)
+                        pl = [int(i - norm_pl) for i in raw_pl]
+                        plstr = ",".join(map(str, pl))  # PL
                         oldgt = x[missgt].split(":")
                         oldgt[0] = newgt
                         oldgt[1] = AD
                         oldgt[2] = '20'
                         oldgt[3] = '99'
-                        oldgt[4] = gl
+                        oldgt[4] = plstr
                     x[missgt] = ":".join(oldgt)
-                # rewrite PL as GL; GL = PL/-10.0
-                for sample in range(9, len(x)):
-                    if "./." not in x[sample]:
-                        gl = x[sample].split(":")
-                        glnew = [float(a)/-10.0
-                                 for a in gl[-1].split(",")]
-                        gl[-1] = ",".join(map(str, glnew))
-                        x[sample] = ":".join(gl)
-                    else:
-                        pass
-                # addfields
-                fields = x[8].split(":")
-                fields[-1] = "GL"
-                x[8] = ":".join(fields)
                 if "0/0" in line or "1/1" in line or "0/1" in line:
                     f.write("{}\n".format("\t".join(x)))
                 else:
@@ -92,5 +81,6 @@ def stitch2vcf(vcf, stitch):
     print("missing\t{}".format(still_miss))
     return(None)
 
+
 if __name__ == '__main__':
-    stitch2vcf(args.INvcf, args.stitch)
+    stitch2vcf(args.vcfFile, args.stitch)
