@@ -24,7 +24,7 @@ def addAA2vcf(vcfIN, aaIN):
     with open(aaIN, 'r') as aa:
         for line in aa:
             x = line.strip().split()
-            anc_alleledict[x[0]][x[1]].append((x[3], x[4]))
+            anc_alleledict[x[0]][x[1]] = ((x[3], x[4]))
     f = open(vcfIN + ".AA", 'w')
     with open(vcfIN, 'r') as vcf:
         for line in vcf:
