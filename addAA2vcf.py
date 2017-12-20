@@ -40,12 +40,12 @@ def addAA2vcf(vcfIN, aaIN):
                         import ipdb; ipdb.set_trace()
                 except KeyError:
                     Aalt = "N"
-                fields = x[8].split(";")
+                fields = x[7].split(";")
                 if len(fields) == 1 and "." in fields:
-                    x[8] = "AA={}".format(Aalt)
+                    x[7] = "AA={}".format(Aalt)
                 else:
                     fields.insert(0, "AA={}".format(Aalt))
-                    x[8] = ";".join(fields)
+                    x[7] = ";".join(fields)
                 f.write("{}\n".format("\t".join(x)))
     return(None)
 
