@@ -61,9 +61,8 @@ def inp2rehh(inp, poplist):
         for line in fs:
             if line.startswith("#"):
                 header = line.strip().split()
-                pop = header[0]
+                pop = header[2]
                 try:
-                    import ipdb;ipdb.set_trace()
                     ix = [i for i, h in enumerate(poplist) if pop in h][0]
                     f.write("{} # subpop. label: {} (internally {})\n".format(pop, ix, ix))
                     line = next(fs)
