@@ -24,6 +24,7 @@ def stitch2vcf(vcf, stitch):
     """Add imputed genotypes to VCF file
     """
     imputedict = {}
+    filled = 0
     with open(stitch, 'r') as stitchvcf:
         for line in stitchvcf:
             if line.startswith("#"):
@@ -50,6 +51,7 @@ def stitch2vcf(vcf, stitch):
                             still_miss += 1
                             oldgt = ["./.", ".", ".", ".", "."]
                         elif newgt == '0/0' or newgt == '1/1':
+                            filled += 1
                             if newgt == '0/0':
                                 AD = "20,0"    # AD
                             elif newgt == "1/1":
@@ -78,7 +80,7 @@ def stitch2vcf(vcf, stitch):
                         print(line)
                 f.write("{}\n".format("\t".join(x)))
     f.close()
-    print("missing\t{}".format(still_miss))
+    print("missing :{}\tfilled:{}".format(still_miss, filled))
     return(None)
 
 
