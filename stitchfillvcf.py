@@ -73,10 +73,10 @@ def stitch2vcf(vcf, stitch):
                             oldgt[3] = '99'
                             oldgt[4] = plstr
                         x[missgt] = ":".join(oldgt)
-                        f.write("{}\n".format("\t".join(x)))
                     except IndexError:
                         # line is empty
                         print(line)
+                f.write("{}\n".format("\t".join(x)))
     f.close()
     print("missing\t{}".format(still_miss))
     return(None)
