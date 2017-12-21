@@ -23,7 +23,7 @@ args = parser.parse_args()
 def stitch2vcf(vcf, stitch):
     """Add imputed genotypes to VCF file
     """
-    impute = {}
+    imputedict = {}
     with open(stitch, 'r') as stitchvcf:
         for line in stitchvcf:
             if line.startswith("#"):
@@ -31,7 +31,7 @@ def stitch2vcf(vcf, stitch):
             else:
                 x = line.strip().split()
                 # assume all the same chromosome
-                impute[x[1]] = x
+                imputedict[x[1]] = x
     f = open(vcf + '.impute', 'w')
     still_miss = 0
     with open(vcf, 'r') as vcffile:
@@ -43,40 +43,40 @@ def stitch2vcf(vcf, stitch):
                 # fill missing
                 miss = [i for i, s in enumerate(x) if re.search(r'\./\.', s)]
                 for missgt in miss:
-                    fixgt = impute[x[1]][missgt].split(":")
-                    newgt = fixgt[0]
-                    if newgt == "./.":
-                        still_miss += 1
-                        oldgt = ["./.", ".", ".", ".", "."]
-                    elif newgt == '0/0' or newgt == '1/1':
-                        if newgt == '0/0':
-                            AD = "20,0"    # AD
-                        elif newgt == "1/1":
-                            AD = "0,20"
-                        else:
-                            pass
-                        try:
-                            gl = [-10 * log10(float(a))
-                                  for a in fixgt[1].split(",")]
-                        except ValueError:
-                            gl = [-10 * log10(float(a) + .000001)
-                                  for a in fixgt[1].split(",")]
-                        raw_pl = [-10 * float(i) for i in gl]
-                        norm_pl = min(raw_pl)
-                        pl = [int(i - norm_pl) for i in raw_pl]
-                        plstr = ",".join(map(str, pl))  # PL
-                        oldgt = x[missgt].split(":")
-                        oldgt[0] = newgt
-                        oldgt[1] = AD
-                        oldgt[2] = '20'
-                        oldgt[3] = '99'
-                        oldgt[4] = plstr
-                    x[missgt] = ":".join(oldgt)
-                if "0/0" in line or "1/1" in line or "0/1" in line:
-                    f.write("{}\n".format("\t".join(x)))
-                else:
-                    # line is empty
-                    print(line)
+                    try:
+                        fixgt = imputedict[x[1]][missgt].split(":")
+                        newgt = fixgt[0]
+                        if newgt == "./.":
+                            still_miss += 1
+                            oldgt = ["./.", ".", ".", ".", "."]
+                        elif newgt == '0/0' or newgt == '1/1':
+                            if newgt == '0/0':
+                                AD = "20,0"    # AD
+                            elif newgt == "1/1":
+                                AD = "0,20"
+                            else:
+                                pass
+                            try:
+                                gl = [-10 * log10(float(a))
+                                      for a in fixgt[1].split(",")]
+                            except ValueError:
+                                gl = [-10 * log10(float(a) + .000001)
+                                      for a in fixgt[1].split(",")]
+                            raw_pl = [-10 * float(i) for i in gl]
+                            norm_pl = min(raw_pl)
+                            pl = [int(i - norm_pl) for i in raw_pl]
+                            plstr = ",".join(map(str, pl))  # PL
+                            oldgt = x[missgt].split(":")
+                            oldgt[0] = newgt
+                            oldgt[1] = AD
+                            oldgt[2] = '20'
+                            oldgt[3] = '99'
+                            oldgt[4] = plstr
+                        x[missgt] = ":".join(oldgt)
+                        f.write("{}\n".format("\t".join(x)))
+                    except IndexError:
+                        # line is empty
+                        print(line)
     f.close()
     print("missing\t{}".format(still_miss))
     return(None)
