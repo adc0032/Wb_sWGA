@@ -32,7 +32,7 @@ for line in iter(proc.stdout.readline, ''):
             f.write(line.split()[0]+"\n")
 f.close()
 
-command = "vcftools --vcf " + args.INvcf + " --remove remove_inds.out --recode --recode-INFO-all --out " + args.INvcf + ".nomiss"
+command = "vcftools --vcf " + args.INvcf + " --remove remove_inds.out --recode --recode --out " + args.INvcf + ".nomiss"
 print command
 proc = subprocess.Popen(command, shell=True)
 proc.wait()
