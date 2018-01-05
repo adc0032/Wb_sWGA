@@ -15,6 +15,8 @@ parser.add_argument('INvcf', metavar="INvcf", type=str,
                     help='path to vcf IN file')
 parser.add_argument('-p', "--miss", type=float, default=1,
                     help="percent missing after which an ind is removed")
+parser.add_argument('-m', "--max", type=float, default=1,
+                    help="max missing after which a site is removed")
 args = parser.parse_args()
 
 command = "vcftools --vcf " + args.INvcf + " --missing-indv --stdout"
@@ -32,7 +34,7 @@ for line in iter(proc.stdout.readline, ''):
             f.write(line.split()[0]+"\n")
 f.close()
 
-command = "vcftools --vcf " + args.INvcf + " --max-missing .2 --remove remove_inds.out --recode --out " + args.INvcf + ".nomiss"
+command = "vcftools --vcf " + args.INvcf + " --max-missing " + args.max + " --remove remove_inds.out --recode --out " + args.INvcf + ".nomiss"
 print command
 proc = subprocess.Popen(command, shell=True)
 proc.wait()
