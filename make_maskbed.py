@@ -20,7 +20,7 @@ args = parser.parse_args()
 
 
 def make_negmaskbed(masked_fasta):
-    f = open(masked_fasta + "negmask.bed", 'w')
+    f = open(masked_fasta + "-negmask.bed", 'w')
     with open(masked_fasta, 'r') as fasta:
         for line in fasta:
             if line.startswith(">"):
@@ -28,12 +28,12 @@ def make_negmaskbed(masked_fasta):
                 length = 0
             else:
                 line = line.rstrip("\n")
+                length += len(line)
                 bed_locate = [m.start() for m in re.finditer("[agtcnN]", line)]
                 ranges = []
-                import ipdb; ipdb.set_trace()
                 for k, g in groupby(enumerate(bed_locate), lambda (i, x): i-x):
                     group = map(itemgetter(1), g)
-                    ranges.append((group[0], group[-1]))
+                    ranges.append((group[0]+length, group[-1]+length))
                 for item in ranges:
                     if len(item) > 1:
                         f.write("{}\t{}\t{}\n".format(contig, item[0], item[1]+1))
@@ -43,7 +43,7 @@ def make_negmaskbed(masked_fasta):
 
 
 def make_posmaskbed(masked_fasta):
-    f = open(masked_fasta + "posmask.bed", 'w')
+    f = open(masked_fasta + "-posmask.bed", 'w')
     with open(masked_fasta, 'r') as fasta:
         for line in fasta:
             if line.startswith(">"):
@@ -51,11 +51,12 @@ def make_posmaskbed(masked_fasta):
                 length = 0
             else:
                 line = line.rstrip("\n")
+                length += len(line)
                 bed_locate = [m.start() for m in re.finditer("[AGTC]", line)]
                 ranges = []
                 for k, g in groupby(enumerate(bed_locate), lambda (i, x): i-x):
                     group = map(itemgetter(1), g)
-                    ranges.append((group[0], group[-1]))
+                    ranges.append((group[0]+length, group[-1]+length))
                 for item in ranges:
                     if len(item) > 1:
                         f.write("{}\t{}\t{}\n".format(contig, item[0], item[1]+1))
