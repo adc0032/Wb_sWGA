@@ -7,6 +7,7 @@ addphase2vcf.py -v VCF -p phase.vcf
 """
 
 import argparse
+from collections import defaultdict
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', '--vcf',
@@ -19,7 +20,7 @@ args = parser.parse_args()
 def phased2vcf(vcf, phase):
     """Replace gt fields in vcf with phased data
     """
-    phased = {}
+    phasedict = defaultdict(dict)
     with open(phase, 'r') as pvcf:
         for line in pvcf:
             if line.startswith("#"):
@@ -27,7 +28,7 @@ def phased2vcf(vcf, phase):
             else:
                 x = line.strip().split()
                 # assume all the same chromosome
-                phased[x[1]] = x
+                phasedict[x[0]][x[1]] = x
     f = open(vcf + '.gtphased', 'w')
     with open(vcf, 'r') as vcffile:
         for line in vcffile:
@@ -41,7 +42,7 @@ def phased2vcf(vcf, phase):
                     f.write(line2)
                 else:
                     try:
-                        y = phased[x[1]]
+                        y = phasedict[x[0]][x[1]]
                         # replace gt
                         for sample in range(9, len(x)):
                             gt_old = x[sample].split(":")
