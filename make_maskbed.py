@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Mar 21 13:27:07 2016
-make a bedfile mask for use with bedtools mask fasta from a lower-case fasta
-where the lower case is considered a masked site
-python make_maskbed.py foo.MASK.fa
+usage: python make_maskbed.py -f foo.MASK.fa
+
+Make a bedfile mask for use with vcftools --exclude
+where the lower case or N is considered a masked site.
+Recommend using: mergeBed -d 10 -i FOO-posmask.bed > merged.pos.bed; if the
+fastafile is truncated to multiple lines
 
 @author: stsmall
 """
 import re
-import sys
 from operator import itemgetter
 from itertools import groupby
 import argparse
