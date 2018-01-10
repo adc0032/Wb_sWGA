@@ -21,7 +21,7 @@ def make_negmaskbed(masked_fasta):
                 contig = line.strip(">\n")
             else:
                 line = line.rstrip("\n")                
-                bed_locate = [m.start() for m in re.finditer("[agtcn]", line)]
+                bed_locate = [m.start() for m in re.finditer("[agtcnN]", line)]
                 ranges=[]
                 for k,g in groupby(enumerate(bed_locate), lambda (i,x):i-x):
                     group = map(itemgetter(1), g)
@@ -41,7 +41,7 @@ def make_posmaskbed(masked_fasta):
                 contig = line.strip(">\n")
             else:
                 line = line.rstrip("\n")                
-                bed_locate = [m.start() for m in re.finditer("[AGTCN]", line)]
+                bed_locate = [m.start() for m in re.finditer("[AGTC]", line)]
                 ranges=[]
                 for k,g in groupby(enumerate(bed_locate), lambda (i,x):i-x):
                     group = map(itemgetter(1), g)
