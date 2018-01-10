@@ -30,6 +30,7 @@ def make_negmaskbed(masked_fasta):
                 line = line.rstrip("\n")
                 bed_locate = [m.start() for m in re.finditer("[agtcnN]", line)]
                 ranges = []
+                import ipdb; ipdb.set_trace()
                 for k, g in groupby(enumerate(bed_locate), lambda (i, x): i-x):
                     group = map(itemgetter(1), g)
                     ranges.append((group[0], group[-1]))
