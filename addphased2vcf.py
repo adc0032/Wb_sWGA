@@ -51,6 +51,7 @@ def phased2vcf(vcf, phase):
                                 gt_old[0] = gt_new
                                 x[sample] = ":".join(gt_old)
                             else:
+                                import ipdb;ipdb.set_trace()
                                 gt_old = ".|.:.:.:.:."
                         f.write("{}\n".format("\t".join(x)))
                     except KeyError:
