@@ -46,8 +46,9 @@ def phased2vcf(vcf, phase):
                         # replace gt
                         for sample in range(9, len(x)):
                             gt_old = x[sample].split(":")
-                            gt_new = y[sample]
-                            gt_old[0] = gt_new
+                            if "." not in gt_old[0]:
+                                gt_new = y[sample]
+                                gt_old[0] = gt_new
                             x[sample] = ":".join(gt_old)
                         f.write("{}\n".format("\t".join(x)))
                     except KeyError:
