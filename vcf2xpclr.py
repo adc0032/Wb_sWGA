@@ -92,4 +92,4 @@ if __name__ == "__main__":
     sizes = args.size
     xpclrdict, samples = Vcf2Dict(vcf)
     peddict = GetPopInfo(popinfo, sizes, pops)
-    WriteXpclr(xpclrdict, peddict, args.phased)
+    WriteXpclr(xpclrdict, peddict, samples, args.phased)
