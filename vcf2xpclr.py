@@ -76,9 +76,9 @@ def WriteXpclr(xpclrdict, peddict, samples, phased):
                 countgt = []
                 for s in p_ix:
                     if phased:
-                        countgt.extend(pos[p_ix].split(":")[0].split("|"))
+                        countgt.extend(pos[s].split(":")[0].split("|"))
                     else:
-                        countgt.extend(pos[p_ix].split(":")[0].split("/"))
+                        countgt.extend(pos[s].split(":")[0].split("/"))
                 gt = " ".join(countgt)
                 gt = gt.replace(".", "9")
                 f.write("{}\n".format(gt))
