@@ -18,6 +18,8 @@ parser.add_argument('-pops', "--poplist", type=str, nargs='+', required=True,
                     help="list of pops")
 parser.add_argument('-s', "--size", type=str, nargs='+', required=False,
                     default='', help="how many from each pop, blank uses all")
+parser.add_argument("--phased", action="store_true",
+                    help="phased data")
 args = parser.parse_args()
 
 
@@ -55,19 +57,32 @@ def Vcf2Dict(vcfin):
     xpclrdict = defaultdict(list)
     with open(vcfin, 'r') as vcf:
         for line in vcf:
+            if line.startswith("#CHROM"):
+                samples = line.split()
             if not line.startswith("#"):
                 x = line.split()
-                xpclrdict[x[0]].append((x[1], x[8:]))
-    return(xpclrdict)
+                xpclrdict[x[0]].append(x)
+    return(xpclrdict, samples)
 
 
-def WriteXpclr(xpclrdict, peddict):
+def WriteXpclr(xpclrdict, peddict, samples, phased):
     """
     """
-    import ipdb;ipdb.set_trace()
-#    for chrom in xpclrdict.keys():
-#        for pop in peddict.keys():
-#            f = open("{}.{}.in".format(pop, chrom))
+    for chrom in xpclrdict.keys():
+        for pop in peddict.keys():
+            p_ix = [samples.index(s) for s in peddict[pop]]
+            f = open("{}.{}.in".format(pop, chrom))
+            for pos in xpclrdict[chrom]:
+                countgt = []
+                for s in p_ix:
+                    if phased:
+                        countgt.extend(pos[p_ix].split(":")[0].split("|"))
+                    else:
+                        countgt.extend(pos[p_ix].split(":")[0].split("/"))
+                gt = " ".join(countgt)
+                gt = gt.replace(".", "9")
+                f.write("{}\n".format(gt))
+            f.close()
 
 
 if __name__ == "__main__":
@@ -75,6 +90,6 @@ if __name__ == "__main__":
     popinfo = args.pedfile
     pops = args.poplist
     sizes = args.size
-    xpclrdict = Vcf2Dict(vcf)
+    xpclrdict, samples = Vcf2Dict(vcf)
     peddict = GetPopInfo(popinfo, sizes, pops)
-    WriteXpclr(xpclrdict, peddict)
+    WriteXpclr(xpclrdict, peddict, args.phased)
