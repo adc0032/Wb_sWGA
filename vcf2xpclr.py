@@ -71,7 +71,7 @@ def WriteXpclr(xpclrdict, peddict, samples, phased):
     for chrom in xpclrdict.keys():
         for pop in peddict.keys():
             p_ix = [samples.index(s) for s in peddict[pop]]
-            f = open("{}.{}.in".format(pop, chrom))
+            f = open("{}.{}.in".format(pop, chrom), 'w')
             for pos in xpclrdict[chrom]:
                 countgt = []
                 for s in p_ix:
