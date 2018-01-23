@@ -99,11 +99,9 @@ def WriteMap(xpclrdict, cmorgan):
     """
     for chrom in xpclrdict.keys():
         f = open("{}.map".format(chrom), 'w')
-        cm = 0
         for pos in xpclrdict[chrom]:
             snp = chrom + pos[1]
-            centi = (int(pos[1]) - cm)/cmorgan
-            cm = int(pos[1])
+            centi = int(pos[1])/cmorgan
             f.write("{}\t{}\t{}\t{}\t{}\t{}\n".format(snp, chrom, centi, pos[1], pos[3], pos[4]))
         f.close()
     return(None)
