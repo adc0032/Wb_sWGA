@@ -89,7 +89,7 @@ def WriteXpclr(xpclrdict, peddict, samples, phased):
                         countgt.extend(pos[s].split(":")[0].split("/"))
                 gt = " ".join(countgt)
                 gt = gt.replace(".", "9")
-                f.write("{}\n".format(gt))
+                f.write("{} \n".format(gt))
             f.close()
     return(None)
 
