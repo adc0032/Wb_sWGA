@@ -9,6 +9,8 @@ uniform recombination the distance between 2 snps to have a prob of crossing-
 over of 0.01 is 850,000 bases. 0.01/(4 * 2.9E-9) = 850000
 
 """
+from __future__ import print_function
+from __future__ import division
 import argparse
 import numpy as np
 from collections import defaultdict
@@ -77,7 +79,7 @@ def WriteXpclr(xpclrdict, peddict, samples, phased):
     for chrom in xpclrdict.keys():
         for pop in peddict.keys():
             p_ix = [samples.index(s) for s in peddict[pop]]
-            f = open("{}.{}.in".format(pop, chrom), 'w')
+            f = open("{}.{}.geno".format(pop, chrom), 'w')
             for pos in xpclrdict[chrom]:
                 countgt = []
                 for s in p_ix:
