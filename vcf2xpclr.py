@@ -3,8 +3,11 @@
 """
 Created on Wed Oct 18 16:09:29 2017
 @author: stsmall
-make sweepfinder file for sweeD and sweepfinder2
-if AA is in vcf column will use this info for fold/unfold
+creates input file for XPCLR, the centimorgan stuff is still a bit wooly. In
+Wb the recombination rate is 4x greater than the mutation rate. Assuming
+uniform recombination the distance between 2 snps to have a prob of crossing-
+over of 0.01 is 850,000 bases. 0.01/(4 * 2.9E-9) = 850000
+
 """
 import argparse
 import numpy as np
@@ -18,6 +21,9 @@ parser.add_argument('-pops', "--poplist", type=str, nargs='+', required=True,
                     help="list of pops")
 parser.add_argument('-s', "--size", type=str, nargs='+', required=False,
                     default='', help="how many from each pop, blank uses all")
+parser.add_argument('-c', "--cmorgan", type=int, required=True,
+                    default=850000, help="physical length where prob recomb is"
+                    "0.01")
 parser.add_argument("--phased", action="store_true",
                     help="phased data")
 args = parser.parse_args()
@@ -83,6 +89,22 @@ def WriteXpclr(xpclrdict, peddict, samples, phased):
                 gt = gt.replace(".", "9")
                 f.write("{}\n".format(gt))
             f.close()
+    return(None)
+
+
+def WriteMap(xpclrdict, cmorgan):
+    """
+    """
+    for chrom in xpclrdict.keys():
+        f = open("{}.map".format(chrom), 'w')
+        cm = 0
+        for pos in xpclrdict[chrom]:
+            snp = chrom + pos[1]
+            centi = (int(pos[1]) - cm)/cmorgan
+            cm = int(pos[1])
+            f.write("{}\t{}\t{}\t{}\t{}\t{}\n".format(snp, chrom, centi, pos[1], pos[3], pos[4]))
+        f.close()
+    return(None)
 
 
 if __name__ == "__main__":
@@ -93,3 +115,4 @@ if __name__ == "__main__":
     xpclrdict, samples = Vcf2Dict(vcf)
     peddict = GetPopInfo(popinfo, sizes, pops)
     WriteXpclr(xpclrdict, peddict, samples, args.phased)
+    WriteMap(xpclrdict, args.centmorgan)
