@@ -117,4 +117,4 @@ if __name__ == "__main__":
     xpclrdict, samples = Vcf2Dict(vcf)
     peddict = GetPopInfo(popinfo, sizes, pops)
     WriteXpclr(xpclrdict, peddict, samples, args.phased)
-    WriteMap(xpclrdict, args.centmorgan)
+    WriteMap(xpclrdict, args.cmorgan)
