@@ -13,6 +13,7 @@ from __future__ import print_function
 from __future__ import division
 import argparse
 import numpy as np
+import re
 from collections import defaultdict
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', "--vcf", type=str,
@@ -83,10 +84,7 @@ def WriteXpclr(xpclrdict, peddict, samples, phased):
             for pos in xpclrdict[chrom]:
                 countgt = []
                 for s in p_ix:
-                    if phased:
-                        countgt.extend(pos[s].split(":")[0].split("|"))
-                    else:
-                        countgt.extend(pos[s].split(":")[0].split("/"))
+                    countgt.extend(re.split("/|\|", pos[s].split(":")[0]))
                 gt = " ".join(countgt)
                 gt = gt.replace(".", "9")
                 f.write("{} \n".format(gt))
