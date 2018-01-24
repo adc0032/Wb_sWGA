@@ -96,7 +96,7 @@ def printsf2(sf2, chrom, cm=850000.0):
         for snp in sf2[pop]:
             f.write("{}\t{}\t{}\t{}\n".format(snp[0], snp[1],
                     snp[2], snp[3]))
-            d.write("{}\t{}\n".format(snp[0]), (snp[0] - pos) / cm)
+            d.write("{}\t{}\n".format(snp[0], (snp[0] - pos)/cm))
             pos = snp[0]
         f.close()
         d.close()
