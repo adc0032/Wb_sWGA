@@ -82,7 +82,7 @@ def countsf2(pop, x,  pop_iix, peddict):
         return((pos, count, number, fold))
 
 
-def printsf2(sf2, chrom, cm=850000):
+def printsf2(sf2, chrom, cm=850000.0):
     """
     """
     for pop in sf2.keys():
@@ -91,14 +91,13 @@ def printsf2(sf2, chrom, cm=850000):
         f.write("position\tx\tn\tfolded\n")
         d.write("position\trate\n")
         for snp in sf2[pop]:
-            pos = snp[1]
+            pos = snp[0]
             break
         for snp in sf2[pop]:
             f.write("{}\t{}\t{}\t{}\n".format(snp[0], snp[1],
                     snp[2], snp[3]))
-            import ipdb;ipdb.set_trace()
-            d.write("{}\t{}\n".format(snp[0]), (snp[1] - pos) / cm)
-            pos = snp[1]
+            d.write("{}\t{}\n".format(snp[0]), (snp[0] - pos) / cm)
+            pos = snp[0]
         f.close()
         d.close()
     return(None)
