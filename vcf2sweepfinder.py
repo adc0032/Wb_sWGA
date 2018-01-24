@@ -82,16 +82,24 @@ def countsf2(pop, x,  pop_iix, peddict):
         return((pos, count, number, fold))
 
 
-def printsf2(sf2, chrom):
+def printsf2(sf2, chrom, cm=850000):
     """
     """
     for pop in sf2.keys():
         f = open("{}.{}.sf2in".format(pop, chrom), 'w')
+        d = open("{}.{}.sf2recomb".format(pop, chrom), 'w')
         f.write("position\tx\tn\tfolded\n")
+        d.write("position\trate\n")
+        for snp in sf2[pop]:
+            pos = snp[1]
+            break
         for snp in sf2[pop]:
             f.write("{}\t{}\t{}\t{}\n".format(snp[0], snp[1],
                     snp[2], snp[3]))
+            d.write("{}\t{}\n".format(snp[0]), (snp[1] - pos) / cm)
+            pos = snp[1]
         f.close()
+        d.close()
     return(None)
 
 
@@ -153,6 +161,7 @@ def vcf2sf2(vcfin, peddict):
     if sf2:
         printsf2(sf2, chrom)
     return(None)
+
 
 
 if __name__ == "__main__":
