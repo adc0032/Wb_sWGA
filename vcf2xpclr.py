@@ -27,8 +27,6 @@ parser.add_argument('-s', "--size", type=str, nargs='+', required=False,
 parser.add_argument('-c', "--cmorgan", type=int, required=True,
                     default=850000, help="physical length where prob recomb is"
                     "0.01")
-parser.add_argument("--phased", action="store_true",
-                    help="phased data")
 args = parser.parse_args()
 
 
@@ -74,7 +72,7 @@ def Vcf2Dict(vcfin):
     return(xpclrdict, samples)
 
 
-def WriteXpclr(xpclrdict, peddict, samples, phased):
+def WriteXpclr(xpclrdict, peddict, samples):
     """
     """
     for chrom in xpclrdict.keys():
@@ -112,5 +110,5 @@ if __name__ == "__main__":
     sizes = args.size
     xpclrdict, samples = Vcf2Dict(vcf)
     peddict = GetPopInfo(popinfo, sizes, pops)
-    WriteXpclr(xpclrdict, peddict, samples, args.phased)
+    WriteXpclr(xpclrdict, peddict, samples)
     WriteMap(xpclrdict, args.cmorgan)

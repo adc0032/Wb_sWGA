@@ -59,7 +59,7 @@ def countsf2(pop, x,  pop_iix, peddict):
                     number += 2
                 else:
                     number += 1
-                print("{}, {}:{}".format(pop, x[0], x[1]))
+                # print("{}, {}:{}".format(pop, x[0], x[1]))
             elif anc == aa:
                 count += gt.count("0")
                 fold = 0
@@ -67,7 +67,7 @@ def countsf2(pop, x,  pop_iix, peddict):
                     number += 2
                 else:
                     number += 1
-                print("{}, {}:{}".format(pop, x[0], x[1]))
+                # print("{}, {}:{}".format(pop, x[0], x[1]))
             else:
                 count += gt.count("1")
                 fold = 1
@@ -76,7 +76,7 @@ def countsf2(pop, x,  pop_iix, peddict):
                 else:
                     number += 1
     if count == 0 and fold == 0:  # monomorphic
-        print("{}:{}:{}:{}".format(pos, count, number, fold))
+        # print("{}:{}:{}:{}".format(pos, count, number, fold))
         return(None)
     else:
         return((pos, count, number, fold))
@@ -152,7 +152,6 @@ def vcf2sf2(vcfin, peddict):
     # catch the last entry
     if sf2:
         printsf2(sf2, chrom)
-
     return(None)
 
 
