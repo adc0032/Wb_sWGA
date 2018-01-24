@@ -96,6 +96,7 @@ def printsf2(sf2, chrom, cm=850000):
         for snp in sf2[pop]:
             f.write("{}\t{}\t{}\t{}\n".format(snp[0], snp[1],
                     snp[2], snp[3]))
+            import ipdb;ipdb.set_trace()
             d.write("{}\t{}\n".format(snp[0]), (snp[1] - pos) / cm)
             pos = snp[1]
         f.close()
