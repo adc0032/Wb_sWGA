@@ -5,6 +5,8 @@ Created on Thu Jan 25 13:11:42 2018
 
 @author: scott
 """
+from __future__ import print_function
+from __future__ import division
 import numpy as np
 import argparse
 parser = argparse.ArgumentParser()
@@ -38,7 +40,6 @@ def CalcPvalue(neutralsim, targetsim):
                 x = line.split()
                 tvalue = float(x[1])
                 pvalue = 1 - (len(np.where(neutralarr < tvalue)[0]) / total)
-                import ipdb;ipdb.set_trace()
                 pos = x[0].split(".")[0]
                 f.write("{}\t{}\t{}\t{}\t{}\n".format(pop, chrom, pos, x[1], pvalue))
     f.close()
