@@ -32,7 +32,7 @@ def CalcPvalue(neutralsim, targetsim):
     f = open("{}.{}.pvalue".format(pop, chrom), 'w')
     with open(targetsim, 'r') as t:
         for line in t:
-            if line.startwith("location"):
+            if line.startswith("location"):
                 pass
             else:
                 x = line.split()
