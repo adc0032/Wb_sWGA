@@ -67,9 +67,9 @@ def inp2rehh(inp, poplist):
                     ix = [i for i, h in enumerate(poplist) if h in pop][0] + 1
                     f.write("{} # subpop. label: {} (internally {})\n".format(pop, ix, ix))
                     line = next(fs)
-                    f.write(line)
+                    f.write("{}\n".format(" ".join(line.rstrip("\n"))))
                     line = next(fs)
-                    f.write(line)
+                    f.write("{}\n".format(" ".join(line.rstrip("\n"))))
                 except IndexError:
                     pass
     f.write("END GENOTYPES")
