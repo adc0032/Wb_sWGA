@@ -162,7 +162,6 @@ def vcf2sf2(vcfin, peddict):
     return(None)
 
 
-
 if __name__ == "__main__":
     vcf = args.vcf
     popinfo = args.pedfile
