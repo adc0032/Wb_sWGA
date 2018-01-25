@@ -38,6 +38,7 @@ def CalcPvalue(neutralsim, targetsim):
                 x = line.split()
                 tvalue = float(x[1])
                 pvalue = 1 - (len(np.where(neutralarr < tvalue)[0]) / total)
+                import ipdb;ipdb.set_trace()
                 pos = x[0].split(".")[0]
                 f.write("{}\t{}\t{}\t{}\t{}\n".format(pop, chrom, pos, x[1], pvalue))
     f.close()
