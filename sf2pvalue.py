@@ -23,7 +23,10 @@ def CalcPvalue(neutralsim, targetsim):
     neutrallist = []
     with open(neutralsim, 'r') as n:
         for line in n:
-            neutrallist.append(float(line.split()[1]))
+            if line.startswith("location"):
+                pass
+            else:
+                neutrallist.append(float(line.split()[1]))
     neutralarr = np.array(neutrallist)
     total = len(neutrallist)
     f = open("{}.{}.pvalue".format(pop, chrom))
