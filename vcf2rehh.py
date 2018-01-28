@@ -16,10 +16,11 @@ denoting the ancestral allele state in the VCF
 @author: stsmall
 """
 import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', "--vcfFile", type=str, help='path to vcf file')
 parser.add_argument('-i', "--inp", type=str, help='path to inp files')
-parser.add_argument('-p', "--pops", type=str, nargs="+", required=True,
+parser.add_argument('-p', "--pops", type=str, nargs="+", required=False,
                     help='poplist')
 args = parser.parse_args()
 
@@ -55,7 +56,7 @@ def vcf2map(vcfFile):
 def inp2rehh(inp, poplist):
     """
     """
-    f = open(inp + ".fp", 'w')
+    f = open(inp + "hapguess_switch.out", 'w')
     f.write("BEGIN GENOTYPES\n")
     with open(inp, 'r') as fs:
         for line in fs:
@@ -79,4 +80,4 @@ def inp2rehh(inp, poplist):
 
 if __name__ == "__main__":
     vcf2map(args.vcfFile)
-    inp2rehh(args.inp, args.pops)
+    # inp2rehh(args.inp, args.pops)
