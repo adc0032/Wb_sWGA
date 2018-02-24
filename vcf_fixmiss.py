@@ -21,13 +21,12 @@ def fixmissing(vcfin):
         for line in vcf:
             if "#" not in line:
                 x = line.split()
-                het = [i for i, s in enumerate(x) if re.search(r'\.:\.', s)]
-                for i in het:  # for all entries in het do the following
-                    if ("/" not in x[i]) or ("|" not in x[i]):
+                dots = [i for i, s in enumerate(x) if re.search(r'^\.', s)]
+                for i in dots:
+                    if ("|" in x[i]):
+                        x[i] = ".|."
+                    else:
                         x[i] = "./."
-                        # xr = x[i].split(":")
-                        # xr[0] = "./."
-                        # x[i] = ":".join(xr)
                 f.write('{}\n'.format('\t'.join(x)))  # writes line with snps
             else:  # this is header
                 f.write(line)
