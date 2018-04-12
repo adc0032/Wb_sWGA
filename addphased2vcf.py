@@ -36,31 +36,36 @@ def phased2vcf(vcf, phase):
                 f.write(line)
             else:
                 x = line.strip().split()
-                if x[4] == ".":
-                    # invariant
-                    line2 = line.replace("/", "|")
-                    f.write(line2)
-                else:
-                    try:
-                        y = phasedict[x[0]][x[1]]
-                        # replace gt
-                        for sample in range(9, len(x)):
-                            gt_old = x[sample].split(":")
-                            if "." not in gt_old[0]:
+                num_samples = len(x[9:])
+                missing_count = line.count("./.")
+                if missing_count < num_samples:
+                    if x[4] == ".":
+                        # invariant
+                        line2 = line.replace("/", "|")
+                        f.write(line2)
+                    else:
+                        try:
+                            y = phasedict[x[0]][x[1]]
+                            # replace gt
+                            for sample in range(9, len(x)):
+                                gt_old = x[sample].split(":")
+    #                            if "." not in gt_old[0]:
                                 gt_new = y[sample]
                                 gt_old[0] = gt_new
                                 x[sample] = ":".join(gt_old)
-                            else:
-                                gt_old = ".|.:.:.:.:."
-                                x[sample] = gt_old
-                        f.write("{}\n".format("\t".join(x)))
-                    except KeyError:
-                        for sample in range(9, len(x)):
-                            gt_old = x[sample].split(":")
-                            if "." in gt_old[0]:
-                                gt_old = "./.:.:.:.:."
-                                x[sample] = gt_old
-                        f.write("{}\n".format("\t".join(x)))
+    #                            else:
+    #                                gt_old = ".|.:.:.:.:."
+    #                                x[sample] = gt_old
+                            f.write("{}\n".format("\t".join(x)))
+                        except KeyError:
+                            for sample in range(9, len(x)):
+                                gt_old = x[sample].split(":")
+    #                            if "." in gt_old[0]:
+    #                                gt_old = "./.:.:.:.:."
+    #                                x[sample] = gt_old
+                            line2 = line.replace("/", "|")
+                            f.write(line2)
+    #                        f.write("{}\n".format("\t".join(x)))
     f.close()
     return(None)
 
