@@ -30,6 +30,7 @@ def miss_mask(vcfin, invar):
     """
     """
     mask = collections.defaultdict(lambda: collections.defaultdict(list))
+    start = 1
     t = open(vcfin + ".miss.bed", 'w')
     with open(vcfin, 'r') as vcf:
         for line in vcf:
@@ -44,6 +45,11 @@ def miss_mask(vcfin, invar):
                     import ipdb;ipdb.set_trace()
                     if len(miss) == len(x) - 9:
                         t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
+                    if start != pos:
+                        t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
+                        start = pos + 1
+                    else:
+                        start += 1
                     for sample in range(9, len(x)):
                         if "./." in x[sample]:
                             mask[indv[sample]][x[0]].append(x[1])
