@@ -53,7 +53,7 @@ def miss_mask(vcfin, invar):
                             start += 1
                     for sample in range(9, len(x)):
                         if "./." in x[sample]:
-                            mask[indv[sample]][x[0]].append(x[1])
+                            mask[indv[sample]][x[0]].append(int(x[1]))
     t.close()
     return(mask)
 
