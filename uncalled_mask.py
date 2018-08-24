@@ -44,12 +44,13 @@ def miss_mask(vcfin, invar):
                     miss = [i for i, s in enumerate(x[9:]) if re.search(r'^\.', s)]
                     if len(miss) == len(x) - 9:
                         t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
-                    if start != pos:
-                        print(line)
-                        t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
-                        start = pos + 1
-                    else:
-                        start += 1
+                    if invar:
+                        if start != pos:
+                            print(line)
+                            t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
+                            start = pos + 1
+                        else:
+                            start += 1
                     for sample in range(9, len(x)):
                         if "./." in x[sample]:
                             mask[indv[sample]][x[0]].append(x[1])
