@@ -7,9 +7,12 @@ position mask vcf mask.out
 """
 import argparse
 import collections
+import re
 parser = argparse.ArgumentParser()
 parser.add_argument('INvcf', metavar="INvcf", type=str,
                     help='path to vcf IN file')
+parser.add_argument('--invar', action='store_true',
+                    help='invariant sites in file')
 args = parser.parse_args()
 
 
@@ -23,33 +26,36 @@ class AutoVivification(dict):
             return value
 
 
-def pos_mask(vcfin):
+def miss_mask(vcfin, invar):
     """
     """
     mask = collections.defaultdict(lambda: collections.defaultdict(list))
-    t = open(vcfin + ".miss", 'w')
+    t = open(vcfin + ".miss.bed", 'w')
     with open(vcfin, 'r') as vcf:
         for line in vcf:
-            if "##" in line:
-                t.write(line)
-            elif "#CHROM" in line:
+            if "#CHROM" in line:
                 indv = line.split()
-                t.write(line)
             else:
-                x = line.strip().split()
-                for sample in range(9, len(x)):
-                    if ".:." in x[sample]:
-                        mask[indv[sample]][x[0]].append(x[1])
-                        x[sample] = "./.:.:.:.:."
-                t.write("{}\n".format("\t".join(x)))
+                if not line.startswith("#"):
+                    x = line.strip().split()
+                    chrom = x[0]
+                    pos = int(x[1])
+                    miss = [i for i, s in enumerate(x[9:]) if re.search(r'^\.', s)]
+                    import ipdb;ipdb.set_trace()
+                    if len(miss) == len(x) - 9:
+                        t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
+                    for sample in range(9, len(x)):
+                        if "./." in x[sample]:
+                            mask[indv[sample]][x[0]].append(x[1])
     t.close()
     return(mask)
 
+
 if __name__ == '__main__':
-    mask = pos_mask(args.INvcf)
+    mask = miss_mask(args.INvcf, args.invar)
     for ind in mask.keys():
-        f = open(ind + ".FilteredSites.mask", 'w')
+        f = open(ind + ".FilteredSites.bed", 'w')
         for chrom in mask[ind]:
-            for site in mask[ind][chrom]:
-                f.write("{}\t{}\n".format(chrom, site))
+            for pos in mask[ind][chrom]:
+                f.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
         f.close()
