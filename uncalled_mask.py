@@ -47,7 +47,8 @@ def miss_mask(vcfin, invar):
                     if invar:
                         if start != pos:
                             print(line)
-                            t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
+                            for p in range(start, pos):
+                                t.write("{}\t{}\t{}\n".format(chrom, p-1, p))
                             start = pos + 1
                         else:
                             start += 1
