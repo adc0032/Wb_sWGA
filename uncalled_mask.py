@@ -45,6 +45,7 @@ def miss_mask(vcfin, invar):
                     if len(miss) == len(x) - 9:
                         t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
                     if start != pos:
+                        print(line)
                         t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
                         start = pos + 1
                     else:
