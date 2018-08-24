@@ -42,7 +42,6 @@ def miss_mask(vcfin, invar):
                     chrom = x[0]
                     pos = int(x[1])
                     miss = [i for i, s in enumerate(x[9:]) if re.search(r'^\.', s)]
-                    import ipdb;ipdb.set_trace()
                     if len(miss) == len(x) - 9:
                         t.write("{}\t{}\t{}\n".format(chrom, pos-1, pos))
                     if start != pos:
