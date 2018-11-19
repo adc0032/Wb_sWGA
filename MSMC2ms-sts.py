@@ -83,6 +83,7 @@ def makems(m0, r, theta0, chromL, msmc2ms):
     t = theta0 * chromL
     prec = math.ceil(math.log10(chromL))
     rat = r/m0
+    print("final rho:{}".format(r))
     size = ' -eN '.join(' '.join(str(x) for x in timestep) for timestep in msmc2ms)
     print('-t {} -r {} {} -p {} -eN {}'.format(t, t * rat, chromL, prec,
                                                size))
