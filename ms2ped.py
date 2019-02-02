@@ -26,6 +26,7 @@ def read_msformat_file(msFile, loclen, thin):
     gt_list = []
     block = 10000
     with open(msFile, 'r') as ms:
+        import ipdb;ipdb.set_trace()
         header = next(ms)
         x = header.split()
         nind = int(x[1])
