@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--msFile", type=str, required=True,
                     help="msformatted file")
 parser.add_argument("--locusLen", type=int, help="locus len")
-parser.add_argument("--thin", type=int, help="thin snps")
+parser.add_argument("--thin", type=int, default=0, help="thin snps")
 args = parser.parse_args()
 
 
@@ -77,5 +77,5 @@ def ms2ped(gt_list, pos_list):
 
 
 if __name__ == "__main__":
-    gt, pos = read_msformat_file(args.msFile, args.loclen, args.thin)
+    gt, pos = read_msformat_file(args.msFile, args.locLen, args.thin)
     ms2ped(gt, pos)
