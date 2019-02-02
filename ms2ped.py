@@ -55,7 +55,7 @@ def read_msformat_file(msFile, loclen, thin):
                         cix += 1
                         line = next(ms)
                 except StopIteration:
-                    gtdict[cix-1].extend(map(int, line.strip()))
+                    # gtdict[cix-1].extend(map(int, line.strip()))
                     break
     return(gtdict, np.concatenate(pos_list, axis=0))
 
