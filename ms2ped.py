@@ -51,13 +51,13 @@ def read_msformat_file(msFile, loclen, thin):
                     while line:
                         line = list(line.strip())
                         try:
-                            gtdict[cix].append(map(int, line.split()))
+                            gtdict[cix].append(map(int, line))
                         except IndexError:
                             break
                         cix += 1
                         line = next(ms)
                 except StopIteration:
-                    gtdict[cix].append(map(int, line.split()))
+                    gtdict[cix].append(map(int, line))
                     break
     return(gt_list, np.concatenate(pos_list, axis=0))
 
