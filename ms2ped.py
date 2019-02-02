@@ -50,12 +50,13 @@ def read_msformat_file(msFile, loclen, thin):
                     while line.strip():
                         try:
                             gtdict[cix].append(map(int,line.strip()))
+                            import ipdb;ipdb.set_trace()
                         except IndexError:
                             break
                         cix += 1
                         line = next(ms)
                 except StopIteration:
-                    gtdict[cix].append(map(int,line.strip()))
+                    gtdict[cix-1].append(map(int,line.strip()))
                     break
     return(gtdict, np.concatenate(pos_list, axis=0))
 
@@ -65,12 +66,12 @@ def ms2ped(gtdict, pos_list):
     """
     f = open("sim.ped", 'w')
     samp = 0
-    import ipdb;ipdb.set_trace()
-    for i in range():
-        f.write("Ind-{} 0 0 0 -9 {}\n".format(samp, ))
+    haps = len(gtdict.keys())
+    haplist = range(0, haps, 2)
+    for i in haplist:
+        geno = np.array(gtdict[i]) + np.array(gtdict[i + 1])
+        f.write("Ind-{} 0 0 0 -9 {}\n".format(samp, " ".join(map(str, geno))))
         samp += 1
-
-
     return(None)
 
 
