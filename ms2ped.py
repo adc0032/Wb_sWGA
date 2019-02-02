@@ -49,7 +49,7 @@ def read_msformat_file(msFile, loclen, thin):
                 cix = 0
                 try:
                     try:
-                        while line:
+                        while line.strip():
                             line = list(line.strip())
                             try:
                                 gtdict[cix].append(map(int, line))
