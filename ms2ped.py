@@ -9,6 +9,7 @@ from __future__ import print_function
 from __future__ import division
 import numpy as np
 import argparse
+from collections import defaultdict
 parser = argparse.ArgumentParser()
 parser.add_argument("--msFile", type=str, required=True,
                     help="msformatted file")
@@ -25,6 +26,7 @@ def read_msformat_file(msFile, loclen, thin):
     pos_count = 0
     gt_list = []
     block = 10000
+    gtdict = defaultdict(list)
     with open(msFile, 'r') as ms:
         header = next(ms)
         x = header.split()
@@ -43,21 +45,20 @@ def read_msformat_file(msFile, loclen, thin):
                 pos_list.append(pos.astype(np.int64) + pos_count)  # append
                 pos_count += block  # the two loci are unlinked
                 line = next(ms)
-                gt = np.zeros((nind, pos.shape[0]), dtype=np.uint8)
+
                 cix = 0
                 try:
                     while line:
                         line = list(line.strip())
                         try:
-                            gt[cix, :] = np.array(line, dtype=np.uint8)
+                            gtdict[cix].append(map(int, line.split()))
                         except IndexError:
                             break
                         cix += 1
                         line = next(ms)
                 except StopIteration:
-                    gt_list.append(gt)
+                    gtdict[cix].append(map(int, line.split()))
                     break
-                gt_list.append(gt)
     return(gt_list, np.concatenate(pos_list, axis=0))
 
 
