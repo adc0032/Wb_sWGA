@@ -48,18 +48,20 @@ def read_msformat_file(msFile, loclen, thin):
 
                 cix = 0
                 try:
-                    while line:
-                        line = list(line.strip())
-                        try:
-                            import ipdb;ipdb.set_trace()
-                            gtdict[cix].append(map(int, line))
-                        except IndexError:
-                            break
-                        cix += 1
-                        line = next(ms)
-                except StopIteration:
-                    gtdict[cix].append(map(int, line))
-                    break
+                    try:
+                        while line:
+                            line = list(line.strip())
+                            try:
+                                gtdict[cix].append(map(int, line))
+                            except IndexError:
+                                break
+                            cix += 1
+                            line = next(ms)
+                    except StopIteration:
+                        gtdict[cix].append(map(int, line))
+                        break
+                except ValueError:
+                    import ipdb;ipdb.set_trace()
     return(gt_list, np.concatenate(pos_list, axis=0))
 
 
