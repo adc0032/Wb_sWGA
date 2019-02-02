@@ -24,6 +24,7 @@ def read_msformat_file(msFile, loclen, thin):
     pos_list = []
     pos_count = 0
     gt_list = []
+    block = 10000
     with open(msFile, 'r') as ms:
         header = next(ms)
         x = header.split()
@@ -35,13 +36,13 @@ def read_msformat_file(msFile, loclen, thin):
                 # collisions can result here when theta is high
                 pos = np.round(np.array(line.strip().split()[1:], dtype=np.float64) * loclen)
                 prev = 0
-                  for idx, item in enumerate(pos, start=0):
+                for idx, item in enumerate(pos, start=0):
                     while prev >= item:
                         item += 1
                     pos[idx] = item
                     prev = pos[idx]
                 pos_list.append(pos.astype(np.int64) + pos_count)  # append
-                pos_count += block + 10000  # the two loci are unlinked
+                pos_count += block  # the two loci are unlinked
                 line = next(ms)
                 gt = np.zeros((nind, pos.shape[0]), dtype=np.uint8)
                 cix = 0
