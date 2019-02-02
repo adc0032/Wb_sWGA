@@ -51,6 +51,7 @@ def read_msformat_file(msFile, loclen, thin):
                     while line:
                         line = list(line.strip())
                         try:
+                            import ipdb;ipdb.set_trace()
                             gtdict[cix].append(map(int, line))
                         except IndexError:
                             break
