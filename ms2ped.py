@@ -50,7 +50,6 @@ def read_msformat_file(msFile, loclen, thin):
                     while line.strip():
                         try:
                             gtdict[cix].extend(map(int,line.strip()))
-                            import ipdb;ipdb.set_trace()
                         except IndexError:
                             break
                         cix += 1
