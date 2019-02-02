@@ -49,13 +49,13 @@ def read_msformat_file(msFile, loclen, thin):
                 try:
                     while line.strip():
                         try:
-                            gtdict[cix].extend(map(int,line.strip()))
+                            gtdict[cix].extend(map(int, line.strip()))
                         except IndexError:
                             break
                         cix += 1
                         line = next(ms)
                 except StopIteration:
-                    gtdict[cix-1].extend(map(int,line.strip()))
+                    gtdict[cix-1].extend(map(int, line.strip()))
                     break
     return(gtdict, np.concatenate(pos_list, axis=0))
 
@@ -69,8 +69,9 @@ def ms2ped(gtdict, pos_list):
     haplist = range(0, haps, 2)
     for i in haplist:
         geno = np.array(gtdict[i]) + np.array(gtdict[i + 1])
-        f.write("Ind-{} 0 0 0 -9 {}\n".format(samp, " ".join(map(str, geno))))
+        f.write("Ind-{} Ind-{} 0 0 0 -9 {}\n".format(samp, samp, " ".join(map(str, geno))))
         samp += 1
+    f.close()
     return(None)
 
 
