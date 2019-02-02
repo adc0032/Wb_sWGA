@@ -77,5 +77,5 @@ def ms2ped(gt_list, pos_list):
 
 
 if __name__ == "__main__":
-    gt, pos = read_msformat_file(args.msFile, args.locLen, args.thin)
+    gt, pos = read_msformat_file(args.msFile, args.locusLen, args.thin)
     ms2ped(gt, pos)
