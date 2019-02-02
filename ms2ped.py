@@ -49,14 +49,14 @@ def read_msformat_file(msFile, loclen, thin):
                 try:
                     while line.strip():
                         try:
-                            gtdict[cix].append(map(int,line.strip()))
+                            gtdict[cix].extend(map(int,line.strip()))
                             import ipdb;ipdb.set_trace()
                         except IndexError:
                             break
                         cix += 1
                         line = next(ms)
                 except StopIteration:
-                    gtdict[cix-1].append(map(int,line.strip()))
+                    gtdict[cix-1].extend(map(int,line.strip()))
                     break
     return(gtdict, np.concatenate(pos_list, axis=0))
 
