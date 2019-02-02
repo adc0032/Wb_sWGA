@@ -45,27 +45,23 @@ def read_msformat_file(msFile, loclen, thin):
                 pos_list.append(pos.astype(np.int64) + pos_count)  # append
                 pos_count += block  # the two loci are unlinked
                 line = next(ms)
-
                 cix = 0
                 try:
-                    try:
-                        while line.strip():
-                            line = list(line.strip())
-                            try:
-                                gtdict[cix].append(map(int, line))
-                            except IndexError:
-                                break
-                            cix += 1
-                            line = next(ms)
-                    except StopIteration:
-                        gtdict[cix].append(map(int, line))
-                        break
-                except ValueError:
-                    import ipdb;ipdb.set_trace()
-    return(gt_list, np.concatenate(pos_list, axis=0))
+                    while line.strip():
+                        line = list(line.strip())
+                        try:
+                            gtdict[cix].append(map(int, line))
+                        except IndexError:
+                            break
+                        cix += 1
+                        line = next(ms)
+                except StopIteration:
+                    gtdict[cix].append(map(int, line))
+                    break
+    return(gtdict, np.concatenate(pos_list, axis=0))
 
 
-def ms2ped(gt_list, pos_list):
+def ms2ped(gtdict, pos_list):
     """
     """
     f = open("sim.ped", 'w')
