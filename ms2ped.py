@@ -70,7 +70,7 @@ def ms2ped(gtdict, pos_list):
     for i in haplist:
         try:
             geno = np.array(gtdict[i]) + np.array(gtdict[i + 1])
-            f.write("Ind-{} Ind-{} 0 0 0 -9 {}\n".format(samp, samp, " ".join(map(str, geno))))
+            f.write("Ind-{} Ind-{} 0 0 1 1 {}\n".format(samp, samp, " ".join(map(str, geno))))
             samp += 1
         except ValueError:
             import ipdb;ipdb.set_trace()
