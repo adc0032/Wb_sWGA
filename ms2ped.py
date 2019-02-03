@@ -24,14 +24,10 @@ def read_msformat_file(msFile, loclen, thin):
     """
     pos_list = []
     pos_count = 0
-    gt_list = []
     block = 10000
     gtdict = defaultdict(list)
     with open(msFile, 'r') as ms:
-        header = next(ms)
-        x = header.split()
-        nind = int(x[1])
-        nloci = int(x[2])
+        next(ms)
         for line in ms:
             if line.startswith("positions"):
                 # collisions can result here when theta is high
@@ -55,7 +51,6 @@ def read_msformat_file(msFile, loclen, thin):
                         cix += 1
                         line = next(ms)
                 except StopIteration:
-                    # gtdict[cix-1].extend(map(int, line.strip()))
                     break
     return(gtdict, np.concatenate(pos_list, axis=0))
 
@@ -68,12 +63,17 @@ def ms2ped(gtdict, pos_list):
     haps = len(gtdict.keys())
     haplist = range(0, haps, 2)
     for i in haplist:
-        try:
-            geno = np.array(gtdict[i]) + np.array(gtdict[i + 1])
-            f.write("Ind-{} Ind-{} 0 0 0 -9 {}\n".format(samp, samp, "\t".join(map(str, geno))))
-            samp += 1
-        except ValueError:
-            import ipdb;ipdb.set_trace()
+        geno = np.array(gtdict[i]) + np.array(gtdict[i + 1])
+        geno12 = []
+        for base in geno:  # prob a smarter way, like interweaving by insert
+            if base == 2:
+                geno12.extend([1, 1])
+            elif base == 0:
+                geno12.extend([2, 2])
+            elif base == 1:
+                geno12.extend([2, 1])
+        f.write("Ind-{} Ind-{} 0 0 0 -9 {}\n".format(samp, samp, " ".join(map(str, geno12))))
+        samp += 1
     f.close()
     return(None)
 
