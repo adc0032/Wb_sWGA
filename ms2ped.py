@@ -18,7 +18,7 @@ parser.add_argument("--thin", type=int, default=0, help="thin snps")
 args = parser.parse_args()
 
 
-def read_msformat_file(msFile, loclen, thin):
+def read_msformat_file(msFile, loclen):
     """Read and parse simulations from ms formatted file from folder of files
     with basename
     """
@@ -55,7 +55,7 @@ def read_msformat_file(msFile, loclen, thin):
     return(gtdict, np.concatenate(pos_list, axis=0))
 
 
-def ms2ped(gtdict, pos_list):
+def ms2ped(gtdict, pos_list, thin):
     """
     """
     f = open("sim.ped", 'w')
@@ -79,5 +79,5 @@ def ms2ped(gtdict, pos_list):
 
 
 if __name__ == "__main__":
-    gt, pos = read_msformat_file(args.msFile, args.locusLen, args.thin)
-    ms2ped(gt, pos)
+    gt, pos = read_msformat_file(args.msFile, args.locusLen)
+    ms2ped(gt, pos, args.thin)
