@@ -71,10 +71,9 @@ def msmc_interpolate(infile, pops, num, coord):
             coords_p.append(coords)
         with open("{}.msmc2.interpolated.out".format(p1), 'w') as f:
             for n, ind in enumerate(demodict[p1]):
-                import ipdb;ipdb.set_trace()
-                interp = np.interp(coords, ind[0], ind[1])
+                interpolate = np.interp(coords, ind[0], ind[1])
                 x = 1
-                for i, j in zip(coords, interp):
+                for i, j in zip(coords, interpolate):
                     f.write("{}\t{}\t{}\t{}\t{}\n".format(p1, n+1, x, i, j))
                     x += 1
     if coord:
@@ -83,10 +82,10 @@ def msmc_interpolate(infile, pops, num, coord):
         return(coords)
 
 
-def msmc_boots(pops, coords, coord, num):
+def msmc_boots(pops, coords, num):
     """File must be named POP.msmc2.boots
     """
-    for c, p in enumerate(pops):
+    for p in pops:
         # count reps
         reps = 0
         with open("{}.msmc2.boots".format(p), 'r') as boot:
@@ -96,18 +95,23 @@ def msmc_boots(pops, coords, coord, num):
         # build array from boot values
         r = -1
         f = []
+        c = []
         boot_array = np.empty(shape=(reps, num+1))
         with open("{}.msmc2.boots".format(p), 'r') as boot:
             for line in boot:
                 x = line.strip().split()
                 if line.startswith('0'):
                     if f:
-                        boot_array[r, :] = f
+                        interpolate = np.interp(coords, c, f)
+                        boot_array[r, :] = interpolate
                     r += 1
                     f = []
+                    c = []
                     f.append(float(x[3]))
+                    c.append(float(x[2]))
                 else:
                     f.append(float(x[3]))
+                    c.append(float(x[2]))
         # calc mean and quantiles from boots for a pop
         bmean = np.mean(boot_array, axis=0)
         five = np.percentile(boot_array, 2.5, axis=0)
@@ -115,12 +119,8 @@ def msmc_boots(pops, coords, coord, num):
         # write to file
         foo = open("{}.boots.out".format(p), 'w')
         for i, b in enumerate(bmean):
-            if coord:
-                foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[c][i], b,
-                                                        five[i], nine_five[i]))
-            else:
-                foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[i], b,
-                                                        five[i], nine_five[i]))
+            foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[0][i], b,
+                      five[i], nine_five[i]))
         foo.close()
     return(None)
 
@@ -133,6 +133,6 @@ if __name__ == "__main__":
     pops = args.pop
     num = args.ntime
     coord = args.coord
-    coords = msmc_interpolate(infile, pops, num, coord)
+    coord_p = msmc_interpolate(infile, pops, num, coord)
     if args.boots:
-        msmc_boots(pops, coords, coord, num)
+        msmc_boots(pops, coord_p, num)
