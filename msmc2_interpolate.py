@@ -50,16 +50,17 @@ def msmc_interpolate(infile, pops, num, coord):
         with open("{}.{}".format(p, infile), 'r') as msmc:
             for line in msmc:
                 x = line.strip().split()
-                if line.startswith('0'):
-                    if time_r:
-                        demodict[p].append((time_r, lambda_size))
-                    time_r = []
-                    time_r.append(float(x[2]))
-                    lambda_size = []
-                    lambda_size.append(float(x[3]))
-                else:
-                    time_r.append(float(x[2]))  # uses right time boundary
-                    lambda_size.append(float(x[3]))
+                if x[0].isdigit():
+                    if line.startswith('0'):
+                        if time_r:
+                            demodict[p].append((time_r, lambda_size))
+                        time_r = []
+                        time_r.append(float(x[2]))
+                        lambda_size = []
+                        lambda_size.append(float(x[3]))
+                    else:
+                        time_r.append(float(x[2]))  # uses right time boundary
+                        lambda_size.append(float(x[3]))
         # print last entry since else it only records when it encounters 0
         demodict[p].append((time_r, lambda_size))
     # interpolate by first pop, first individual's coordinates
@@ -100,18 +101,19 @@ def msmc_boots(pops, coords, num):
         with open("{}.msmc2.boots".format(p), 'r') as boot:
             for line in boot:
                 x = line.strip().split()
-                if line.startswith('0'):
-                    if f:
-                        interpolate = np.interp(coords, c, f)
-                        boot_array[r, :] = interpolate
-                    r += 1
-                    f = []
-                    c = []
-                    f.append(float(x[3]))
-                    c.append(float(x[2]))
-                else:
-                    f.append(float(x[3]))
-                    c.append(float(x[2]))
+                if x[0].isdigit():
+                    if line.startswith('0'):
+                        if f:
+                            interpolate = np.interp(coords, c, f)
+                            boot_array[r, :] = interpolate
+                        r += 1
+                        f = []
+                        c = []
+                        f.append(float(x[3]))
+                        c.append(float(x[2]))
+                    else:
+                        f.append(float(x[3]))
+                        c.append(float(x[2]))
         # calc mean and quantiles from boots for a pop
         bmean = np.mean(boot_array, axis=0)
         five = np.percentile(boot_array, 2.5, axis=0)
