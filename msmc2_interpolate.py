@@ -97,7 +97,7 @@ def msmc_boots(boots, pops, coords, num):
         f = []
         c = []
         boot_array = np.empty(shape=(reps, num+1))
-        with open("{}.msmc2.boots".format(p), 'r') as boot:
+        with open("{}.{}".format(p, boots), 'r') as boot:
             for line in boot:
                 x = line.strip().split()
                 if x[0].isdigit():
