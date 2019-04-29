@@ -46,26 +46,19 @@ def phased2vcf(vcf, phase):
                     else:
                         try:
                             y = phasedict[x[0]][x[1]]
-                            # replace gt
+                            # replace gt; keeps missing data
                             for sample in range(9, len(x)):
                                 gt_old = x[sample].split(":")
-    #                            if "." not in gt_old[0]:
-                                gt_new = y[sample]
-                                gt_old[0] = gt_new
-                                x[sample] = ":".join(gt_old)
-    #                            else:
-    #                                gt_old = ".|.:.:.:.:."
-    #                                x[sample] = gt_old
+                                if "." not in gt_old[0]:
+                                    gt_new = y[sample]
+                                    gt_old[0] = gt_new
+                                    x[sample] = ":".join(gt_old)
+                                else:
+                                    gt_old = ".|.:.:.:.:."
+                                    x[sample] = gt_old
                             f.write("{}\n".format("\t".join(x)))
                         except KeyError:
-                            for sample in range(9, len(x)):
-                                gt_old = x[sample].split(":")
-    #                            if "." in gt_old[0]:
-    #                                gt_old = "./.:.:.:.:."
-    #                                x[sample] = gt_old
-                            line2 = line.replace("/", "|")
-                            f.write(line2)
-    #                        f.write("{}\n".format("\t".join(x)))
+                            continue
     f.close()
     return(None)
 

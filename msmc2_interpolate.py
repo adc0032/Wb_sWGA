@@ -71,6 +71,7 @@ def msmc_interpolate(infile, pops, num, coord):
             coords_p.append(coords)
         with open("{}.msmc2.interpolated.out".format(p1), 'w') as f:
             for n, ind in enumerate(demodict[p1]):
+                import ipdb;ipdb.set_trace()
                 interp = np.interp(coords, ind[0], ind[1])
                 x = 1
                 for i, j in zip(coords, interp):
