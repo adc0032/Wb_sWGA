@@ -121,7 +121,7 @@ def msmc_boots(boots, pops, coords, num):
         foo = open("{}.boots.out".format(p), 'w')
         for i, b in enumerate(bmean):
             import ipdb;ipdb.set_trace()
-            foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[0][i], b,
+            foo.write("{}\t{}\t{}\t{}\t{}\n".format(p, coords[i], b,
                       five[i], nine_five[i]))
         foo.close()
     return(None)
