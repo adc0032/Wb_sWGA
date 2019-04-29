@@ -54,12 +54,12 @@ def msmc_interpolate(infile, pops, num, coord):
                     if time_r:
                         demodict[p].append((time_r, lambda_size))
                     time_r = []
-                    time_r.append(x[2])
+                    time_r.append(float(x[2]))
                     lambda_size = []
-                    lambda_size.append(x[3])
+                    lambda_size.append(float(x[3]))
                 else:
-                    time_r.append(x[2])  # uses right time boundary
-                    lambda_size.append(x[3])
+                    time_r.append(float(x[2]))  # uses right time boundary
+                    lambda_size.append(float(x[3]))
         # print last entry since else it only records when it encounters 0
         demodict[p].append((time_r, lambda_size))
     # interpolate by first pop, first individual's coordinates
