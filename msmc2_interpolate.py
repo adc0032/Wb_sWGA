@@ -28,9 +28,8 @@ parser.add_argument('-f', '--infile', type=str, help='infile base name;'
                     'expects: POP.msmc2.interpolate')
 parser.add_argument('-p', "--pop", nargs='+', required=True,
                     help='name pop1 pop2')
-parser.add_argument('--boots', action="store_true", help="calculate"
-                    "mean and std for bootstraps, expect name to be"
-                    " POP.msmc2.boots")
+parser.add_argument('--boots', type=str, help="calculate mean and std for"
+                    "bootstraps, expect name to be POP.msmc2.boots")
 parser.add_argument('-n', "--ntime", type=int, required=True,
                     help='number of time frags')
 parser.add_argument('--coord', action="store_true", help="use first individual"
@@ -83,13 +82,13 @@ def msmc_interpolate(infile, pops, num, coord):
         return(coords)
 
 
-def msmc_boots(pops, coords, num):
+def msmc_boots(boots, pops, coords, num):
     """File must be named POP.msmc2.boots
     """
     for p in pops:
         # count reps
         reps = 0
-        with open("{}.msmc2.boots".format(p), 'r') as boot:
+        with open("{}.{}".format(p, boots), 'r') as boot:
             for line in boot:
                 if line.startswith('0'):
                     reps += 1
@@ -137,4 +136,4 @@ if __name__ == "__main__":
     coord = args.coord
     coord_p = msmc_interpolate(infile, pops, num, coord)
     if args.boots:
-        msmc_boots(pops, coord_p, num)
+        msmc_boots(args.boots, pops, coord_p, num)
