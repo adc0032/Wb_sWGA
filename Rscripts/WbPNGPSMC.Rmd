@@ -1,0 +1,253 @@
+---
+title: "WbPNGL3-PSMC"
+output: html_document
+---
+
+```{r PSMC_WbPNG4873}
+
+library(plyr)
+library(ggplot2)
+
+N0=(4*2.9E-9)
+
+WbPNG4873RS <- read.delim("Wb4873.s100.RS.psmc.out", header=F) # cat $combined_trunc_file | grep "RS"
+WbPNG4873TR<-read.delim("Wb4873.s100.TR.psmc.out", header=F) # cat $combined_trunc_file | grep "TR"
+bootstrp<-rep(1:101,each=32)
+rep<-rep(1:32,101)
+WbPNG4873TR.theta<-rep(WbPNG4873TR$V1,each=32)
+WbPNG4873psmc<-data.frame(rep,bootstrp,(WbPNG4873TR.theta*WbPNG4873RS$V1)/100, (WbPNG4873TR.theta*WbPNG4873RS$V2)/100,2*(((WbPNG4873TR.theta*WbPNG4873RS$V1)/100)/N0),(((WbPNG4873TR.theta*WbPNG4873RS$V2)/100)/N0))
+colnames(WbPNG4873psmc)=c("rep","boot","div","theta","time","Ne")
+mean_div4873=ddply(WbPNG4873psmc,"rep",summarise,div=mean(div))
+mean_theta4873=ddply(WbPNG4873psmc,"rep",summarise,theta=mean(theta))
+mean_time4873=ddply(WbPNG4873psmc,"rep",summarise,time=mean(time))
+mean_Ne4873=ddply(WbPNG4873psmc,"rep",summarise,Ne=mean(Ne))
+WbPNG4873psmc_mean=data.frame(boot=rep(101,32),div=mean_div4873$div,theta=mean_theta4873$theta,time=mean_time4873$time,Ne=mean_Ne4873$Ne)
+
+#unscaled
+(ggplot(WbPNG4873psmc,aes(x=div,y=theta,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG4873psmc_mean,aes(x=div,y=theta))+xlab("divergence Log10")+ylab(expression(theta))+scale_x_log10()+scale_y_log10())
+
+#scaled
+ggplot(WbPNG4873psmc,aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG4873psmc_mean,aes(x=time,y=Ne))+annotation_logticks() + xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+scale_y_log10()+scale_x_log10()
+```
+
+```{r PSMC_WbPNG17D}
+
+library(plyr)
+library(ggplot2)
+
+WbPNG17DRS <- read.delim("Wb17D.s100.RS.psmc.out", header=F) # cat $combined_trunc_file | grep "RS"
+WbPNG17DTR<-read.delim("Wb17D.s100.TR.psmc.out", header=F) # cat $combined_trunc_file | grep "TR"
+bootstrp<-rep(1:101,each=31)
+rep<-rep(1:31,101)
+WbPNG17DTR.theta<-rep(WbPNG17DTR$V1,each=31)
+WbPNG17Dpsmc<-data.frame(rep,bootstrp,(WbPNG17DTR.theta*WbPNG17DRS$V1)/100, (WbPNG17DTR.theta*WbPNG17DRS$V2)/100,2*(((WbPNG17DTR.theta*WbPNG17DRS$V1)/100)/N0),(((WbPNG17DTR.theta*WbPNG17DRS$V2)/100)/N0))
+colnames(WbPNG17Dpsmc)=c("rep","boot","div","theta","time","Ne")
+mean_div17D=ddply(WbPNG17Dpsmc,"rep",summarise,div=mean(div))
+mean_theta17D=ddply(WbPNG17Dpsmc,"rep",summarise,theta=mean(theta))
+mean_time17D=ddply(WbPNG17Dpsmc,"rep",summarise,time=mean(time))
+mean_Ne17D=ddply(WbPNG17Dpsmc,"rep",summarise,Ne=mean(Ne))
+WbPNG17Dpsmc_mean=data.frame(boot=rep(101,31),div=mean_div17D$div,theta=mean_theta17D$theta,time=mean_time17D$time,Ne=mean_Ne17D$Ne)
+
+#unscaled
+ggplot(WbPNG17Dpsmc,aes(x=div,y=theta,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG17Dpsmc_mean,aes(x=div,y=theta))+xlab("divergence Log10")+ylab(expression(theta))+scale_x_log10()+scale_y_log10()
+
+#scaled
+ggplot(WbPNG17Dpsmc,aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG17Dpsmc_mean,aes(x=time,y=Ne))+annotation_logticks() + xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+scale_y_log10()+scale_x_log10()
+```
+
+```{r PSMC_WbPNG4853}
+
+library(plyr)
+library(ggplot2)
+
+WbPNG4853RS <- read.delim("Wb4853.s100.RS.psmc.out", header=F) # cat $combined_trunc_file | grep "RS"
+WbPNG4853TR<-read.delim("Wb4853.s100.TR.psmc.out", header=F) # cat $combined_trunc_file | grep "TR"
+bootstrp<-rep(1:101,each=32)
+rep<-rep(1:32,101)
+WbPNG4853TR.theta<-rep(WbPNG4853TR$V1,each=32)
+WbPNG4853psmc<-data.frame(rep,bootstrp,(WbPNG4853TR.theta*WbPNG4853RS$V1)/100, (WbPNG4853TR.theta*WbPNG4853RS$V2)/100,2*(((WbPNG4853TR.theta*WbPNG4853RS$V1)/100)/N0),(((WbPNG4853TR.theta*WbPNG4853RS$V2)/100)/N0))
+colnames(WbPNG4853psmc)=c("rep","boot","div","theta","time","Ne")
+mean_div4853=ddply(WbPNG4853psmc,"rep",summarise,div=mean(div))
+mean_theta4853=ddply(WbPNG4853psmc,"rep",summarise,theta=mean(theta))
+mean_time4853=ddply(WbPNG4853psmc,"rep",summarise,time=mean(time))
+mean_Ne4853=ddply(WbPNG4853psmc,"rep",summarise,Ne=mean(Ne))
+WbPNG4853psmc_mean=data.frame(boot=rep(101,32),div=mean_div4853$div,theta=mean_theta4853$theta,time=mean_time4853$time,Ne=mean_Ne4853$Ne)
+
+#unscaled
+ggplot(WbPNG4853psmc,aes(x=div,y=theta,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG4853psmc_mean,aes(x=div,y=theta))+xlab("divergence Log10")+ylab(expression(theta))+scale_x_log10()+scale_y_log10()
+
+#scaled
+ggplot(WbPNG4853psmc,aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG4853psmc_mean,aes(x=time,y=Ne))+annotation_logticks() + xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+scale_y_log10()+scale_x_log10()
+```
+
+
+```{r PSMC_WbPNG48B}
+
+library(plyr)
+library(ggplot2)
+
+WbPNG48BRS <- read.delim("Wb48B.s100.RS.psmc.out", header=F) # cat $combined_trunc_file | grep "RS"
+WbPNG48BTR<-read.delim("Wb48B.s100.TR.psmc.out", header=F) # cat $combined_trunc_file | grep "TR"
+bootstrp<-rep(1:101,each=31)
+rep<-rep(1:31,101)
+WbPNG48BTR.theta<-rep(WbPNG48BTR$V1,each=31)
+WbPNG48Bpsmc<-data.frame(rep,bootstrp,(WbPNG48BTR.theta*WbPNG48BRS$V1)/100, (WbPNG48BTR.theta*WbPNG48BRS$V2)/100,2*(((WbPNG48BTR.theta*WbPNG48BRS$V1)/100)/N0),(((WbPNG48BTR.theta*WbPNG48BRS$V2)/100)/N0))
+colnames(WbPNG48Bpsmc)=c("rep","boot","div","theta","time","Ne")
+mean_div48B=ddply(WbPNG48Bpsmc,"rep",summarise,div=mean(div))
+mean_theta48B=ddply(WbPNG48Bpsmc,"rep",summarise,theta=mean(theta))
+mean_time48B=ddply(WbPNG48Bpsmc,"rep",summarise,time=mean(time))
+mean_Ne48B=ddply(WbPNG48Bpsmc,"rep",summarise,Ne=mean(Ne))
+WbPNG48Bpsmc_mean=data.frame(boot=rep(101,31),div=mean_div48B$div,theta=mean_theta48B$theta,time=mean_time48B$time,Ne=mean_Ne48B$Ne)
+
+#unscaled
+ggplot(WbPNG48Bpsmc,aes(x=div,y=theta,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG48Bpsmc_mean,aes(x=div,y=theta))+xlab("divergence Log10")+ylab(expression(theta))+scale_x_log10()+scale_y_log10()
+
+#scaled
+ggplot(WbPNG48Bpsmc,aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG48Bpsmc_mean,aes(x=time,y=Ne))+annotation_logticks() + xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+scale_y_log10()+scale_x_log10()
+```
+
+```{r PSMC_WbPNG17E}
+
+library(plyr)
+library(ggplot2)
+
+WbPNG17ERS <- read.delim("Wb17E.s100.RS.psmc.out", header=F) # cat $combined_trunc_file | grep "RS"
+WbPNG17ETR<-read.delim("Wb17E.s100.TR.psmc.out", header=F) # cat $combined_trunc_file | grep "TR"
+bootstrp<-rep(1:101,each=32)
+rep<-rep(1:32,101)
+WbPNG17ETR.theta<-rep(WbPNG17ETR$V1,each=32)
+WbPNG17Epsmc<-data.frame(rep,bootstrp,(WbPNG17ETR.theta*WbPNG17ERS$V1)/100, (WbPNG17ETR.theta*WbPNG17ERS$V2)/100,2*(((WbPNG17ETR.theta*WbPNG17ERS$V1)/100)/N0),(((WbPNG17ETR.theta*WbPNG17ERS$V2)/100)/N0))
+colnames(WbPNG17Epsmc)=c("rep","boot","div","theta","time","Ne")
+mean_div17E=ddply(WbPNG17Epsmc,"rep",summarise,div=mean(div))
+mean_theta17E=ddply(WbPNG17Epsmc,"rep",summarise,theta=mean(theta))
+mean_time17E=ddply(WbPNG17Epsmc,"rep",summarise,time=mean(time))
+mean_Ne17E=ddply(WbPNG17Epsmc,"rep",summarise,Ne=mean(Ne))
+WbPNG17Epsmc_mean=data.frame(boot=rep(101,32),div=mean_div17E$div,theta=mean_theta17E$theta,time=mean_time17E$time,Ne=mean_Ne17E$Ne)
+
+#unscaled
+ggplot(WbPNG17Epsmc,aes(x=div,y=theta,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG17Epsmc_mean,aes(x=div,y=theta))+xlab("divergence Log10")+ylab(expression(theta))+scale_x_log10()+scale_y_log10()
+
+#scaled
+ggplot(WbPNG17Epsmc,aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG17Epsmc_mean,aes(x=time,y=Ne))+annotation_logticks() + xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+scale_y_log10()+scale_x_log10()
+
+```
+
+```{r PSMC_WbPNG17A}
+
+library(plyr)
+library(ggplot2)
+
+WbPNG17ARS <- read.delim("Wb17A.s100.RS.psmc.out", header=F) # cat $combined_trunc_file | grep "RS"
+WbPNG17ATR<-read.delim("Wb17A.s100.TR.psmc.out", header=F) # cat $combined_trunc_file | grep "TR"
+bootstrp<-rep(1:101,each=32)
+rep<-rep(1:32,101)
+WbPNG17ATR.theta<-rep(WbPNG17ATR$V1,each=32)
+WbPNG17Apsmc<-data.frame(rep,bootstrp,(WbPNG17ATR.theta*WbPNG17ARS$V1)/100, (WbPNG17ATR.theta*WbPNG17ARS$V2)/100,2*(((WbPNG17ATR.theta*WbPNG17ARS$V1)/100)/N0),(((WbPNG17ATR.theta*WbPNG17ARS$V2)/100)/N0))
+colnames(WbPNG17Apsmc)=c("rep","boot","div","theta","time","Ne")
+mean_div17A=ddply(WbPNG17Apsmc,"rep",summarise,div=mean(div))
+mean_theta17A=ddply(WbPNG17Apsmc,"rep",summarise,theta=mean(theta))
+mean_time17A=ddply(WbPNG17Apsmc,"rep",summarise,time=mean(time))
+mean_Ne17A=ddply(WbPNG17Apsmc,"rep",summarise,Ne=mean(Ne))
+WbPNG17Apsmc_mean=data.frame(boot=rep(101,32),div=mean_div17A$div,theta=mean_theta17A$theta,time=mean_time17A$time,Ne=mean_Ne17A$Ne)
+
+#unscaled
+ggplot(WbPNG17Apsmc,aes(x=div,y=theta,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG17Apsmc_mean,aes(x=div,y=theta))+xlab("divergence Log10")+ylab(expression(theta))+scale_x_log10()+scale_y_log10()
+
+#scaled
+ggplot(WbPNG17Apsmc,aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNG17Apsmc_mean,aes(x=time,y=Ne))+annotation_logticks() + xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+scale_y_log10()+scale_x_log10()
+
+```
+
+
+```{r PSMC_PLOT}
+##Plots all of them w/ mean and in gens
+
+library(plyr)
+library(ggplot2)
+theme_set( theme_bw( base_size=18, base_family= "Tw Cen MT"))
+scale_colour_manual(values=cbPalette)
+
+png(file="r2.png",width=3224,height=1500,res=300)
+par(mar=c(5,3,2,2)+0.1)
+ggplot()
+dev.off()
+
+#    gray,    orange,   sky blue, blue green, yellow,    blue,      vermillion reddish-purple 
+#"#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"
+
+#unscaled
+ggplot(subset(WbPNG17Epsmc,div>0),aes(x=div,y=theta,group=as.factor(boot)))+geom_line(color="#009E73")+geom_line(data=subset(WbPNG4853psmc,div>0),color="#56B4E9",aes(x=div,y=theta,group=as.factor(boot)))+geom_line(data=subset(WbPNG4873psmc,div>0),color="#E69F00",aes(x=div,y=theta,group=as.factor(boot)))+annotation_logticks() + xlab("divergence Log10")+ylab(expression(theta))+scale_y_log10()+scale_x_log10()+geom_line(data=subset(WbPNG17Epsmc_mean,div>0),aes(x=div,y=theta))+geom_line(data=subset(WbPNG4853psmc_mean,div>0),aes(x=div,y=theta))+geom_line(data=subset(WbPNG4873psmc_mean,div>0),aes(x=div,y=theta))
+
+#geom_line(data=subset(WbPNG17Dpsmc,div>0),color="#0072B2",aes(x=div,y=theta,group=as.factor(boot)))+geom_line(data=subset(WbPNG48Bpsmc_mean,div>0),aes(x=div,y=theta))+geom_line(data=subset(WbPNG48Bpsmc,div>0),color="#CC79A7",aes(x=div,y=theta,group=as.factor(boot)))+geom_line(data=subset(WbPNG17Dpsmc_mean,div>0),aes(x=div,y=theta))+geom_line(data=subset(WbPNG17Apsmc_mean,div>0),aes(x=div,y=theta))+geom_line(data=subset(WbPNG17Apsmc,div>0),color="#56B4E9",aes(x=div,y=theta,group=as.factor(boot)))
+
+#scaled
+ggplot(subset(WbPNG17Epsmc,time>0),aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(color="#009E73")+geom_line(data=subset(WbPNG4853psmc,time>0),color="#56B4E9",aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(data=subset(WbPNG4873psmc,time>0),color="#E69F00",aes(x=time,y=Ne,group=as.factor(boot)))+xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+geom_line(data=subset(WbPNG17Epsmc_mean,time>0),aes(x=time,y=Ne), linetype=1)+geom_line(data=subset(WbPNG4853psmc_mean,time>0),aes(x=time,y=Ne),linetype=2)+geom_line(data=subset(WbPNG4873psmc_mean,time>0),aes(x=time,y=Ne),linetype=3)+scale_y_log10()+scale_x_log10(breaks=c(100,1000,10000,100000,500000))+annotation_logticks()+ geom_line(data=subset(WbPNGMalipsmc_mean,time>0),aes(x=time,y=Ne),linetype=6, size=2)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
+#geom_line(data=subset(WbPNG17Dpsmc,time>0),color="#0072B2",aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(data=subset(WbPNG48Bpsmc_mean,time>0),aes(x=time,y=Ne))+geom_line(data=subset(WbPNG48Bpsmc,time>0),color="#CC79A7",aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(data=subset(WbPNG17Dpsmc_mean,time>0),aes(x=time,y=Ne))+geom_line(data=subset(WbPNG17Apsmc_mean,time>0),aes(x=time,y=Ne))+geom_line(data=subset(WbPNG17Apsmc,time>0),color="#56B4E9",aes(x=time,y=Ne,group=as.factor(boot)))
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+```
+
+```{r MSMC_PLOT}
+library(plyr)
+library(ggplot2)
+theme_set( theme_bw( base_size=18, base_family= "Tw Cen MT"))
+scale_colour_manual(values=cbPalette)
+mu=2.9E-9
+
+WbPNGL3msmcR <- read.delim("~/WbPNGL3-ALL.phased.msmcR.out.final.txt", header=T)
+WbPNGL3msmcR$timeL=WbPNGL3msmcR$left_time_boundary/mu
+WbPNGL3msmcR$timeR=WbPNGL3msmcR$right_time_boundary/mu
+WbPNGL3msmcR$Ne=(1/WbPNGL3msmcR$lambda_00)/(2*mu)
+
+number_ticks <- function(n) {function(limits) pretty(limits, n)}
+#+scale_x_continuous(breaks=number_ticks(10))+scale_y_continuous(breaks=number_ticks(10))
+
+#scaled
+ggplot(subset(WbPNGL3msmcR, timeR<6000),aes(x=log10(timeR),y=log10(Ne)))+geom_line(color="#CC79A7") + xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+scale_x_continuous(breaks=number_ticks(10))+scale_y_continuous(breaks=number_ticks(10))+annotation_logticks()
+
+#scaled no log
+ggplot(subset(WbPNGL3msmcR, timeR<6000),aes(x=timeR,y=Ne))+geom_line(size=1) + xlab("Generations")+ylab(expression(paste(N[e])))+scale_x_continuous(breaks=number_ticks(10))+scale_y_continuous(breaks=number_ticks(10))
+
+```
+
+```{r vivax_psmc}
+library(plyr)
+library(ggplot2)
+
+vivax.psms.plot <- read.delim("~/vivax.psms-plot.out", header=F)
+colnames(vivax.psms.plot)=c("region","rep","inds","boot","theta","rho","t_k","lambda_k","nrecomb","posterior")
+cols = rainbow(26, s=.6, v=.9)[sample(1:26,26)]
+ggplot(subset(vivax.psms.plot,rep >0),aes(color=inds,x=log((t_k*theta/50)),y=log((lambda_k*theta/50)),group=as.factor(interaction(inds,boot))))+geom_line() + facet_wrap(~region,nrow=1)+ scale_color_manual(values=cols)
+
+#relative theta as theta/highest_theta, compare 1:1 w/bootstraps, when do the lines diverge?
+
+```
+
+```{r PSMC_MALI}
+
+library(plyr)
+library(ggplot2)
+
+WbPNGMaliRS <- read.delim("WbMali.s100.RS.psmc.out", header=F) # cat $combined_trunc_file | grep "RS"
+WbPNGMaliTR<-read.delim("WbMali.s100.TR.psmc.out", header=F) # cat $combined_trunc_file | grep "TR"
+bootstrp<-rep(1:101,each=32)
+rep<-rep(1:32,101)
+WbPNGMaliTR.theta<-rep(WbPNGMaliTR$V1,each=32)
+
+WbPNGMalipsmc<-data.frame(rep,bootstrp,(WbPNGMaliTR.theta*WbPNGMaliRS$V1)/100, (WbPNGMaliTR.theta*WbPNGMaliRS$V2)/100,2*(((WbPNGMaliTR.theta*WbPNGMaliRS$V1)/100)/N0),(((WbPNGMaliTR.theta*WbPNGMaliRS$V2)/100)/N0))
+
+colnames(WbPNGMalipsmc)=c("rep","boot","div","theta","time","Ne")
+mean_divMali=ddply(WbPNGMalipsmc,"rep",summarise,div=mean(div))
+mean_thetaMali=ddply(WbPNGMalipsmc,"rep",summarise,theta=mean(theta))
+mean_timeMali=ddply(WbPNGMalipsmc,"rep",summarise,time=mean(time))
+mean_NeMali=ddply(WbPNGMalipsmc,"rep",summarise,Ne=mean(Ne))
+WbPNGMalipsmc_mean=data.frame(boot=rep(101,32),div=mean_divMali$div,theta=mean_thetaMali$theta,time=mean_timeMali$time,Ne=mean_NeMali$Ne)
+
+#unscaled
+ggplot(WbPNGMalipsmc,aes(x=div,y=theta,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNGMalipsmc_mean,aes(x=div,y=theta))+xlab("divergence Log10")+ylab(expression(theta))+scale_x_log10()+scale_y_log10()
+
+#scaled
+ggplot(WbPNGMalipsmc,aes(x=time,y=Ne,group=as.factor(boot)))+geom_line(color="red")+geom_line(data=WbPNGMalipsmc_mean,aes(x=time,y=Ne))+annotation_logticks() + xlab("log10 Generations")+ylab(expression(paste("log10 ",N[e])))+scale_y_log10()+scale_x_log10()
+
+```
+

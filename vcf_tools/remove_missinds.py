@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct 17 16:28:56 2016
@@ -20,7 +20,7 @@ parser.add_argument('-m', "--max", type=float, default=1,
 args = parser.parse_args()
 
 command = "vcftools --vcf " + args.INvcf + " --missing-indv --stdout"
-print command
+print(command)
 proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
 proc.wait()
 
@@ -35,6 +35,6 @@ for line in iter(proc.stdout.readline, ''):
 f.close()
 
 command = "vcftools --vcf " + args.INvcf + " --max-missing " + args.max + " --remove remove_inds.out --recode --out " + args.INvcf + ".nomiss"
-print command
+print(command)
 proc = subprocess.Popen(command, shell=True)
 proc.wait()
